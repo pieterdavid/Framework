@@ -14,7 +14,7 @@ git cms-init
 cd ${CMSSW_BASE}/src 
 
 git clone -o upstream git@github.com:blinkseb/TreeWrapper.git cp3_llbb/TreeWrapper
-git clone -o upstream git@github.com:cp3-llbb/Framework.git cp3_llbb/ExTreeMaker
+git clone -o upstream git@github.com:cp3-llbb/Framework.git cp3_llbb/Framework
 
 cd cp3_llbb/Framework
 
