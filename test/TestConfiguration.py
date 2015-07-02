@@ -34,6 +34,7 @@ process.load('FWCore.MessageLogger.MessageLogger_cfi')
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 # Producers
+from cp3_llbb.Framework import EventProducer
 from cp3_llbb.Framework import GenParticlesProducer
 from cp3_llbb.Framework import HLTProducer
 from cp3_llbb.Framework import JetsProducer
@@ -45,6 +46,8 @@ process.framework = cms.EDProducer("ExTreeMaker",
         output = cms.string('output_mc.root'),
 
         producers = cms.PSet(
+
+            event = EventProducer.default_configuration,
 
             hlt = HLTProducer.default_configuration,
 
