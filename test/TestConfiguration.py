@@ -37,6 +37,9 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 100
 from cp3_llbb.Framework import GenParticlesProducer
 from cp3_llbb.Framework import HLTProducer
 from cp3_llbb.Framework import JetsProducer
+from cp3_llbb.Framework import METProducer
+from cp3_llbb.Framework import MuonsProducer
+from cp3_llbb.Framework import ElectronsProducer
 
 process.framework = cms.EDProducer("ExTreeMaker",
         output = cms.string('output_mc.root'),
@@ -52,6 +55,12 @@ process.framework = cms.EDProducer("ExTreeMaker",
                     cut = cms.untracked.string("pt > 10")
                     )
                 ),
+
+            met = METProducer.default_configuration,
+
+            muons = MuonsProducer.default_configuration,
+
+            electrons = ElectronsProducer.default_configuration,
             ),
 
         analyzers = cms.PSet(
