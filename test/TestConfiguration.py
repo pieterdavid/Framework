@@ -41,6 +41,7 @@ from cp3_llbb.Framework import JetsProducer
 from cp3_llbb.Framework import METProducer
 from cp3_llbb.Framework import MuonsProducer
 from cp3_llbb.Framework import ElectronsProducer
+from cp3_llbb.Framework import VerticesProducer
 
 process.framework = cms.EDProducer("ExTreeMaker",
         output = cms.string('output_mc.root'),
@@ -64,6 +65,8 @@ process.framework = cms.EDProducer("ExTreeMaker",
             muons = MuonsProducer.default_configuration,
 
             electrons = ElectronsProducer.default_configuration,
+
+            vertices = VerticesProducer.default_configuration,
             ),
 
         analyzers = cms.PSet(
