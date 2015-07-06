@@ -10,6 +10,7 @@
 #include <FWCore/Utilities/interface/InputTag.h>
 
 #include <cp3_llbb/TreeWrapper/interface/TreeWrapper.h>
+#include <cp3_llbb/Framework/interface/Tools.h>
 
 #include <Math/Vector4D.h>
 

@@ -31,28 +31,42 @@ for idmod in my_id_modules:
 # Services
 ##### #####
 process.load('FWCore.MessageLogger.MessageLogger_cfi')
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
+
+# Producers
+from cp3_llbb.Framework import EventProducer
+from cp3_llbb.Framework import GenParticlesProducer
+from cp3_llbb.Framework import HLTProducer
+from cp3_llbb.Framework import JetsProducer
+from cp3_llbb.Framework import METProducer
+from cp3_llbb.Framework import MuonsProducer
+from cp3_llbb.Framework import ElectronsProducer
+from cp3_llbb.Framework import VerticesProducer
 
 process.framework = cms.EDProducer("ExTreeMaker",
         output = cms.string('output_mc.root'),
 
         producers = cms.PSet(
 
-            jets = cms.PSet(
-                type = cms.string('jets'),
-                prefix = cms.string('jet_'),
-                enable = cms.bool(True),
+            event = EventProducer.default_configuration,
+
+            hlt = HLTProducer.default_configuration,
+
+            gen_particles = GenParticlesProducer.default_configuration,
+
+            jets = JetsProducer.default_configuration.clone(
                 parameters = cms.PSet(
                     cut = cms.untracked.string("pt > 10")
                     )
                 ),
 
-            gen_particles = cms.PSet(
-                type = cms.string('gen_particles'),
-                prefix = cms.string('gen_particle_'),
-                enable = cms.bool(True)
-                )
+            met = METProducer.default_configuration,
 
+            muons = MuonsProducer.default_configuration,
+
+            electrons = ElectronsProducer.default_configuration,
+
+            vertices = VerticesProducer.default_configuration,
             ),
 
         analyzers = cms.PSet(
