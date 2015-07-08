@@ -8,9 +8,9 @@ process.load("Configuration.EventContent.EventContent_cff")
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 
-process.GlobalTag.globaltag = "MCRUN2_74_V7"
+process.GlobalTag.globaltag = "MCRUN2_74_V9"
 
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(5))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
 process.source = cms.Source("PoolSource")
 process.source.fileNames = cms.untracked.vstring(
         'file:///home/fynu/sbrochet/storage/MINIAODSIM/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_Asympt25ns_MCRUN2_74_V9_reduced.root'
@@ -31,7 +31,7 @@ for idmod in my_id_modules:
 # Services
 ##### #####
 process.load('FWCore.MessageLogger.MessageLogger_cfi')
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
 # Producers
 from cp3_llbb.Framework import EventProducer

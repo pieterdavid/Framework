@@ -1,4 +1,5 @@
 #include <cp3_llbb/Framework/interface/ElectronsProducer.h>
+#include <iostream>
 
 void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup) {
 
@@ -14,6 +15,7 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
 
     size_t index = 0;
     for (const auto& electron: *electrons) {
+        std::cout << "HELLO WORLD, I AM A NEW ELECTRON!" << std::endl;
         if (! pass_cut(electron))
             continue;
 
@@ -24,6 +26,9 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
         computeIsolations_R04(electron.chargedHadronIso(), electron.neutralHadronIso(), electron.photonIso(), electron.puChargedHadronIso(), electron.pt(), electron.superCluster()->eta(), rho);
 
         const pat::ElectronRef electronRef(electrons, index++);
+        std::cout << "Will now produce the electron IDs" << std::endl;
         Identifiable::produce_id(electronRef);
+        std::cout << "Finished producing the electron IDs" << std::endl;
     }
+    Identifiable::clean();
 }

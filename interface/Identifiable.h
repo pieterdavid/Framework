@@ -9,6 +9,8 @@
 
 #include <cp3_llbb/TreeWrapper/interface/TreeWrapper.h>
 
+#include <iostream>
+
 class Identifiable {
 
     public:
@@ -18,8 +20,13 @@ class Identifiable {
             }
 
         template <class T> void produce_id(const edm::Ref<T>& ref) {
+            std::cout << "Entering Identifiable produce_id" << std::endl;
+            std::cout << "\tref.get()= " << ref.get() << "\tids.size()= " << ids.size() << "\tm_id_maps.size()= " << m_id_maps.size() << std::endl;
+            std::cout << "\tref.id()= " << ref.id() << "\tref.key()= " << ref.key() << std::endl;
             std::map<std::string, bool> ids_;
             for (auto& handle: m_id_maps) {
+                std::cout << "handle.first= " << handle.first << std::endl;
+                std::cout << "(*(handle.second))[ref]= " << (*(handle.second))[ref] << std::endl;
                 ids_.emplace(handle.first, (*(handle.second))[ref]);
             }
             ids.push_back(ids_);
