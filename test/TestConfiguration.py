@@ -31,7 +31,7 @@ for idmod in my_id_modules:
 # Services
 ##### #####
 process.load('FWCore.MessageLogger.MessageLogger_cfi')
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 # Producers
 from cp3_llbb.Framework import EventProducer
