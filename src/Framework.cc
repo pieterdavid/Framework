@@ -18,7 +18,7 @@
 #include <chrono>
 
 // user include files
-#include <cp3_llbb/Framework/plugins/Framework.h>
+#include <cp3_llbb/Framework/interface/Framework.h>
 #include <cp3_llbb/TreeWrapper/interface/TreeWrapper.h>
 
 #include <TFile.h>

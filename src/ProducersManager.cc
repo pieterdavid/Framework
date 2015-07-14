@@ -1,6 +1,6 @@
 #include <cp3_llbb/Framework/interface/ProducersManager.h>
 
-#include <cp3_llbb/Framework/plugins/Framework.h>
+#include <cp3_llbb/Framework/interface/Framework.h>
 #include <cp3_llbb/Framework/interface/Producer.h>
 
 ProducersManager::ProducersManager(ExTreeMaker* framework):
