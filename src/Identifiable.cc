@@ -1,9 +1,8 @@
 #include <cp3_llbb/Framework/interface/Identifiable.h>
 
 void Identifiable::consumes_id_tokens(const edm::ParameterSet& config, edm::ConsumesCollector&& collector) {
-    if (config.existsAs<std::vector<edm::InputTag>>("ids")) {
+    if (config.existsAs<std::vector<edm::InputTag>>("ids", false)) {
         const std::vector<edm::InputTag>& id_tags = config.getUntrackedParameter<std::vector<edm::InputTag>>("ids");
-
         for (const edm::InputTag& tag: id_tags) {
             m_id_tokens.push_back(std::make_pair(tag.instance(), collector.consumes<edm::ValueMap<bool>>(tag)));
         }

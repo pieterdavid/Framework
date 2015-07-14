@@ -26,4 +26,5 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
         const pat::ElectronRef electronRef(electrons, index++);
         Identifiable::produce_id(electronRef);
     }
+    Identifiable::clean();
 }
