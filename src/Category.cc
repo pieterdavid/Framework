@@ -7,7 +7,7 @@ void CategoryManager::new_category(const std::string& name, const std::string& d
     m_categories.push_back(CategoryData(name, description, category, m_tree));
 }
 
-bool CategoryManager::evaluate() {
+bool CategoryManager::evaluate(const ProducersManager& producers) {
     bool ret;
 
     if (m_categories.size() == 0) {
@@ -15,7 +15,7 @@ bool CategoryManager::evaluate() {
     } else {
         ret = false;
         for (auto& category: m_categories) {
-            if (category.callback->event_in_category()) {
+            if (category.callback->event_in_category(producers)) {
                 ret = true;
                 category.in_category = true;
                 category.events++;
