@@ -34,6 +34,7 @@ class ExTreeMaker: public edm::EDProducer {
 
         // For ProducersManager
         Framework::Producer& getProducer(const std::string& name);
+        bool producerExists(const std::string& name);
         std::unique_ptr<ProducersManager> m_producers_manager;
 
         std::string m_output_filename;
