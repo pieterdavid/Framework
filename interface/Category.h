@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <cp3_llbb/Framework/interface/Cut.h>
+#include <cp3_llbb/Framework/interface/ProducersManager.h>
 
 #include <cp3_llbb/TreeWrapper/interface/TreeWrapper.h>
 
@@ -13,7 +14,7 @@ class CategoryManager;
 
 class Category {
     public:
-        virtual bool event_in_category() const = 0;
+        virtual bool event_in_category(const ProducersManager& producers) const = 0;
         virtual void register_cuts(CutManager& manager) {};
         virtual void evaluate_cuts(CutManager& manager) const {};
 };
@@ -47,7 +48,7 @@ class CategoryManager {
 
     public:
         void new_category(const std::string& name, const std::string& description, Category* category);
-        bool evaluate();
+        bool evaluate(const ProducersManager& producers);
 
         void print_summary();
 

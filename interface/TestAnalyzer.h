@@ -3,9 +3,12 @@
 
 #include <cp3_llbb/Framework/interface/Analyzer.h>
 
+#include <cp3_llbb/Framework/interface/MuonsProducer.h>
+
 class TwoMuonsCategory: public Category {
-    virtual bool event_in_category() const override {
-        return rand() / (float) RAND_MAX > 0.5;
+    virtual bool event_in_category(const ProducersManager& producers) const override {
+        const MuonsProducer& muons = dynamic_cast<const MuonsProducer&>(producers.get("muons"));         
+        return muons.p4.size() >= 2;
     };
 
     virtual void register_cuts(CutManager& manager) override {

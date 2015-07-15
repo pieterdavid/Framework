@@ -104,8 +104,10 @@ void ExTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for (auto& analyzer: m_analyzers)
         analyzer->analyze(iEvent, iSetup, *m_producers_manager);
 
-    if (m_categories->evaluate())
+    if (m_categories->evaluate(*m_producers_manager))
         m_wrapper->fill();
+    else
+        m_wrapper->reset();
 }
 
 
