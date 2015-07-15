@@ -106,6 +106,8 @@ void ExTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
     if (m_categories->evaluate(*m_producers_manager))
         m_wrapper->fill();
+    else
+        m_wrapper->reset();
 }
 
 
