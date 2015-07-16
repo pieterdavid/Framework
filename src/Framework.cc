@@ -175,10 +175,17 @@ void ExTreeMaker::endLuminosityBlock(const edm::LuminosityBlock& lumi, const edm
 Framework::Producer& ExTreeMaker::getProducer(const std::string& name) {
     const auto& producer = m_producers.find(name);
     if (producer == m_producers.end()) {
-        // FIXME: Throw
+        std::stringstream details;
+        details << "Producer '" << name << "' not found. Please load it first in the python configuration";
+        throw edm::Exception(edm::errors::NotFound, details.str());
     }
 
     return *producer->second;
+}
+
+bool ExTreeMaker::producerExists(const std::string& name) {
+    const auto& producer = m_producers.find(name);
+    return (producer != m_producers.end());
 }
 
 //define this as a plug-in

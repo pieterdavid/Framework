@@ -14,6 +14,7 @@ class ProducersManager {
 
     public:
         const Framework::Producer& get(const std::string& name) const;
+        bool exists(const std::string& name) const;
 
     private:
         ProducersManager(ExTreeMaker* framework);

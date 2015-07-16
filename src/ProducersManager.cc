@@ -11,3 +11,7 @@ ProducersManager::ProducersManager(ExTreeMaker* framework):
 const Framework::Producer& ProducersManager::get(const std::string& name) const {
     return m_framework->getProducer(name);
 }
+
+bool ProducersManager::exists(const std::string& name) const {
+    return m_framework->producerExists(name);
+}
