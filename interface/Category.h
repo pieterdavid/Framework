@@ -22,7 +22,7 @@ class Category {
 struct CategoryData {
     std::string name;
     std::string description;
-    Category* callback;
+    std::unique_ptr<Category> callback;
     ROOT::TreeGroup tree;
     CutManager cut_manager;
 
@@ -31,10 +31,10 @@ struct CategoryData {
     // Tree branches
     bool& in_category;
 
-    CategoryData(const std::string& name_, const std::string& description_, Category* category, ROOT::TreeWrapper& tree_):
+    CategoryData(const std::string& name_, const std::string& description_, std::unique_ptr<Category> category, ROOT::TreeWrapper& tree_):
         name(name_),
         description(description_),
-        callback(category),
+        callback(std::move(category)),
         tree(tree_.group(name_ + "_")),
         cut_manager(*this),
         in_category(tree["category"].write<bool>())
@@ -47,7 +47,12 @@ class CategoryManager {
     friend class ExTreeMaker;
 
     public:
-        void new_category(const std::string& name, const std::string& description, Category* category);
+        template<class T>
+        void new_category(const std::string& name, const std::string& description) {
+            std::unique_ptr<Category> category(new T());
+            m_categories.push_back(CategoryData(name, description, std::move(category), m_tree));
+        }
+
         bool evaluate(const ProducersManager& producers);
 
         void print_summary();

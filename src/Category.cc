@@ -3,10 +3,6 @@
 #include <cstdio>
 #include <cinttypes>
 
-void CategoryManager::new_category(const std::string& name, const std::string& description, Category* category) {
-    m_categories.push_back(CategoryData(name, description, category, m_tree));
-}
-
 bool CategoryManager::evaluate(const ProducersManager& producers) {
     bool ret;
 

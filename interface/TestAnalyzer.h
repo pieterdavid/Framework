@@ -35,11 +35,10 @@ class TestAnalyzer: public Framework::Analyzer {
         virtual void analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager&) override;
 
         virtual void registerCategories(CategoryManager& manager) {
-            manager.new_category("two_muons", "At least two muons category", &two_muons_category);
+            manager.new_category<TwoMuonsCategory>("two_muons", "At least two muons category");
         }
 
     private:
-        TwoMuonsCategory two_muons_category;
 
 };
 
