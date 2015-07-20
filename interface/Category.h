@@ -16,7 +16,7 @@ class Category {
     public:
         virtual bool event_in_category(const ProducersManager& producers) const = 0;
         virtual void register_cuts(CutManager& manager) {};
-        virtual void evaluate_cuts(CutManager& manager) const {};
+        virtual void evaluate_cuts(CutManager& manager, const ProducersManager& producers) const {};
 };
 
 struct CategoryData {

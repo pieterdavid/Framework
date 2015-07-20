@@ -12,16 +12,17 @@ class TwoMuonsCategory: public Category {
     };
 
     virtual void register_cuts(CutManager& manager) override {
-        manager.new_cut("cut_1", "cut test");
-        manager.new_cut("cut_2", "cut test");
+        manager.new_cut("muon_1_pt", "pt > 30");
+        manager.new_cut("muon_2_pt", "pt > 10");
     };
 
-    virtual void evaluate_cuts(CutManager& manager) const override {
-        if (rand() / (float) RAND_MAX > 0.5)
-            manager.pass_cut("cut_1");
+    virtual void evaluate_cuts(CutManager& manager, const ProducersManager& producers) const override {
+        const MuonsProducer& muons = dynamic_cast<const MuonsProducer&>(producers.get("muons"));         
+        if (muons.p4[0].Pt() > 30) 
+            manager.pass_cut("muon_1_pt");
 
-        if (rand() / (float) RAND_MAX > 0.5)
-            manager.pass_cut("cut_2");
+        if (muons.p4[1].Pt() > 10)
+            manager.pass_cut("muon_2_pt");
     }
 };
 

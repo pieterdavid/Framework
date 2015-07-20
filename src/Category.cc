@@ -15,7 +15,7 @@ bool CategoryManager::evaluate(const ProducersManager& producers) {
                 ret = true;
                 category.in_category = true;
                 category.events++;
-                category.callback->evaluate_cuts(category.cut_manager);
+                category.callback->evaluate_cuts(category.cut_manager, producers);
             }
         }
     }
