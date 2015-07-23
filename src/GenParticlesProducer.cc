@@ -27,7 +27,8 @@ void GenParticlesProducer::produce(edm::Event& event, const edm::EventSetup& eve
         pruned_status.push_back(p.status());
         pruned_status_flags.push_back(p.statusFlags().flags_.to_ulong());
 
-        std::vector<uint16_t> mothers_index(p.numberOfMothers());
+        std::vector<uint16_t> mothers_index;
+        mothers_index.reserve(p.numberOfMothers());
         for (size_t i = 0; i < p.numberOfMothers(); i++)
             mothers_index.push_back(static_cast<uint16_t>(p.motherRef(i).key()));
 
