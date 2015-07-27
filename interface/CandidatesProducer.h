@@ -23,9 +23,7 @@ class CandidatesProducer: public Framework::Producer {
                 p4.push_back(LorentzVector(p.pt(), p.eta(), p.phi(), p.energy()));
                 y.push_back(p.rapidity());
                 charge.push_back(p.charge());
-
-                // TODO: MC Matching
-                matched.push_back(false);
+                // MC Matching cannot be templated: look in the individual producers
             }
 
         bool pass_cut(const ObjectType& p) {
