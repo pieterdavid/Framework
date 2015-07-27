@@ -37,6 +37,9 @@ template <class T> class LeptonsProducer: public CandidatesProducer<T> {
                 this->gen_charge.push_back(p.genParticle()->charge());
             } else {
                 this->matched.push_back(false);
+                this->gen_p4.push_back(LorentzVector(0., 0., 0., 0.));
+                this->gen_y.push_back(0.);
+                this->gen_charge.push_back(0.);
             }
          }
         void computeIsolations_R03(float chargedHadronIso, float neutralHadronIso, float photonIso, float puChargedHadronIso, float pt, float eta, float rho) {

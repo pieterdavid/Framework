@@ -32,6 +32,9 @@ class JetsProducer: public CandidatesProducer<pat::Jet> {
                 this->gen_charge.push_back(p.genJet()->charge());
             } else {
                 this->matched.push_back(false);
+                this->gen_p4.push_back(LorentzVector(0., 0., 0., 0.));
+                this->gen_y.push_back(0.);
+                this->gen_charge.push_back(0.);
             }
         }
 
