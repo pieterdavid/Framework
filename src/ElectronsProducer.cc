@@ -17,7 +17,7 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
         if (! pass_cut(electron))
             continue;
 
-        fill_candidate(electron);
+        fill_candidate(electron, electron.genParticle());
 
         reco::GsfElectron::PflowIsolationVariables pfIso = electron.pfIsolationVariables();
         computeIsolations_R03(pfIso.sumChargedHadronPt, pfIso.sumNeutralHadronEt, pfIso.sumPhotonEt, pfIso.sumPUPt, electron.pt(), electron.superCluster()->eta(), rho);

@@ -27,21 +27,6 @@ template <class T> class LeptonsProducer: public CandidatesProducer<T> {
         virtual ~LeptonsProducer() {}
 
     protected:
-        void fill_candidate(const T& p) {
-            CandidatesProducer<T>::fill_candidate(p);
-            if( p.genParticle() != 0 )
-            {
-                this->matched.push_back(true);
-                this->gen_p4.push_back(LorentzVector(p.genParticle()->pt(), p.genParticle()->eta(), p.genParticle()->phi(), p.genParticle()->energy()));
-                this->gen_y.push_back(p.genParticle()->y());
-                this->gen_charge.push_back(p.genParticle()->charge());
-            } else {
-                this->matched.push_back(false);
-                this->gen_p4.push_back(LorentzVector(0., 0., 0., 0.));
-                this->gen_y.push_back(0.);
-                this->gen_charge.push_back(0.);
-            }
-         }
         void computeIsolations_R03(float chargedHadronIso, float neutralHadronIso, float photonIso, float puChargedHadronIso, float pt, float eta, float rho) {
             chargedHadronIsoR03.push_back(chargedHadronIso);
             neutralHadronIsoR03.push_back(neutralHadronIso);

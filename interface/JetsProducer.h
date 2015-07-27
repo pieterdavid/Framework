@@ -21,23 +21,6 @@ class JetsProducer: public CandidatesProducer<pat::Jet> {
 
         virtual void produce(edm::Event& event, const edm::EventSetup& eventSetup) override;
 
-    protected:
-        void fill_candidate(const pat::Jet& p) {
-            CandidatesProducer<pat::Jet>::fill_candidate(p);
-            if( p.genJet() != 0 )
-            {
-                this->matched.push_back(true);
-                this->gen_p4.push_back(LorentzVector(p.genJet()->pt(), p.genJet()->eta(), p.genJet()->phi(), p.genJet()->energy()));
-                this->gen_y.push_back(p.genJet()->y());
-                this->gen_charge.push_back(p.genJet()->charge());
-            } else {
-                this->matched.push_back(false);
-                this->gen_p4.push_back(LorentzVector(0., 0., 0., 0.));
-                this->gen_y.push_back(0.);
-                this->gen_charge.push_back(0.);
-            }
-        }
-
     private:
 
         // Tokens

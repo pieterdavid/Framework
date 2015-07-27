@@ -10,7 +10,7 @@ void JetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup)
         if (! pass_cut(jet))
             continue;
 
-        fill_candidate(jet);
+        fill_candidate(jet, jet.genJet());
 
         jecFactor.push_back(jet.jecFactor(0));
         area.push_back(jet.jetArea());
