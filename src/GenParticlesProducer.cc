@@ -13,8 +13,11 @@ void GenParticlesProducer::produce(edm::Event& event, const edm::EventSetup& eve
         packed_status.push_back(p.status());
         packed_status_flags.push_back(p.statusFlags().flags_.to_ulong());
 
-        if (p.numberOfMothers() > 0)
+        if (p.numberOfMothers() > 0) {
             packed_mothers_index.push_back({ static_cast<uint16_t>(p.motherRef().key()) });
+        } else {
+            packed_mothers_index.push_back({});
+        }
     }
 
     edm::Handle<std::vector<reco::GenParticle>> pruned_gen_particles;
