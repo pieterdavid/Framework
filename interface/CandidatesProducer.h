@@ -18,14 +18,23 @@ class CandidatesProducer: public Framework::Producer {
         virtual ~CandidatesProducer() {}
 
     protected:
-        template<typename T>
-            void fill_candidate(const T& p) {
+        template<typename T, typename U>
+            void fill_candidate(const T& p, const U* gen) {
                 p4.push_back(LorentzVector(p.pt(), p.eta(), p.phi(), p.energy()));
                 y.push_back(p.rapidity());
                 charge.push_back(p.charge());
-
-                // TODO: MC Matching
-                matched.push_back(false);
+                if( gen != 0 )
+                {
+                    matched.push_back(true);
+                    gen_p4.push_back(LorentzVector(gen->pt(), gen->eta(), gen->phi(), gen->energy()));
+                    gen_y.push_back(gen->y());
+                    gen_charge.push_back(gen->charge());
+                } else {
+                    matched.push_back(false);
+                    gen_p4.push_back(LorentzVector(0., 0., 0., 0.));
+                    gen_y.push_back(0.);
+                    gen_charge.push_back(0.);
+                }
             }
 
         bool pass_cut(const ObjectType& p) {

@@ -19,7 +19,7 @@ void MuonsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup
         if (! pass_cut(muon))
             continue;
 
-        fill_candidate(muon);
+        fill_candidate(muon, muon.genParticle());
 
         reco::MuonPFIsolation pfIso = muon.pfIsolationR03();
         computeIsolations_R03(pfIso.sumChargedHadronPt, pfIso.sumNeutralHadronEt, pfIso.sumPhotonEt, pfIso.sumPUPt, muon.pt(), muon.eta(), rho);

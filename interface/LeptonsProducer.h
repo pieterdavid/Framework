@@ -27,7 +27,6 @@ template <class T> class LeptonsProducer: public CandidatesProducer<T> {
         virtual ~LeptonsProducer() {}
 
     protected:
-
         void computeIsolations_R03(float chargedHadronIso, float neutralHadronIso, float photonIso, float puChargedHadronIso, float pt, float eta, float rho) {
             chargedHadronIsoR03.push_back(chargedHadronIso);
             neutralHadronIsoR03.push_back(neutralHadronIso);
