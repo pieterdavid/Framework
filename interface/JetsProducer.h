@@ -2,15 +2,16 @@
 #define JETS_PRODUCER
 
 #include <cp3_llbb/Framework/interface/CandidatesProducer.h>
+#include <cp3_llbb/Framework/interface/BTaggingScaleFactors.h>
 
 #include <DataFormats/PatCandidates/interface/Jet.h>
 
-class JetsProducer: public CandidatesProducer<pat::Jet> {
+class JetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScaleFactors {
     public:
         JetsProducer(const std::string& name, const ROOT::TreeGroup& tree, const edm::ParameterSet& config):
-            CandidatesProducer(name, tree, config)
+            CandidatesProducer(name, tree, config), BTaggingScaleFactors(const_cast<ROOT::TreeGroup&>(tree))
         {
-
+            BTaggingScaleFactors::create_branches(config);
         }
 
         virtual ~JetsProducer() {}
