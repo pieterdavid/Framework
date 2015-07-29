@@ -1,0 +1,57 @@
+{
+    "dimension": 2,
+    "binning": {
+        "x": [0, 1, 2],
+        "y": [0, 10, 50, 1000]
+    },
+    "absolute_errors": false,
+    "formula": false,
+    "data": [
+        {
+            "bin": [0, 1],
+            "values": [
+                {
+                    "bin": [0, 10],
+                    "value": 1,
+                    "error_low": 1,
+                    "error_high": 1
+                },
+                {
+                    "bin": [10, 50],
+                    "value": 2,
+                    "error_low": 1,
+                    "error_high": 1
+                },
+                {
+                    "bin": [50, 1000],
+                    "value": 3,
+                    "error_low": 1,
+                    "error_high": 1
+                }
+            ]
+        },
+        {
+            "bin": [1, 2],
+            "values": [
+                {
+                    "bin": [0, 10],
+                    "value": 1,
+                    "error_low": 1,
+                    "error_high": 1
+                },
+                {
+                    "bin": [10, 50],
+                    "value": 2,
+                    "error_low": 1,
+                    "error_high": 1
+                },
+                {
+                    "bin": [50, 1000],
+                    "value": 3,
+                    "error_low": 1,
+                    "error_high": 1
+                }
+            ]
+        }
+    ]
+}

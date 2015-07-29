@@ -2,17 +2,19 @@
 #define MUONS_PRODUCER
 
 #include <cp3_llbb/Framework/interface/LeptonsProducer.h>
+#include <cp3_llbb/Framework/interface/ScaleFactors.h>
 
 #include <DataFormats/VertexReco/interface/Vertex.h>
 #include <DataFormats/PatCandidates/interface/Muon.h>
 
 #include <utility>
 
-class MuonsProducer: public LeptonsProducer<pat::Muon> {
+class MuonsProducer: public LeptonsProducer<pat::Muon>, public ScaleFactors {
     public:
         MuonsProducer(const std::string& name, const ROOT::TreeGroup& tree, const edm::ParameterSet& config):
-            LeptonsProducer(name, tree, config)
+            LeptonsProducer(name, tree, config), ScaleFactors(const_cast<ROOT::TreeGroup&>(tree))
         {
+            ScaleFactors::create_branches(config);
         }
 
         virtual ~MuonsProducer() {}

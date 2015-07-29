@@ -16,6 +16,12 @@ default_configuration = cms.PSet(
                 'egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight',
                 'egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto',
                 'egmGsfElectronIDs:heepElectronID-HEEPV51'
+                ),
+            scale_factors = cms.untracked.PSet(
+                id_veto = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_sfVETO_id.json'),
+                id_loose = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_sfLOOSE_id.json'),
+                id_medium = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_sfMEDIUM_id.json'),
+                id_tight = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_sfTIGHT_id.json'),
                 )
-            )
+            ),
         )

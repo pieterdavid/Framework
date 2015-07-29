@@ -3,14 +3,16 @@
 
 #include <cp3_llbb/Framework/interface/LeptonsProducer.h>
 #include <cp3_llbb/Framework/interface/Identifiable.h>
+#include <cp3_llbb/Framework/interface/ScaleFactors.h>
 
 #include <DataFormats/PatCandidates/interface/Electron.h>
 
-class ElectronsProducer: public LeptonsProducer<pat::Electron>, public Identifiable {
+class ElectronsProducer: public LeptonsProducer<pat::Electron>, public Identifiable, public ScaleFactors {
     public:
         ElectronsProducer(const std::string& name, const ROOT::TreeGroup& tree, const edm::ParameterSet& config):
-            LeptonsProducer(name, tree, config), Identifiable(const_cast<ROOT::TreeGroup&>(tree))
+            LeptonsProducer(name, tree, config), Identifiable(const_cast<ROOT::TreeGroup&>(tree)), ScaleFactors(const_cast<ROOT::TreeGroup&>(tree))
         {
+            ScaleFactors::create_branches(config);
         }
 
         virtual ~ElectronsProducer() {}
