@@ -29,11 +29,11 @@ class JetsProducer: public CandidatesProducer<pat::Jet> {
     public:
         // Tree members
         std::vector<float>& area = tree["area"].write<std::vector<float>>();
-        std::vector<int8_t> partonFlavor = tree["partonFlavor"].write<std::vector<int8_t>>();
-        std::vector<int8_t> hadronFlavor = tree["hadronFlavor"].write<std::vector<int8_t>>();
-        std::vector<float> jecFactor = tree["jecFactor"].write<std::vector<float>>();
-        std::vector<float> puJetID = tree["puJetID"].write<std::vector<float>>();
-        std::vector<float> vtxMass = tree["vtxMass"].write<std::vector<float>>();
+        std::vector<int8_t>& partonFlavor = tree["partonFlavor"].write<std::vector<int8_t>>();
+        std::vector<int8_t>& hadronFlavor = tree["hadronFlavor"].write<std::vector<int8_t>>();
+        std::vector<float>& jecFactor = tree["jecFactor"].write<std::vector<float>>();
+        std::vector<float>& puJetID = tree["puJetID"].write<std::vector<float>>();
+        std::vector<float>& vtxMass = tree["vtxMass"].write<std::vector<float>>();
 };
 
 #endif
