@@ -27,6 +27,12 @@ void JetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup)
             // Get branch from tree
             std::vector<float>& branch = tree[btag_discri.first].write<std::vector<float>>();
             branch.push_back(btag_discri.second);
+
+            Algorithm algo = string_to_algorithm(btag_discri.first);
+
+            if (algo != Algorithm::UNKNOWN && BTaggingScaleFactors::has_scale_factors(algo)) {
+                BTaggingScaleFactors::store_scale_factors(algo, get_flavor(jet.hadronFlavour()), {static_cast<float>(fabs(jet.eta())), static_cast<float>(jet.pt()), btag_discri.second});
+            }
         }
     }
 }

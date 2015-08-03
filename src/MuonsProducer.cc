@@ -32,5 +32,7 @@ void MuonsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup
         isSoft.push_back(muon.isSoftMuon(primary_vertex));
         isTight.push_back(muon.isTightMuon(primary_vertex));
         isHighPt.push_back(muon.isHighPtMuon(primary_vertex));
+
+        ScaleFactors::store_scale_factors({static_cast<float>(fabs(muon.eta())), static_cast<float>(muon.pt())});
     }
 }
