@@ -26,6 +26,8 @@ class EventProducer: public Framework::Producer {
 
         virtual void produce(edm::Event& event, const edm::EventSetup& eventSetup) override;
 
+        virtual void endJob(MetadataManager&) override;
+
     private:
 
         // Tokens
@@ -33,6 +35,8 @@ class EventProducer: public Framework::Producer {
         edm::EDGetTokenT<std::vector<PileupSummaryInfo>> m_pu_info_token;
         edm::EDGetTokenT<GenEventInfoProduct> m_gen_info_token;
         edm::EDGetTokenT<LHEEventProduct> m_lhe_info_token;
+
+        float m_event_weight_sum = 0;
 
     public:
         // Tree members

@@ -126,6 +126,7 @@ void ExTreeMaker::beginJob() {
 
 // ------------ method called once each job just after ending the event loop  ------------
 void ExTreeMaker::endJob() {
+    std::cout << std::endl << "---" << std::endl;
     for (auto& producer: m_producers)
         producer.second->endJob(*m_metadata);
 
