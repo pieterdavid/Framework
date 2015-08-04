@@ -7,7 +7,7 @@
 
 class TwoMuonsCategory: public Category {
     virtual bool event_in_category(const ProducersManager& producers) const override {
-        const MuonsProducer& muons = dynamic_cast<const MuonsProducer&>(producers.get("muons"));         
+        const MuonsProducer& muons = producers.get<MuonsProducer>("muons");
         return muons.p4.size() >= 2;
     };
 
@@ -17,7 +17,7 @@ class TwoMuonsCategory: public Category {
     };
 
     virtual void evaluate_cuts(CutManager& manager, const ProducersManager& producers) const override {
-        const MuonsProducer& muons = dynamic_cast<const MuonsProducer&>(producers.get("muons"));         
+        const MuonsProducer& muons = producers.get<MuonsProducer>("muons");
         if (muons.p4[0].Pt() > 30) 
             manager.pass_cut("muon_1_pt");
 

@@ -33,7 +33,7 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
         m_wrapper.reset(new ROOT::TreeWrapper(tree));
 
         m_categories.reset(new CategoryManager(*m_wrapper));
-        m_producers_manager.reset(new ProducersManager(this));
+        m_producers_manager.reset(new ProducersManager(*this));
 
         // Load plugins
         if (!iConfig.existsAs<edm::ParameterSet>("producers")) {
@@ -172,7 +172,7 @@ void ExTreeMaker::endLuminosityBlock(const edm::LuminosityBlock& lumi, const edm
         analyzer->endLuminosityBlock(lumi, eventSetup);
 }
 
-Framework::Producer& ExTreeMaker::getProducer(const std::string& name) {
+const Framework::Producer& ExTreeMaker::getProducer(const std::string& name) const {
     const auto& producer = m_producers.find(name);
     if (producer == m_producers.end()) {
         std::stringstream details;
@@ -183,7 +183,7 @@ Framework::Producer& ExTreeMaker::getProducer(const std::string& name) {
     return *producer->second;
 }
 
-bool ExTreeMaker::producerExists(const std::string& name) {
+bool ExTreeMaker::producerExists(const std::string& name) const {
     const auto& producer = m_producers.find(name);
     return (producer != m_producers.end());
 }

@@ -12,9 +12,10 @@
 #include "cp3_llbb/Framework/interface/Analyzer.h"
 #include "cp3_llbb/Framework/interface/Producer.h"
 #include "cp3_llbb/Framework/interface/Category.h"
+#include "cp3_llbb/Framework/interface/ProducerGetter.h"
 #include "cp3_llbb/Framework/interface/ProducersManager.h"
 
-class ExTreeMaker: public edm::EDProducer {
+class ExTreeMaker: public edm::EDProducer, ProducerGetter {
     friend class ProducersManager;
 
     public:
@@ -32,9 +33,9 @@ class ExTreeMaker: public edm::EDProducer {
         virtual void beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
         virtual void endLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) override;
 
-        // For ProducersManager
-        Framework::Producer& getProducer(const std::string& name);
-        bool producerExists(const std::string& name);
+        // From ProducerGetter
+        virtual const Framework::Producer& getProducer(const std::string& name) const override;
+        virtual bool producerExists(const std::string& name) const override;
         std::unique_ptr<ProducersManager> m_producers_manager;
 
         std::string m_output_filename;
