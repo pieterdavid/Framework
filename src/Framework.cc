@@ -35,6 +35,8 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
         m_categories.reset(new CategoryManager(*m_wrapper));
         m_producers_manager.reset(new ProducersManager(this));
 
+        m_metadata.reset(new MetadataManager(m_output.get()));
+
         // Load plugins
         if (!iConfig.existsAs<edm::ParameterSet>("producers")) {
             throw new std::logic_error("No producers specified");
@@ -116,19 +118,19 @@ void ExTreeMaker::beginJob() {
     m_start_time = clock::now();
 
     for (auto& producer: m_producers)
-        producer.second->beginJob();
+        producer.second->beginJob(*m_metadata);
 
     for (auto& analyzer: m_analyzers)
-        analyzer->beginJob();
+        analyzer->beginJob(*m_metadata);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
 void ExTreeMaker::endJob() {
     for (auto& producer: m_producers)
-        producer.second->endJob();
+        producer.second->endJob(*m_metadata);
 
     for (auto& analyzer: m_analyzers)
-        analyzer->endJob();
+        analyzer->endJob(*m_metadata);
 
     auto end_time = clock::now();
 

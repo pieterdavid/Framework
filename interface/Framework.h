@@ -46,6 +46,9 @@ class ExTreeMaker: public edm::EDProducer {
         // Categories
         std::unique_ptr<CategoryManager> m_categories;
 
+        // Metadata
+        std::unique_ptr<MetadataManager> m_metadata;
+
         // Timing
         typedef std::chrono::system_clock clock;
         typedef std::chrono::milliseconds ms;

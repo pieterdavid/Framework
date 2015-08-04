@@ -12,6 +12,7 @@
 
 #include <cp3_llbb/Framework/interface/Category.h>
 #include <cp3_llbb/Framework/interface/ProducersManager.h>
+#include <cp3_llbb/Framework/interface/MetadataManager.h>
 #include <cp3_llbb/TreeWrapper/interface/TreeWrapper.h>
 
 #include <Math/Vector4D.h>
@@ -35,8 +36,8 @@ namespace Framework {
 
             virtual void registerCategories(CategoryManager& manager) {}
 
-            virtual void beginJob() {}
-            virtual void endJob() {}
+            virtual void beginJob(MetadataManager&) {}
+            virtual void endJob(MetadataManager&) {}
 
             virtual void beginRun(const edm::Run&, const edm::EventSetup&) {}
             virtual void endRun(const edm::Run&, const edm::EventSetup&) {}

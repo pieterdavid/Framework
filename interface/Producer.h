@@ -11,6 +11,7 @@
 
 #include <cp3_llbb/TreeWrapper/interface/TreeWrapper.h>
 #include <cp3_llbb/Framework/interface/Tools.h>
+#include <cp3_llbb/Framework/interface/MetadataManager.h>
 
 #include <Math/Vector4D.h>
 
@@ -31,8 +32,8 @@ namespace Framework {
             virtual void produce(edm::Event&, const edm::EventSetup&) = 0;
             virtual void doConsumes(const edm::ParameterSet&, edm::ConsumesCollector&& collector) {}
 
-            virtual void beginJob() {}
-            virtual void endJob() {}
+            virtual void beginJob(MetadataManager&) {}
+            virtual void endJob(MetadataManager&) {}
 
             virtual void beginRun(const edm::Run&, const edm::EventSetup&) {}
             virtual void endRun(const edm::Run&, const edm::EventSetup&) {}
