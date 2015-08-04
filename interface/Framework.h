@@ -14,9 +14,12 @@
 #include "cp3_llbb/Framework/interface/Category.h"
 #include "cp3_llbb/Framework/interface/ProducerGetter.h"
 #include "cp3_llbb/Framework/interface/ProducersManager.h"
+#include "cp3_llbb/Framework/interface/AnalyzerGetter.h"
+#include "cp3_llbb/Framework/interface/AnalyzersManager.h"
 
-class ExTreeMaker: public edm::EDProducer, ProducerGetter {
+class ExTreeMaker: public edm::EDProducer, ProducerGetter, AnalyzerGetter {
     friend class ProducersManager;
+    friend class AnalyzersManager;
 
     public:
         explicit ExTreeMaker(const edm::ParameterSet&);
@@ -38,11 +41,20 @@ class ExTreeMaker: public edm::EDProducer, ProducerGetter {
         virtual bool producerExists(const std::string& name) const override;
         std::unique_ptr<ProducersManager> m_producers_manager;
 
+        // From AnalyzerGetter
+        virtual const Framework::Analyzer& getAnalyzer(const std::string& name) const override;
+        virtual bool analyzerExists(const std::string& name) const override;
+        std::unique_ptr<AnalyzersManager> m_analyzers_manager;
+
         std::string m_output_filename;
         std::unique_ptr<TFile> m_output;
         std::unique_ptr<ROOT::TreeWrapper> m_wrapper;
         std::unordered_map<std::string, std::shared_ptr<Framework::Producer>> m_producers;
+
+
+        // Order is important, we can't use a map here
         std::vector<std::shared_ptr<Framework::Analyzer>> m_analyzers;
+        std::vector<std::string> m_analyzers_name;
 
         // Categories
         std::unique_ptr<CategoryManager> m_categories;
