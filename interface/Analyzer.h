@@ -10,7 +10,6 @@
 #include <FWCore/Framework/interface/ConsumesCollector.h>
 #include <FWCore/Utilities/interface/InputTag.h>
 
-#include <cp3_llbb/Framework/interface/Category.h>
 #include <cp3_llbb/Framework/interface/ProducersManager.h>
 #include <cp3_llbb/TreeWrapper/interface/TreeWrapper.h>
 
@@ -20,6 +19,8 @@
 #include <map>
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<float>> LorentzVector;
+
+class CategoryManager;
 
 namespace Framework {
 

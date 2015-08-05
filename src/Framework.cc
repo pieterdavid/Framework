@@ -34,6 +34,7 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
 
         m_categories.reset(new CategoryManager(*m_wrapper));
         m_producers_manager.reset(new ProducersManager(*this));
+        m_analyzers_manager.reset(new AnalyzersManager(*this));
 
         // Load plugins
         if (!iConfig.existsAs<edm::ParameterSet>("producers")) {
@@ -87,6 +88,7 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
             analyzer->registerCategories(*m_categories);
 
             m_analyzers.push_back(analyzer);
+            m_analyzers_name.push_back(analyzerName);
         }
 
 }
@@ -101,13 +103,21 @@ void ExTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for (auto& producer: m_producers)
         producer.second->produce(iEvent, iSetup);
 
+    bool should_continue = m_categories->evaluate_pre_analyzers(*m_producers_manager);
+    if (! should_continue) {
+        m_wrapper->reset();
+        m_categories->reset();
+    }
+
     for (auto& analyzer: m_analyzers)
         analyzer->analyze(iEvent, iSetup, *m_producers_manager);
 
-    if (m_categories->evaluate(*m_producers_manager))
+    if (m_categories->evaluate_post_analyzers(*m_producers_manager, *m_analyzers_manager))
         m_wrapper->fill();
     else
         m_wrapper->reset();
+
+    m_categories->reset();
 }
 
 
@@ -186,6 +196,22 @@ const Framework::Producer& ExTreeMaker::getProducer(const std::string& name) con
 bool ExTreeMaker::producerExists(const std::string& name) const {
     const auto& producer = m_producers.find(name);
     return (producer != m_producers.end());
+}
+
+const Framework::Analyzer& ExTreeMaker::getAnalyzer(const std::string& name) const {
+    auto it = std::find(m_analyzers_name.begin(), m_analyzers_name.end(), name);
+    if (it == m_analyzers_name.end()) {
+        std::stringstream details;
+        details << "Analyzer '" << name << "' not found. Please load it first in the python configuration";
+        throw edm::Exception(edm::errors::NotFound, details.str());
+    }
+
+    return *m_analyzers[std::distance(m_analyzers_name.begin(), it)];
+}
+
+bool ExTreeMaker::analyzerExists(const std::string& name) const {
+    const auto& analyzer = std::find(m_analyzers_name.begin(), m_analyzers_name.end(), name);
+    return (analyzer != m_analyzers_name.end());
 }
 
 //define this as a plug-in

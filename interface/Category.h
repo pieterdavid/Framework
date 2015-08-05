@@ -7,6 +7,7 @@
 
 #include <cp3_llbb/Framework/interface/Cut.h>
 #include <cp3_llbb/Framework/interface/ProducersManager.h>
+#include <cp3_llbb/Framework/interface/AnalyzersManager.h>
 
 #include <cp3_llbb/TreeWrapper/interface/TreeWrapper.h>
 
@@ -14,9 +15,13 @@ class CategoryManager;
 
 class Category {
     public:
-        virtual bool event_in_category(const ProducersManager& producers) const = 0;
+        virtual bool event_in_category_pre_analyzers(const ProducersManager& producers) const = 0;
+        virtual bool event_in_category_post_analyzers(const ProducersManager& producers, const AnalyzersManager& analyzers) const = 0;
+
         virtual void register_cuts(CutManager& manager) {};
-        virtual void evaluate_cuts(CutManager& manager, const ProducersManager& producers) const {};
+
+        virtual void evaluate_cuts_pre_analyzers(CutManager& manager, const ProducersManager& producers) const {};
+        virtual void evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {};
 };
 
 struct CategoryData {
@@ -29,6 +34,8 @@ struct CategoryData {
     uint64_t events = 0;
 
     // Tree branches
+    bool in_category_pre = false;
+    bool in_category_post = false;
     bool& in_category;
 
     CategoryData(const std::string& name_, const std::string& description_, std::unique_ptr<Category> category, ROOT::TreeWrapper& tree_):
@@ -53,7 +60,10 @@ class CategoryManager {
             m_categories.push_back(CategoryData(name, description, std::move(category), m_tree));
         }
 
-        bool evaluate(const ProducersManager& producers);
+        bool evaluate_pre_analyzers(const ProducersManager& producers);
+        bool evaluate_post_analyzers(const ProducersManager& producers, const AnalyzersManager& analyzers);
+
+        void reset();
 
         void print_summary();
 
