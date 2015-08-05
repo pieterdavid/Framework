@@ -6,7 +6,7 @@
 
 void TestAnalyzer::analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager& producers) {
 
-    const JetsProducer& jets = dynamic_cast<const JetsProducer&>(producers.get("jets"));
+    const JetsProducer& jets = producers.get<JetsProducer>("jets");
 
 /*
     if (producers.exists("gen_particles")) {
