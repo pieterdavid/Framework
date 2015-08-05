@@ -45,6 +45,8 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         }
     }
 
+    m_event_weight_sum += weight;
+
     edm::Handle<LHEEventProduct> lhe_info;
     if (event_.getByToken(m_lhe_info_token, lhe_info)) {
         lhe_originalXWGTUP = lhe_info->originalXWGTUP();
@@ -53,4 +55,9 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
             lhe_weights.push_back(std::make_pair(weight.id, weight.wgt));
         }
     }
+}
+
+void EventProducer::endJob(MetadataManager& metadata) {
+    metadata.add("event_weight_sum", m_event_weight_sum);
+    std::cout << "Sum of event weight: " << m_event_weight_sum << std::endl;
 }
