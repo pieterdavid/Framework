@@ -31,9 +31,9 @@ class Identifiable {
         virtual void clean() final {
             m_id_maps.clear();
         }
+        std::vector<std::map<std::string, bool>>& ids;
 
     protected:
         std::vector<std::pair<std::string, edm::EDGetTokenT<edm::ValueMap<bool>>>> m_id_tokens;
         std::vector<std::pair<std::string, edm::Handle<edm::ValueMap<bool>>>> m_id_maps;
-        std::vector<std::map<std::string, bool>>& ids;
 };
