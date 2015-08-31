@@ -5,6 +5,7 @@ default_configuration = cms.PSet(
         prefix = cms.string('jet_'),
         enable = cms.bool(True),
         parameters = cms.PSet(
+            btags = cms.untracked.vstring('pfCombinedInclusiveSecondaryVertexV2BJetTags', 'pfJetProbabilityBJetTags', 'pfCombinedMVABJetTags'),
             scale_factors = cms.untracked.PSet(
                 csv_loose = cms.untracked.PSet(
                     algorithm = cms.untracked.string('csv'),
