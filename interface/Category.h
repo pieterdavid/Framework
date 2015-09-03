@@ -13,6 +13,10 @@
 
 class CategoryManager;
 
+struct CategoryMetadata {
+    // Empty
+};
+
 class Category {
     public:
         virtual bool event_in_category_pre_analyzers(const ProducersManager& producers) const = 0;
@@ -22,6 +26,13 @@ class Category {
 
         virtual void evaluate_cuts_pre_analyzers(CutManager& manager, const ProducersManager& producers) const {};
         virtual void evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {};
+
+        virtual std::shared_ptr<CategoryMetadata> get_metadata() final {
+            return metadata;
+        };
+
+    protected:
+        std::shared_ptr<CategoryMetadata> metadata;
 };
 
 struct CategoryData {
@@ -50,6 +61,24 @@ struct CategoryData {
     }
 };
 
+struct CategoryWrapper {
+    public:
+        CategoryWrapper(const CategoryData& d): data(d) {
+            // Empty
+        }
+
+        bool in_category() const {
+            return data.in_category_pre;
+        }
+
+        std::shared_ptr<CategoryMetadata> get_metadata() const {
+            return data.callback->get_metadata();
+        }
+
+    private:
+        const CategoryData& data;
+};
+
 class CategoryManager {
     friend class ExTreeMaker;
 
@@ -57,7 +86,38 @@ class CategoryManager {
         template<class T>
         void new_category(const std::string& name, const std::string& description) {
             std::unique_ptr<Category> category(new T());
-            m_categories.push_back(CategoryData(name, description, std::move(category), m_tree));
+            m_categories.emplace(name, CategoryData(name, description, std::move(category), m_tree));
+        }
+
+        bool in_category(const std::string& name) const {
+
+            const auto& category = m_categories.find(name);
+            if (category == m_categories.end()) {
+                std::stringstream details;
+                details << "Category '" << name << "' not found.";
+                throw edm::Exception(edm::errors::NotFound, details.str());
+            }
+
+            return category->second.in_category_pre;
+        }
+
+        const CategoryWrapper get(const std::string& name) const {
+
+            const auto& category = m_categories.find(name);
+            if (category == m_categories.end()) {
+                std::stringstream details;
+                details << "Category '" << name << "' not found.";
+                throw edm::Exception(edm::errors::NotFound, details.str());
+            }
+
+            return CategoryWrapper(category->second);
+        }
+
+    private:
+        CategoryManager(ROOT::TreeWrapper& tree):
+            m_tree(tree)
+        {
+            // Empty
         }
 
         bool evaluate_pre_analyzers(const ProducersManager& producers);
@@ -67,14 +127,8 @@ class CategoryManager {
 
         void print_summary();
 
-    private:
-        CategoryManager(ROOT::TreeWrapper& tree):
-            m_tree(tree)
-        {
-            // Empty
-        }
 
-        std::vector<CategoryData> m_categories;
+        std::unordered_map<std::string, CategoryData> m_categories;
         ROOT::TreeWrapper& m_tree;
 
         uint64_t processed_events = 0;

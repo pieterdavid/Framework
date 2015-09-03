@@ -4,7 +4,7 @@
 #include <cp3_llbb/Framework/interface/JetsProducer.h>
 
 
-void TestAnalyzer::analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager& producers) {
+void TestAnalyzer::analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager& producers, const CategoryManager& categories) {
 
     const JetsProducer& jets = producers.get<JetsProducer>("jets");
 
@@ -22,4 +22,13 @@ void TestAnalyzer::analyze(const edm::Event&, const edm::EventSetup&, const Prod
         std::cout << "Jet pt: " << p4.P() << std::endl;
     }
 */
+
+    // Test if event is in category
+    bool in_category = categories.in_category("two_muons");
+    if (in_category) {
+
+    }
+
+    // Get category metadata
+    std::shared_ptr<CategoryMetadata> metadata = categories.get("two_muons").get_metadata();
 }

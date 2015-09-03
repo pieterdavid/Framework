@@ -32,7 +32,7 @@ namespace Framework {
                 tree(tree_) {
                 }
 
-            virtual void analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager&) = 0;
+            virtual void analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager&, const CategoryManager&) = 0;
             virtual void doConsumes(const edm::ParameterSet&, edm::ConsumesCollector&& collector) {}
 
             virtual void registerCategories(CategoryManager& manager) {}
