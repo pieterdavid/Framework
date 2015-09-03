@@ -13,6 +13,10 @@
 
 class CategoryManager;
 
+struct CategoryMetadata {
+    // Empty
+};
+
 class Category {
     public:
         virtual bool event_in_category_pre_analyzers(const ProducersManager& producers) const = 0;
@@ -22,6 +26,13 @@ class Category {
 
         virtual void evaluate_cuts_pre_analyzers(CutManager& manager, const ProducersManager& producers) const {};
         virtual void evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {};
+
+        virtual std::shared_ptr<CategoryMetadata> get_metadata() final {
+            return metadata;
+        };
+
+    protected:
+        std::shared_ptr<CategoryMetadata> metadata;
 };
 
 struct CategoryData {
