@@ -38,7 +38,7 @@ class TestAnalyzer: public Framework::Analyzer {
 
         }
 
-        virtual void analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager&) override;
+        virtual void analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager&, const CategoryManager&) override;
 
         virtual void registerCategories(CategoryManager& manager) {
             manager.new_category<TwoMuonsCategory>("two_muons", "At least two muons category");

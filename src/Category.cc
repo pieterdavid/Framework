@@ -7,10 +7,10 @@ bool CategoryManager::evaluate_pre_analyzers(const ProducersManager& producers) 
     bool ret = m_categories.empty();
 
     for (auto& category: m_categories) {
-        if (category.callback->event_in_category_pre_analyzers(producers)) {
+        if (category.second.callback->event_in_category_pre_analyzers(producers)) {
             ret = true;
-            category.in_category_pre = true;
-            category.callback->evaluate_cuts_pre_analyzers(category.cut_manager, producers);
+            category.second.in_category_pre = true;
+            category.second.callback->evaluate_cuts_pre_analyzers(category.second.cut_manager, producers);
         }
     }
 
@@ -21,12 +21,12 @@ bool CategoryManager::evaluate_post_analyzers(const ProducersManager& producers,
     bool ret = m_categories.empty();
 
     for (auto& category: m_categories) {
-        if (category.in_category_pre && category.callback->event_in_category_post_analyzers(producers, analyzers)) {
+        if (category.second.in_category_pre && category.second.callback->event_in_category_post_analyzers(producers, analyzers)) {
             ret = true;
-            category.in_category_post = true;
-            category.in_category = true;
-            category.events++;
-            category.callback->evaluate_cuts_post_analyzers(category.cut_manager, producers, analyzers);
+            category.second.in_category_post = true;
+            category.second.in_category = true;
+            category.second.events++;
+            category.second.callback->evaluate_cuts_post_analyzers(category.second.cut_manager, producers, analyzers);
         }
     }
 
@@ -39,8 +39,8 @@ bool CategoryManager::evaluate_post_analyzers(const ProducersManager& producers,
 
 void CategoryManager::reset() {
     for (auto& category: m_categories) {
-        category.in_category_pre = false;
-        category.in_category_post = false;
+        category.second.in_category_pre = false;
+        category.second.in_category_post = false;
     }
 }
 
@@ -54,6 +54,6 @@ void CategoryManager::print_summary() {
     printf("%-60s %20s\n", "Category", "# events");
     printf("---------------------------------------------------------------------------------\n");
     for (auto& category: m_categories)
-        printf("%-60s %20" PRIu64 "\n", category.name.c_str(), category.events);
+        printf("%-60s %20" PRIu64 "\n", category.second.name.c_str(), category.second.events);
 }
 
