@@ -12,6 +12,15 @@ class JetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScaleFac
             CandidatesProducer(name, tree, config), BTaggingScaleFactors(const_cast<ROOT::TreeGroup&>(tree))
         {
             BTaggingScaleFactors::create_branches(config);
+
+            if (config.exists("btags")) {
+                const std::vector<std::string>& btags = config.getUntrackedParameter<std::vector<std::string>>("btags");
+
+                // Create branches 
+                for (const std::string& btag: btags) {
+                    m_btag_discriminators.emplace(btag, &CandidatesProducer<pat::Jet>::tree[btag].write<std::vector<float>>());
+                }
+            }
         }
 
         virtual ~JetsProducer() {}
@@ -22,11 +31,16 @@ class JetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScaleFac
 
         virtual void produce(edm::Event& event, const edm::EventSetup& eventSetup) override;
 
+        float getBTagDiscriminant(size_t index, const std::string& name) const {
+            return m_btag_discriminators.at(name)->at(index);
+        }
+
     private:
 
         // Tokens
         edm::EDGetTokenT<std::vector<pat::Jet>> m_jets_token;
 
+        std::map<std::string, std::vector<float>*> m_btag_discriminators;
     public:
         // Tree members
         std::vector<float>& area = tree["area"].write<std::vector<float>>();

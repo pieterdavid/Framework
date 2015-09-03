@@ -22,16 +22,14 @@ void JetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup)
 
         vtxMass.push_back(jet.userFloat("vtxMass"));
 
-        auto& btag_discris = jet.getPairDiscri();
-        for (auto& btag_discri: btag_discris) {
-            // Get branch from tree
-            std::vector<float>& branch = tree[btag_discri.first].write<std::vector<float>>();
-            branch.push_back(btag_discri.second);
+        for (auto& it: m_btag_discriminators) {
 
-            Algorithm algo = string_to_algorithm(btag_discri.first);
+            float btag_discriminator = jet.bDiscriminator(it.first);
+            it.second->push_back(btag_discriminator);
 
+            Algorithm algo = string_to_algorithm(it.first);
             if (algo != Algorithm::UNKNOWN && BTaggingScaleFactors::has_scale_factors(algo)) {
-                BTaggingScaleFactors::store_scale_factors(algo, get_flavor(jet.hadronFlavour()), {static_cast<float>(fabs(jet.eta())), static_cast<float>(jet.pt()), btag_discri.second});
+                BTaggingScaleFactors::store_scale_factors(algo, get_flavor(jet.hadronFlavour()), {static_cast<float>(fabs(jet.eta())), static_cast<float>(jet.pt()), btag_discriminator});
             }
         }
     }
