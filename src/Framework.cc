@@ -109,6 +109,7 @@ void ExTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     if (! should_continue) {
         m_wrapper->reset();
         m_categories->reset();
+        return;
     }
 
     for (auto& analyzer: m_analyzers)
