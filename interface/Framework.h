@@ -11,6 +11,7 @@
 
 #include "cp3_llbb/Framework/interface/Analyzer.h"
 #include "cp3_llbb/Framework/interface/Producer.h"
+#include "cp3_llbb/Framework/interface/Filter.h"
 #include "cp3_llbb/Framework/interface/Category.h"
 #include "cp3_llbb/Framework/interface/ProducerGetter.h"
 #include "cp3_llbb/Framework/interface/ProducersManager.h"
@@ -50,6 +51,7 @@ class ExTreeMaker: public edm::EDProducer, ProducerGetter, AnalyzerGetter {
         std::unique_ptr<TFile> m_output;
         std::unique_ptr<ROOT::TreeWrapper> m_wrapper;
         std::unordered_map<std::string, std::shared_ptr<Framework::Producer>> m_producers;
+        std::unordered_map<std::string, std::shared_ptr<Framework::Filter>> m_filters;
 
 
         // Order is important, we can't use a map here

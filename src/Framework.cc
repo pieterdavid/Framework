@@ -43,6 +43,27 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
             throw new std::logic_error("No producers specified");
         }
 
+        std::cout << std::endl << "filters: " << std::endl;
+        const edm::ParameterSet& filters = iConfig.getParameterSet("filters");
+        std::vector<std::string> filtersName = filters.getParameterNames();
+        for (std::string& filterName: filtersName) {
+            edm::ParameterSet filterData = filters.getParameterSet(filterName);
+            bool enable = filterData.getParameter<bool>("enable");
+            if (! enable)
+                continue;
+
+            const std::string type = filterData.getParameter<std::string>("type");
+            edm::ParameterSet filterParameters;
+            if (filterData.existsAs<edm::ParameterSet>("parameters"))
+                filterParameters = filterData.getParameterSet("parameters");
+
+            std::cout << " -> Adding filter '" << filterName << "' of type '" << type << "'" << std::endl;
+            auto filter = std::shared_ptr<Framework::Filter>(ExTreeMakerFilterFactory::get()->create(type, filterName, filterParameters));
+            filter->doConsumes(filterParameters, consumesCollector());
+
+            m_filters.emplace(filterName, filter);
+        }
+
         std::cout << std::endl << "producers: " << std::endl;
         const edm::ParameterSet& producers = iConfig.getParameterSet("producers");
         std::vector<std::string> producersName = producers.getParameterNames();
@@ -102,10 +123,18 @@ ExTreeMaker::~ExTreeMaker() {
 
 
 void ExTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
+    bool should_continue = true;
+
+    for (auto& filter: m_filters)
+        should_continue &= filter.second->filter(iEvent, iSetup);
+
+    if (! should_continue)
+        return;
+
     for (auto& producer: m_producers)
         producer.second->produce(iEvent, iSetup);
 
-    bool should_continue = m_categories->evaluate_pre_analyzers(*m_producers_manager);
+    should_continue = m_categories->evaluate_pre_analyzers(*m_producers_manager);
     if (! should_continue) {
         m_wrapper->reset();
         m_categories->reset();
@@ -127,6 +156,9 @@ void ExTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 void ExTreeMaker::beginJob() {
     m_start_time = clock::now();
 
+    for (auto& filter: m_filters)
+        filter.second->beginJob(*m_metadata);
+
     for (auto& producer: m_producers)
         producer.second->beginJob(*m_metadata);
 
@@ -137,6 +169,9 @@ void ExTreeMaker::beginJob() {
 // ------------ method called once each job just after ending the event loop  ------------
 void ExTreeMaker::endJob() {
     std::cout << std::endl << "---" << std::endl;
+    for (auto& filter: m_filters)
+        filter.second->endJob(*m_metadata);
+
     for (auto& producer: m_producers)
         producer.second->endJob(*m_metadata);
 
@@ -152,6 +187,9 @@ void ExTreeMaker::endJob() {
 }
 
 void ExTreeMaker::beginRun(const edm::Run& run, const edm::EventSetup& eventSetup) {
+    for (auto& filter: m_filters)
+        filter.second->beginRun(run, eventSetup);
+
     for (auto& producer: m_producers)
         producer.second->beginRun(run, eventSetup);
 
@@ -161,6 +199,9 @@ void ExTreeMaker::beginRun(const edm::Run& run, const edm::EventSetup& eventSetu
 }
 
 void ExTreeMaker::endRun(const edm::Run& run, const edm::EventSetup& eventSetup) {
+    for (auto& filter: m_filters)
+        filter.second->endRun(run, eventSetup);
+
     for (auto& producer: m_producers)
         producer.second->endRun(run, eventSetup);
 
@@ -169,6 +210,9 @@ void ExTreeMaker::endRun(const edm::Run& run, const edm::EventSetup& eventSetup)
 }
 
 void ExTreeMaker::beginLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup& eventSetup) {
+    for (auto& filter: m_filters)
+        filter.second->beginLuminosityBlock(lumi, eventSetup);
+
     for (auto& producer: m_producers)
         producer.second->beginLuminosityBlock(lumi, eventSetup);
 
@@ -178,6 +222,9 @@ void ExTreeMaker::beginLuminosityBlock(const edm::LuminosityBlock& lumi, const e
 }
 
 void ExTreeMaker::endLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup& eventSetup) {
+    for (auto& filter: m_filters)
+        filter.second->endLuminosityBlock(lumi, eventSetup);
+
     for (auto& producer: m_producers)
         producer.second->endLuminosityBlock(lumi, eventSetup);
 
