@@ -44,8 +44,15 @@ from cp3_llbb.Framework import MuonsProducer
 from cp3_llbb.Framework import ElectronsProducer
 from cp3_llbb.Framework import VerticesProducer
 
+# Filters
+from cp3_llbb.Framework import METFilter
+
 process.framework = cms.EDProducer("ExTreeMaker",
         output = cms.string('output_mc.root'),
+
+        filters = cms.PSet(
+            met = METFilter.default_configuration
+            ),
 
         producers = cms.PSet(
 
