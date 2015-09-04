@@ -84,7 +84,18 @@ process.framework = cms.EDProducer("ExTreeMaker",
 
 process.framework.producers.jets.parameters.cut = cms.untracked.string("pt > 10")
 
+# MET Filters
+
+process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
+process.filterOnHBHENoiseFilter = cms.EDFilter('BooleanFlagFilter',
+   inputLabel = cms.InputTag('HBHENoiseFilterResultProducer', 'HBHENoiseFilterResultRun1'), # this is for the 50ns
+#   inputLabel = cms.InputTag('HBHENoiseFilterResultProducer', 'HBHENoiseFilterResulttRun2Loose'), # this is for the 25ns
+#   inputLabel = cms.InputTag('HBHENoiseFilterResultProducer', 'HBHENoiseFilterResulttRun2Tight'), # this is for the 25ns
+   reverseDecision = cms.bool(False)
+)
+
 process.p = cms.Path(
+        process.filterOnHBHENoiseFilter *
         process.egmGsfElectronIDSequence *
         process.framework
         )
