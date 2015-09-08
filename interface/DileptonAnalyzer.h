@@ -15,14 +15,14 @@ class DileptonAnalyzer: public Framework::Analyzer {
 
         virtual void registerCategories(CategoryManager& manager) override;
 
-        BRANCH(dimuons, std::vector<LorentzVector>);
-        BRANCH(dielectrons, std::vector<LorentzVector>);
-        BRANCH(dileptons_emu, std::vector<LorentzVector>);
-        BRANCH(dileptons_mue, std::vector<LorentzVector>);
-        BRANCH(dimuons_indices, std::vector<std::pair<unsigned int,unsigned int>>);
-        BRANCH(dielectrons_indices, std::vector<std::pair<unsigned int,unsigned int>>);
-        BRANCH(dileptons_emu_indices, std::vector<std::pair<unsigned int,unsigned int>>);
-        BRANCH(dileptons_mue_indices, std::vector<std::pair<unsigned int,unsigned int>>);
+        BRANCH(dileptons_mumu, std::vector<LorentzVector>);
+        BRANCH(dileptons_elel, std::vector<LorentzVector>);
+        BRANCH(dileptons_elmu, std::vector<LorentzVector>);
+        BRANCH(dileptons_muel, std::vector<LorentzVector>);
+        BRANCH(dileptons_mumu_indices, std::vector<std::pair<unsigned int,unsigned int>>);
+        BRANCH(dileptons_elel_indices, std::vector<std::pair<unsigned int,unsigned int>>);
+        BRANCH(dileptons_elmu_indices, std::vector<std::pair<unsigned int,unsigned int>>);
+        BRANCH(dileptons_muel_indices, std::vector<std::pair<unsigned int,unsigned int>>);
 
     private:
         // empty

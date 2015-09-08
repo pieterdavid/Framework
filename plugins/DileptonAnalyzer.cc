@@ -31,8 +31,8 @@ void DileptonAnalyzer::analyze(const edm::Event& event, const edm::EventSetup&, 
                 if( muons.isLoose[jmuon] && muons.charge[imuon] * muons.charge[jmuon] < 0 )
                 {
                     LorentzVector dimuon = muons.p4[imuon] + muons.p4[jmuon];
-                    dimuons.push_back(dimuon);
-                    dimuons_indices.push_back(std::make_pair(imuon, jmuon));
+                    dileptons_mumu.push_back(dimuon);
+                    dileptons_mumu_indices.push_back(std::make_pair(imuon, jmuon));
                 }
             }
         }
@@ -48,8 +48,8 @@ void DileptonAnalyzer::analyze(const edm::Event& event, const edm::EventSetup&, 
                 if( electrons.ids[jelectron]["cutBasedElectronID-Spring15-50ns-V1-standalone-loose"] && electrons.charge[ielectron] * electrons.charge[jelectron] < 0 )
                 {
                     LorentzVector dielectron = electrons.p4[ielectron] + electrons.p4[jelectron];
-                    dielectrons.push_back(dielectron);
-                    dielectrons_indices.push_back(std::make_pair(ielectron, jelectron));
+                    dileptons_elel.push_back(dielectron);
+                    dileptons_elel_indices.push_back(std::make_pair(ielectron, jelectron));
                 }
             }
         }
@@ -67,8 +67,8 @@ void DileptonAnalyzer::analyze(const edm::Event& event, const edm::EventSetup&, 
                     electrons.charge[ielectron] * muons.charge[jmuon] < 0 )
                 {
                     LorentzVector dilepton = electrons.p4[ielectron] + muons.p4[jmuon];
-                    dileptons_emu.push_back(dilepton);
-                    dileptons_emu_indices.push_back(std::make_pair(ielectron, jmuon));
+                    dileptons_elmu.push_back(dilepton);
+                    dileptons_elmu_indices.push_back(std::make_pair(ielectron, jmuon));
                 }
             }
         }
@@ -86,8 +86,8 @@ void DileptonAnalyzer::analyze(const edm::Event& event, const edm::EventSetup&, 
                     muons.charge[imuon] * electrons.charge[jelectron] < 0 )
                 {
                     LorentzVector dilepton = muons.p4[imuon] + electrons.p4[jelectron];
-                    dileptons_mue.push_back(dilepton);
-                    dileptons_mue_indices.push_back(std::make_pair(imuon, jelectron));
+                    dileptons_muel.push_back(dilepton);
+                    dileptons_muel_indices.push_back(std::make_pair(imuon, jelectron));
                 }
             }
         }
