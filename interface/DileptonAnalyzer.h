@@ -6,12 +6,12 @@
 
 class DileptonAnalyzer: public Framework::Analyzer {
     public:
-        HHAnalyzer(const std::string& name, const ROOT::TreeGroup& tree_, const edm::ParameterSet& config):
+        DileptonAnalyzer(const std::string& name, const ROOT::TreeGroup& tree_, const edm::ParameterSet& config):
             Analyzer(name, tree_, config) {
 
         }
 
-        virtual void analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager&, const AnalyzersManager& analyzers) override;
+        virtual void analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager&, const CategoryManager&) override;
 
         virtual void registerCategories(CategoryManager& manager) override;
 

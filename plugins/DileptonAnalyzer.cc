@@ -5,7 +5,15 @@
 #include <cp3_llbb/Framework/interface/ElectronsProducer.h>
 #include <cp3_llbb/Framework/interface/MuonsProducer.h>
 
-void DileptonAnalyzer::analyze(const edm::Event& event, const edm::EventSetup&, const ProducersManager& producers, const AnalyzersManager& analyzers) {
+
+void DileptonAnalyzer::registerCategories(CategoryManager& manager) {
+    manager.new_category<MuMuCategory>("mumu", "Category with leading leptons as two muons");
+    manager.new_category<ElElCategory>("elel", "Category with leading leptons as two electrons");
+    manager.new_category<MuElCategory>("muel", "Category with leading leptons as muon, electron");
+    manager.new_category<ElMuCategory>("elmu", "Category with leading leptons as electron, muon");
+}
+
+void DileptonAnalyzer::analyze(const edm::Event& event, const edm::EventSetup&, const ProducersManager& producers, const CategoryManager& categories) {
 
 // ***** ***** *****
 // Get all dilepton objects out of the event
