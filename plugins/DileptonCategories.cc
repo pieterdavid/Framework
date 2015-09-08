@@ -30,8 +30,12 @@ void MuMuCategory::evaluate_cuts_pre_analyzers(CutManager& manager, const Produc
 
 void MuMuCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
     const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
-    if( dilepton_analyzer.dileptons_mumu[0].M() > 20. )
-        manager.pass_cut("ll_mass");
+    for(unsigned int idilepton = 0; idilepton < dilepton_analyzer.dileptons_mumu.size(); idilepton++)
+        if( dilepton_analyzer.dileptons_mumu[idilepton].M() > 20. )
+        {
+            manager.pass_cut("ll_mass");
+            break;
+        }
 }
 
 // ***** ***** *****
@@ -60,8 +64,12 @@ void MuElCategory::evaluate_cuts_pre_analyzers(CutManager& manager, const Produc
 
 void MuElCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
     const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
-    if( dilepton_analyzer.dileptons_muel[0].M() > 20. )
-        manager.pass_cut("ll_mass");
+    for(unsigned int idilepton = 0; idilepton < dilepton_analyzer.dileptons_muel.size(); idilepton++)
+        if( dilepton_analyzer.dileptons_muel[idilepton].M() > 20. )
+        {
+            manager.pass_cut("ll_mass");
+            break;
+        }
 }
 
 // ***** ***** *****
@@ -91,8 +99,12 @@ void ElMuCategory::evaluate_cuts_pre_analyzers(CutManager& manager, const Produc
 
 void ElMuCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
     const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
-    if( dilepton_analyzer.dileptons_elmu[0].M() > 20. )
-        manager.pass_cut("ll_mass");
+    for(unsigned int idilepton = 0; idilepton < dilepton_analyzer.dileptons_elmu.size(); idilepton++)
+        if( dilepton_analyzer.dileptons_elmu[idilepton].M() > 20. )
+        {
+            manager.pass_cut("ll_mass");
+            break;
+        }
 }
 
 // ***** ***** *****
@@ -120,7 +132,11 @@ void ElElCategory::evaluate_cuts_pre_analyzers(CutManager& manager, const Produc
 
 void ElElCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
     const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
-    if( dilepton_analyzer.dileptons_elel[0].M() > 20. )
-        manager.pass_cut("ll_mass");
+    for(unsigned int idilepton = 0; idilepton < dilepton_analyzer.dileptons_elel.size(); idilepton++)
+        if( dilepton_analyzer.dileptons_elel[idilepton].M() > 20. )
+        {
+            manager.pass_cut("ll_mass");
+            break;
+        }
 }
 
