@@ -22,12 +22,6 @@ void MuMuCategory::register_cuts(CutManager& manager) {
     manager.new_cut("ll_mass", "mll > 20");
 };
 
-void MuMuCategory::evaluate_cuts_pre_analyzers(CutManager& manager, const ProducersManager& producers) const {
-    const MuonsProducer& muons = producers.get<MuonsProducer>("muons");
-    if( (muons.p4[0] + muons.p4[1]).M() > 20.)
-        manager.pass_cut("ll_mass");
-}
-
 void MuMuCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
     const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
     for(unsigned int idilepton = 0; idilepton < dilepton_analyzer.dileptons_mumu.size(); idilepton++)
@@ -55,12 +49,6 @@ bool MuElCategory::event_in_category_post_analyzers(const ProducersManager& prod
 void MuElCategory::register_cuts(CutManager& manager) {
     manager.new_cut("ll_mass", "mll > 20");
 };
-void MuElCategory::evaluate_cuts_pre_analyzers(CutManager& manager, const ProducersManager& producers) const {
-    const MuonsProducer& muons = producers.get<MuonsProducer>("muons");
-    const ElectronsProducer& electrons = producers.get<ElectronsProducer>("electrons");
-    if( (muons.p4[0] + electrons.p4[0]).M() > 20.)
-        manager.pass_cut("ll_mass");
-}
 
 void MuElCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
     const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
@@ -90,13 +78,6 @@ void ElMuCategory::register_cuts(CutManager& manager) {
     manager.new_cut("ll_mass", "mll > 20");
 };
 
-void ElMuCategory::evaluate_cuts_pre_analyzers(CutManager& manager, const ProducersManager& producers) const {
-    const MuonsProducer& muons = producers.get<MuonsProducer>("muons");
-    const ElectronsProducer& electrons = producers.get<ElectronsProducer>("electrons");
-    if( (muons.p4[0] + electrons.p4[0]).M() > 20.)
-        manager.pass_cut("ll_mass");
-}
-
 void ElMuCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
     const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
     for(unsigned int idilepton = 0; idilepton < dilepton_analyzer.dileptons_elmu.size(); idilepton++)
@@ -123,12 +104,6 @@ bool ElElCategory::event_in_category_post_analyzers(const ProducersManager& prod
 void ElElCategory::register_cuts(CutManager& manager) {
     manager.new_cut("ll_mass", "mll > 20");
 };
-
-void ElElCategory::evaluate_cuts_pre_analyzers(CutManager& manager, const ProducersManager& producers) const {
-    const ElectronsProducer& electrons = producers.get<ElectronsProducer>("electrons");
-    if( (electrons.p4[0] + electrons.p4[1]).M() > 20.)
-        manager.pass_cut("ll_mass");
-}
 
 void ElElCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
     const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
