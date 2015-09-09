@@ -9,8 +9,8 @@ process = Framework.create(None, 'MCRUN2_74_V9', cms.PSet(
         type = cms.string('dilepton_analyzer'),
         prefix = cms.string('dilepton_'),
         enable = cms.bool(True)
-        )
-    )
+        ),
+
     test = cms.PSet(
         type = cms.string('test_analyzer'),
         prefix = cms.string('test_'),
