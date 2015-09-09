@@ -24,6 +24,29 @@
 #include <TFile.h>
 #include <TTree.h>
 
+// Tools for sorting
+template <typename T>
+std::vector<size_t> get_permutations(const std::vector<T>& from, const std::vector<T>& to) {
+
+    std::vector<size_t> p(from.size());
+
+    std::transform(from.begin(), from.end(), p.begin(), [&from, &to](const T& item) -> size_t {
+                return std::distance(to.begin(), std::find(to.begin(), to.end(), item));
+            });
+
+    return p;
+}
+
+template <typename T>
+void apply_permutations(std::vector<T>& vec, std::vector<size_t> const& p) {
+    std::vector<T> sorted_vec(p.size());
+    std::transform(p.begin(), p.end(), sorted_vec.begin(), [&vec](int i) {
+            return vec[i];
+            });
+
+    vec = sorted_vec;
+}
+
 ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
     m_output_filename(iConfig.getParameter<std::string>("output")) {
 
@@ -105,7 +128,6 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
             if (analyzerData.existsAs<edm::ParameterSet>("parameters"))
                 analyzerParameters = analyzerData.getParameterSet("parameters");
 
-            std::cout << " -> Adding analyzer '" << analyzerName << "' of type '" << type << "'" << std::endl;
             auto analyzer = std::shared_ptr<Framework::Analyzer>(ExTreeMakerAnalyzerFactory::get()->create(type, analyzerName, m_wrapper->group(tree_prefix), analyzerParameters));
             analyzer->doConsumes(analyzerParameters, consumesCollector());
             analyzer->registerCategories(*m_categories);
@@ -114,6 +136,21 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
             m_analyzers_name.push_back(analyzerName);
         }
 
+        // Analyzers scheduling
+        if (iConfig.exists("analyzers_scheduling")) {
+            const std::vector<std::string>& scheduling = iConfig.getUntrackedParameter<std::vector<std::string>>("analyzers_scheduling");
+
+            auto p = get_permutations(scheduling, m_analyzers_name);
+
+            apply_permutations(m_analyzers_name, p);
+            apply_permutations(m_analyzers, p);
+        }
+
+        for (auto& a: m_analyzers_name) {
+            std::cout << " -> Adding analyzer '" << a << "'" << std::endl;
+        }
+
+        std::cout << std::endl;
 }
 
 

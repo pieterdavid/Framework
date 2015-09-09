@@ -18,6 +18,8 @@ process.framework.analyzers.test = cms.PSet(
         enable = cms.bool(True)
         )
 
+Framework.schedule(process, ['dilepton', 'test'])
+
 process.source.fileNames = cms.untracked.vstring(
         '/store/data/Run2015B/DoubleMuon/MINIAOD/17Jul2015-v1/30000/D8ED75E7-C12E-E511-8CBF-0025905A608C.root'
         )
