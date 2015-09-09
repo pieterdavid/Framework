@@ -22,7 +22,7 @@ void DileptonAnalyzer::analyze(const edm::Event& event, const edm::EventSetup&, 
     const ElectronsProducer& electrons = producers.get<ElectronsProducer>("electrons");
 
     // Dimuons
-    for( unsigned int imuon = 0 ; imuon < muons.p4.size()-1 ; imuon++ )
+    for( unsigned int imuon = 0 ; imuon < muons.p4.size() ; imuon++ )
     {
         if(muons.isLoose[imuon])
         {
@@ -39,7 +39,7 @@ void DileptonAnalyzer::analyze(const edm::Event& event, const edm::EventSetup&, 
     }
 
     // Dielectrons
-    for( unsigned int ielectron = 0 ; ielectron < electrons.p4.size()-1 ; ielectron++ )
+    for( unsigned int ielectron = 0 ; ielectron < electrons.p4.size() ; ielectron++ )
     {
         if(electrons.ids[ielectron]["cutBasedElectronID-Spring15-50ns-V1-standalone-loose"])
         {
