@@ -116,6 +116,14 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
         std::cout << std::endl << "analyzers: " << std::endl;
         const edm::ParameterSet& analyzers = iConfig.getParameterSet("analyzers");
         std::vector<std::string> analyzersName = analyzers.getParameterNames();
+
+        if (iConfig.exists("analyzers_scheduling")) {
+            const std::vector<std::string>& scheduling = iConfig.getUntrackedParameter<std::vector<std::string>>("analyzers_scheduling");
+            auto p = get_permutations(scheduling, analyzersName);
+
+            apply_permutations(analyzersName, p);
+        }
+
         for (std::string& analyzerName: analyzersName) {
             edm::ParameterSet analyzerData = analyzers.getParameterSet(analyzerName);
             bool enable = analyzerData.getParameter<bool>("enable");
@@ -125,29 +133,24 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
             const std::string type = analyzerData.getParameter<std::string>("type");
             const std::string tree_prefix = analyzerData.getParameter<std::string>("prefix");
             edm::ParameterSet analyzerParameters;
-            if (analyzerData.existsAs<edm::ParameterSet>("parameters"))
+            if (analyzerData.exists("parameters"))
                 analyzerParameters = analyzerData.getParameterSet("parameters");
 
             auto analyzer = std::shared_ptr<Framework::Analyzer>(ExTreeMakerAnalyzerFactory::get()->create(type, analyzerName, m_wrapper->group(tree_prefix), analyzerParameters));
             analyzer->doConsumes(analyzerParameters, consumesCollector());
-            analyzer->registerCategories(*m_categories);
+
+            edm::ParameterSet analyzerCategoriesParameters;
+            if (analyzerData.exists("categories_parameters")) {
+                analyzerCategoriesParameters = analyzerData.getParameterSet("categories_parameters");
+            }
+
+            analyzer->registerCategories(*m_categories, analyzerCategoriesParameters);
+
+
+            std::cout << " -> Adding analyzer '" << analyzerName << "'" << std::endl;
 
             m_analyzers.push_back(analyzer);
             m_analyzers_name.push_back(analyzerName);
-        }
-
-        // Analyzers scheduling
-        if (iConfig.exists("analyzers_scheduling")) {
-            const std::vector<std::string>& scheduling = iConfig.getUntrackedParameter<std::vector<std::string>>("analyzers_scheduling");
-
-            auto p = get_permutations(scheduling, m_analyzers_name);
-
-            apply_permutations(m_analyzers_name, p);
-            apply_permutations(m_analyzers, p);
-        }
-
-        for (auto& a: m_analyzers_name) {
-            std::cout << " -> Adding analyzer '" << a << "'" << std::endl;
         }
 
         std::cout << std::endl;

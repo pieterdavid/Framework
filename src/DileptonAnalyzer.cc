@@ -6,11 +6,11 @@
 #include <cp3_llbb/Framework/interface/MuonsProducer.h>
 
 
-void DileptonAnalyzer::registerCategories(CategoryManager& manager) {
-    manager.new_category<MuMuCategory>("mumu", "Category with leading leptons as two muons");
-    manager.new_category<ElElCategory>("elel", "Category with leading leptons as two electrons");
-    manager.new_category<MuElCategory>("muel", "Category with leading leptons as muon, electron");
-    manager.new_category<ElMuCategory>("elmu", "Category with leading leptons as electron, muon");
+void DileptonAnalyzer::registerCategories(CategoryManager& manager, const edm::ParameterSet& config) {
+    manager.new_category<MuMuCategory>("mumu", "Category with leading leptons as two muons", config);
+    manager.new_category<ElElCategory>("elel", "Category with leading leptons as two electrons", config);
+    manager.new_category<MuElCategory>("muel", "Category with leading leptons as muon, electron", config);
+    manager.new_category<ElMuCategory>("elmu", "Category with leading leptons as electron, muon", config);
 }
 
 void DileptonAnalyzer::analyze(const edm::Event& event, const edm::EventSetup&, const ProducersManager& producers, const CategoryManager& categories) {

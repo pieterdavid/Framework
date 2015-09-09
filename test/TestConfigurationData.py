@@ -9,7 +9,10 @@ process = Framework.create(eras.Run2_50ns, '74X_dataRun2_Prompt_v1')
 process.framework.analyzers.dilepton = cms.PSet(
         type = cms.string('dilepton_analyzer'),
         prefix = cms.string('dilepton_'),
-        enable = cms.bool(True)
+        enable = cms.bool(True),
+        categories_parameters = cms.PSet(
+            mll_cut = cms.untracked.double(20)
+            )
         )
 
 process.framework.analyzers.test = cms.PSet(

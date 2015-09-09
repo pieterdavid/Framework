@@ -13,7 +13,7 @@ class DileptonAnalyzer: public Framework::Analyzer {
 
         virtual void analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager&, const CategoryManager&) override;
 
-        virtual void registerCategories(CategoryManager& manager) override;
+        virtual void registerCategories(CategoryManager& manager, const edm::ParameterSet&) override;
 
         BRANCH(dileptons_mumu, std::vector<LorentzVector>);
         BRANCH(dileptons_elel, std::vector<LorentzVector>);
