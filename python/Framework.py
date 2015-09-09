@@ -167,3 +167,26 @@ def create(era, globalTag=None, analyzers=cms.PSet()):
     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     return process
+
+def schedule(process, analyzers):
+    """Inform the framework of the desired scheduling of the analyzers
+
+    Args:
+        process (cms.Process): the current framework process, return by the ``create`` method
+        analyzers (string tuple): a string array representing the desired scheduling of the analyzers. Analyzers will be executed in the specified order.
+    """
+
+    if analyzers is None or len(analyzers) == 0:
+        return process
+
+    framework_analyzers = process.framework.analyzers.parameterNames_()
+    for a in framework_analyzers:
+        if not a in analyzers:
+            raise Exception('Analyzer %r not found in your scheduling array. Please add it somewhere suitable for you.' % a)
+
+    if len(analyzers) != len(framework_analyzers):
+        raise Exception('Your scheduling array contains a different number of analyzers than the framework (%d vs %d)' % (len(analyzers), len(framework_analyzers)))
+
+    process.framework.analyzers_scheduling = cms.untracked.vstring(analyzers)
+
+    return process
