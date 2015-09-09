@@ -19,6 +19,8 @@ struct CategoryMetadata {
 
 class Category {
     public:
+        virtual void configure(const edm::ParameterSet& config) {};
+
         virtual bool event_in_category_pre_analyzers(const ProducersManager& producers) const = 0;
         virtual bool event_in_category_post_analyzers(const ProducersManager& producers, const AnalyzersManager& analyzers) const = 0;
 
@@ -71,6 +73,10 @@ struct CategoryWrapper {
             return data.in_category_pre;
         }
 
+        bool cut_passed(const std::string& cut_name) const {
+            return data.cut_manager.cut_passed(cut_name);
+        }
+
         std::shared_ptr<CategoryMetadata> get_metadata() const {
             return data.callback->get_metadata();
         }
@@ -84,8 +90,9 @@ class CategoryManager {
 
     public:
         template<class T>
-        void new_category(const std::string& name, const std::string& description) {
+        void new_category(const std::string& name, const std::string& description, const edm::ParameterSet& config) {
             std::unique_ptr<Category> category(new T());
+            category->configure(config);
             m_categories.emplace(name, CategoryData(name, description, std::move(category), m_tree));
         }
 

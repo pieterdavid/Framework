@@ -34,7 +34,7 @@ class CutManager {
 
         void new_cut(const std::string& name, const std::string& description);
         void pass_cut(const std::string& name);
-
+        bool cut_passed(const std::string& name) const;
     private:
         CategoryData& m_category;
         std::map<std::string, Cut> m_cuts;

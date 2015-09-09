@@ -35,7 +35,7 @@ namespace Framework {
             virtual void analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager&, const CategoryManager&) = 0;
             virtual void doConsumes(const edm::ParameterSet&, edm::ConsumesCollector&& collector) {}
 
-            virtual void registerCategories(CategoryManager& manager) {}
+            virtual void registerCategories(CategoryManager& manager, const edm::ParameterSet& config) {}
 
             virtual void beginJob(MetadataManager&) {}
             virtual void endJob(MetadataManager&) {}

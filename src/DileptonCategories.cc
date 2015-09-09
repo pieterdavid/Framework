@@ -25,7 +25,7 @@ void MuMuCategory::register_cuts(CutManager& manager) {
 void MuMuCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
     const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton");
     for(unsigned int idilepton = 0; idilepton < dilepton_analyzer.dileptons_mumu.size(); idilepton++)
-        if( dilepton_analyzer.dileptons_mumu[idilepton].M() > 20. )
+        if( dilepton_analyzer.dileptons_mumu[idilepton].M() > m_mll_cut)
         {
             manager.pass_cut("ll_mass");
             break;
@@ -53,7 +53,7 @@ void MuElCategory::register_cuts(CutManager& manager) {
 void MuElCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
     const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton");
     for(unsigned int idilepton = 0; idilepton < dilepton_analyzer.dileptons_muel.size(); idilepton++)
-        if( dilepton_analyzer.dileptons_muel[idilepton].M() > 20. )
+        if( dilepton_analyzer.dileptons_muel[idilepton].M() > m_mll_cut)
         {
             manager.pass_cut("ll_mass");
             break;
@@ -81,7 +81,7 @@ void ElMuCategory::register_cuts(CutManager& manager) {
 void ElMuCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
     const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton");
     for(unsigned int idilepton = 0; idilepton < dilepton_analyzer.dileptons_elmu.size(); idilepton++)
-        if( dilepton_analyzer.dileptons_elmu[idilepton].M() > 20. )
+        if( dilepton_analyzer.dileptons_elmu[idilepton].M() > m_mll_cut)
         {
             manager.pass_cut("ll_mass");
             break;
@@ -108,7 +108,7 @@ void ElElCategory::register_cuts(CutManager& manager) {
 void ElElCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
     const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton");
     for(unsigned int idilepton = 0; idilepton < dilepton_analyzer.dileptons_elel.size(); idilepton++)
-        if( dilepton_analyzer.dileptons_elel[idilepton].M() > 20. )
+        if( dilepton_analyzer.dileptons_elel[idilepton].M() > m_mll_cut)
         {
             manager.pass_cut("ll_mass");
             break;
