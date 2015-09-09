@@ -14,7 +14,7 @@ bool MuMuCategory::event_in_category_pre_analyzers(const ProducersManager& produ
 };
 
 bool MuMuCategory::event_in_category_post_analyzers(const ProducersManager& producers, const AnalyzersManager& analyzers) const {
-    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
+    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton");
     return dilepton_analyzer.dileptons_mumu.size() > 0;
 };
 
@@ -23,7 +23,7 @@ void MuMuCategory::register_cuts(CutManager& manager) {
 };
 
 void MuMuCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
-    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
+    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton");
     for(unsigned int idilepton = 0; idilepton < dilepton_analyzer.dileptons_mumu.size(); idilepton++)
         if( dilepton_analyzer.dileptons_mumu[idilepton].M() > 20. )
         {
@@ -42,7 +42,7 @@ bool MuElCategory::event_in_category_pre_analyzers(const ProducersManager& produ
 };
 
 bool MuElCategory::event_in_category_post_analyzers(const ProducersManager& producers, const AnalyzersManager& analyzers) const {
-    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
+    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton");
     return dilepton_analyzer.dileptons_muel.size() > 0;
 };
 
@@ -51,7 +51,7 @@ void MuElCategory::register_cuts(CutManager& manager) {
 };
 
 void MuElCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
-    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
+    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton");
     for(unsigned int idilepton = 0; idilepton < dilepton_analyzer.dileptons_muel.size(); idilepton++)
         if( dilepton_analyzer.dileptons_muel[idilepton].M() > 20. )
         {
@@ -70,7 +70,7 @@ bool ElMuCategory::event_in_category_pre_analyzers(const ProducersManager& produ
 };
 
 bool ElMuCategory::event_in_category_post_analyzers(const ProducersManager& producers, const AnalyzersManager& analyzers) const {
-    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
+    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton");
     return dilepton_analyzer.dileptons_elmu.size() > 0;
 };
 
@@ -79,7 +79,7 @@ void ElMuCategory::register_cuts(CutManager& manager) {
 };
 
 void ElMuCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
-    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
+    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton");
     for(unsigned int idilepton = 0; idilepton < dilepton_analyzer.dileptons_elmu.size(); idilepton++)
         if( dilepton_analyzer.dileptons_elmu[idilepton].M() > 20. )
         {
@@ -97,7 +97,7 @@ bool ElElCategory::event_in_category_pre_analyzers(const ProducersManager& produ
 };
 
 bool ElElCategory::event_in_category_post_analyzers(const ProducersManager& producers, const AnalyzersManager& analyzers) const {
-    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
+    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton");
     return dilepton_analyzer.dileptons_elel.size() > 0;
 };
 
@@ -106,7 +106,7 @@ void ElElCategory::register_cuts(CutManager& manager) {
 };
 
 void ElElCategory::evaluate_cuts_post_analyzers(CutManager& manager, const ProducersManager& producers, const AnalyzersManager& analyzers) const {
-    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton_analyzer");
+    const DileptonAnalyzer& dilepton_analyzer = analyzers.get<DileptonAnalyzer>("dilepton");
     for(unsigned int idilepton = 0; idilepton < dilepton_analyzer.dileptons_elel.size(); idilepton++)
         if( dilepton_analyzer.dileptons_elel[idilepton].M() > 20. )
         {
