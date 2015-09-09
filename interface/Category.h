@@ -71,6 +71,10 @@ struct CategoryWrapper {
             return data.in_category_pre;
         }
 
+        bool cut_passed(const std::string& cut_name) const {
+            return data.cut_manager.cut_passed(cut_name);
+        }
+
         std::shared_ptr<CategoryMetadata> get_metadata() const {
             return data.callback->get_metadata();
         }

@@ -11,3 +11,12 @@ void CutManager::pass_cut(const std::string& name) {
     if (cut != m_cuts.end())
         cut->second.cut = true;
 }
+
+bool CutManager::cut_passed(const std::string& name) const {
+
+    const auto cut = m_cuts.find(name);
+    if (cut != m_cuts.end())
+        return cut->second.cut;
+
+    return false;
+}
