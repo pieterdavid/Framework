@@ -37,14 +37,21 @@ source setup.sh
 cd ${CMSSW_BASE}/src
 ```
 
+If you are using ingrid, here's a useful alias to put in your ``bashrc`` file:
+
+```bash
+alias cms_env="module purge; module load grid/grid_environment_sl6; module load crab/crab3; module load cms/cmssw;"
+```
+
+Then, just do ``cms_env`` to load all the CMSSW environment.
+
 ## Test run (command line)
 
 ```bash
 cd ${CMSSW_BASE}/src/cp3_llbb/Framework/test
-cmsRun TestConfiguration.py
+cmsRun TestConfigurationMC.py
 ```
 
 # When willing to commit things
   * Remember to *branch before committing anything*: ```git checkout -b my-new-branch```
   * The ```setup.sh``` script took care of adding ```origin``` as your own repo, so to push just do the usual ```git push origin my-new-branch```
-
