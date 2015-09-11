@@ -14,7 +14,9 @@ process.framework.analyzers.dilepton = cms.PSet(
             mll_cut = cms.untracked.double(20)
             ),
         parameters = cms.PSet(
-            standalone = cms.untracked.bool(True)
+            standalone = cms.untracked.bool(True),
+            muons_wp = cms.untracked.string('loose'),
+            electrons_wp = cms.untracked.string('loose')
             )
         )
 
