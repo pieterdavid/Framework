@@ -152,25 +152,54 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
             )
     """
 
+    parseCommandLine = False
     import sys
     for argv in sys.argv:
-        if 'globalTag' in argv:
-
-            from FWCore.ParameterSet.VarParsing import VarParsing
-            options = VarParsing()
-            options.register('globalTag',
-                    '',
-                    VarParsing.multiplicity.singleton,
-                    VarParsing.varType.string,
-                    'The globaltag to use')
-
-            options.parseArguments()
-            globalTag = options.globalTag
-
+        if 'globalTag' in argv or 'era' in argv:
+            parseCommandLine = True
             break
 
+    if parseCommandLine:
+        from FWCore.ParameterSet.VarParsing import VarParsing
+        options = VarParsing()
+        options.register('globalTag',
+                '',
+                VarParsing.multiplicity.singleton,
+                VarParsing.varType.string,
+                'The globaltag to use')
+
+        options.register('era',
+                '',
+                VarParsing.multiplicity.singleton,
+                VarParsing.varType.string,
+                'Era of the dataset')
+
+        options.parseArguments()
+
+        if options.globalTag:
+            globalTag = options.globalTag
+
+        if options.era:
+            assert options.era == '25ns' or options.era == '50ns'
+            if options.era == '25ns':
+                era = eras.Run2_25ns
+            else:
+                era = eras.Run2_50ns
+
+
+
     if globalTag is None:
-        raise Exception("No global tag specified. Use the 'globalTag' command line argument to set one.\n\tcmsRun <configuration> --globalTag=<global_tag>")
+        raise Exception("No global tag specified. Use the 'globalTag' command line argument to set one.\n\tcmsRun <configuration> globalTag=<global_tag>")
+
+    if era is None:
+        raise Exception("No era specified. Use the 'era' command line argument to set one.\n\tcmsRun <configuration> era=[25ns|50ns]")
+
+    print("")
+    print("CP3 llbb framework:")
+    print("\t - Running over %s" % ("data" if isData else "simulation"))
+    print("\t - global tag: %s" % globalTag)
+    print("\t - era: %s" % ("25ns" if era == eras.Run2_25ns else "50ns"))
+    print("")
 
     process = cms.Process("ETM", era)
 
