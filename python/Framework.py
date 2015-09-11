@@ -1,4 +1,5 @@
 import FWCore.ParameterSet.Config as cms
+from Configuration.StandardSequences.Eras import eras
 
 def setup_jets_(process, isData, bTagDiscriminators):
     from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
@@ -255,6 +256,11 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
 
     process.framework.producers.jets.parameters.cut = cms.untracked.string("pt > 10")
     process.framework.producers.jets.parameters.btags = cms.untracked.vstring(bTagDiscriminators)
+
+    if era == eras.Run2_25ns:
+        process.framework.producers.electrons.parameters.ea_R03 = cms.untracked.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt')
+    else:
+        process.framework.producers.electrons.parameters.ea_R03 = cms.untracked.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_50ns.txt')
 
     path = cms.Path()
 
