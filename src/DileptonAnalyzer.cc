@@ -5,6 +5,32 @@
 #include <cp3_llbb/Framework/interface/ElectronsProducer.h>
 #include <cp3_llbb/Framework/interface/MuonsProducer.h>
 
+template <>
+bool DileptonAnalyzer::passID(const MuonsProducer& muons, size_t index) {
+    switch (m_muons_wp) {
+        case WorkingPoint::LOOSE:
+            return muons.isLoose[index];
+
+        case WorkingPoint::TIGHT:
+            return muons.isTight[index];
+    }
+
+    return false;
+}
+
+template <>
+bool DileptonAnalyzer::passID(const ElectronsProducer& electrons, size_t index) {
+    switch (m_electrons_wp) {
+        case WorkingPoint::LOOSE:
+            return electrons.ids[index][m_electron_loose_wp_name];
+
+        case WorkingPoint::TIGHT:
+            return electrons.ids[index][m_electron_tight_wp_name];
+    }
+
+    return false;
+}
+
 
 void DileptonAnalyzer::registerCategories(CategoryManager& manager, const edm::ParameterSet& config) {
     if (m_standalone_mode) {
@@ -26,11 +52,11 @@ void DileptonAnalyzer::analyze(const edm::Event& event, const edm::EventSetup&, 
     // Dimuons
     for( unsigned int imuon = 0 ; imuon < muons.p4.size() ; imuon++ )
     {
-        if(muons.isLoose[imuon])
+        if(passID(muons, imuon))
         {
             for( unsigned int jmuon = imuon+1 ; jmuon < muons.p4.size() ; jmuon++ )
             {
-                if( muons.isLoose[jmuon] && muons.charge[imuon] * muons.charge[jmuon] < 0 )
+                if(passID(muons, jmuon) && muons.charge[imuon] * muons.charge[jmuon] < 0 )
                 {
                     LorentzVector dimuon = muons.p4[imuon] + muons.p4[jmuon];
                     dileptons_mumu.push_back(dimuon);
@@ -43,11 +69,11 @@ void DileptonAnalyzer::analyze(const edm::Event& event, const edm::EventSetup&, 
     // Dielectrons
     for( unsigned int ielectron = 0 ; ielectron < electrons.p4.size() ; ielectron++ )
     {
-        if(electrons.ids[ielectron]["cutBasedElectronID-Spring15-50ns-V1-standalone-loose"])
+        if(passID(electrons, ielectron))
         {
             for( unsigned int jelectron = ielectron+1 ; jelectron < electrons.p4.size() ; jelectron++ )
             {
-                if( electrons.ids[jelectron]["cutBasedElectronID-Spring15-50ns-V1-standalone-loose"] && electrons.charge[ielectron] * electrons.charge[jelectron] < 0 )
+                if(passID(electrons, jelectron) && electrons.charge[ielectron] * electrons.charge[jelectron] < 0 )
                 {
                     LorentzVector dielectron = electrons.p4[ielectron] + electrons.p4[jelectron];
                     dileptons_elel.push_back(dielectron);
@@ -60,12 +86,12 @@ void DileptonAnalyzer::analyze(const edm::Event& event, const edm::EventSetup&, 
     //Dilepton electron-muon
     for( unsigned int ielectron = 0 ; ielectron < electrons.p4.size() ; ielectron++ )
     {
-        if(electrons.ids[ielectron]["cutBasedElectronID-Spring15-50ns-V1-standalone-loose"])
+        if(passID(electrons, ielectron))
         {
             for( unsigned int jmuon = 0 ; jmuon < muons.p4.size() ; jmuon++ )
             {
                 if( muons.p4[jmuon].pt() < electrons.p4[ielectron].pt() &&
-                    muons.isLoose[jmuon] &&
+                    passID(muons, jmuon) &&
                     electrons.charge[ielectron] * muons.charge[jmuon] < 0 )
                 {
                     LorentzVector dilepton = electrons.p4[ielectron] + muons.p4[jmuon];
@@ -79,12 +105,12 @@ void DileptonAnalyzer::analyze(const edm::Event& event, const edm::EventSetup&, 
     //Dilepton muon-electron
     for( unsigned int imuon = 0 ; imuon < muons.p4.size() ; imuon++ )
     {
-        if(muons.isLoose[imuon])
+        if(passID(muons, imuon))
         {
             for( unsigned int jelectron = 0 ; jelectron < electrons.p4.size() ; jelectron++ )
             {
                 if( electrons.p4[jelectron].pt() < muons.p4[imuon].pt() &&
-                    electrons.ids[jelectron]["cutBasedElectronID-Spring15-50ns-V1-standalone-loose"] &&
+                    passID(electrons, jelectron) &&
                     muons.charge[imuon] * electrons.charge[jelectron] < 0 )
                 {
                     LorentzVector dilepton = muons.p4[imuon] + electrons.p4[jelectron];
