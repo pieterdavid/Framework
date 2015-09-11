@@ -12,6 +12,9 @@ process.framework.analyzers.dilepton = cms.PSet(
         enable = cms.bool(True),
         categories_parameters = cms.PSet(
             mll_cut = cms.untracked.double(20)
+            ),
+        parameters = cms.PSet(
+            standalone = cms.untracked.bool(True)
             )
         )
 

@@ -7,10 +7,12 @@
 
 
 void DileptonAnalyzer::registerCategories(CategoryManager& manager, const edm::ParameterSet& config) {
-    manager.new_category<MuMuCategory>("mumu", "Category with leading leptons as two muons", config);
-    manager.new_category<ElElCategory>("elel", "Category with leading leptons as two electrons", config);
-    manager.new_category<MuElCategory>("muel", "Category with leading leptons as muon, electron", config);
-    manager.new_category<ElMuCategory>("elmu", "Category with leading leptons as electron, muon", config);
+    if (m_standalone_mode) {
+        manager.new_category<MuMuCategory>("mumu", "Category with leading leptons as two muons", config);
+        manager.new_category<ElElCategory>("elel", "Category with leading leptons as two electrons", config);
+        manager.new_category<MuElCategory>("muel", "Category with leading leptons as muon, electron", config);
+        manager.new_category<ElMuCategory>("elmu", "Category with leading leptons as electron, muon", config);
+    }
 }
 
 void DileptonAnalyzer::analyze(const edm::Event& event, const edm::EventSetup&, const ProducersManager& producers, const CategoryManager& categories) {

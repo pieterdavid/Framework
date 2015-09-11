@@ -11,6 +11,9 @@ process = Framework.create(None, '74X_mcRun2_asymptotic_v2', cms.PSet(
         enable = cms.bool(True),
         categories_parameters = cms.PSet(
             mll_cut = cms.untracked.double(20)
+            ),
+        parameters = cms.PSet(
+            standalone = cms.untracked.bool(True)
             )
         ),
 

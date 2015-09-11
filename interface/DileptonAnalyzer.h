@@ -8,7 +8,7 @@ class DileptonAnalyzer: public Framework::Analyzer {
     public:
         DileptonAnalyzer(const std::string& name, const ROOT::TreeGroup& tree_, const edm::ParameterSet& config):
             Analyzer(name, tree_, config) {
-
+                m_standalone_mode = config.getUntrackedParameter<bool>("standalone", false);
         }
 
         virtual void analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager&, const CategoryManager&) override;
@@ -25,7 +25,7 @@ class DileptonAnalyzer: public Framework::Analyzer {
         BRANCH(dileptons_muel_indices, std::vector<std::pair<unsigned int,unsigned int>>);
 
     private:
-        // empty
+        bool m_standalone_mode = false;
 };
 
 
