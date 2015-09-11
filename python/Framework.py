@@ -1,12 +1,125 @@
 import FWCore.ParameterSet.Config as cms
 
-def create(era, globalTag=None, analyzers=cms.PSet()):
+def setup_jets_(process, isData, bTagDiscriminators):
+    from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
+    jetToolbox(process, 'ak4', 'ak4CHSJetSequence', 'out', PUMethod='CHS', runOnMC=not isData, miniAOD=True, addPUJetID=False, bTagDiscriminators=bTagDiscriminators + ['pfSimpleSecondaryVertexHighEffBJetTags'])
+    process.softPFElectronsTagInfosAK4PFCHS.electrons = cms.InputTag('slimmedElectrons')
+    process.softPFMuonsTagInfosAK4PFCHS.muons = cms.InputTag('slimmedMuons')
+
+    # b-tagging information. From
+    # https://github.com/cms-sw/cmssw/blob/CMSSW_7_4_X/PhysicsTools/PatAlgos/python/slimming/miniAOD_tools.py#L130
+    process.patJetsAK4PFCHS.userData.userFunctions = cms.vstring(
+            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).p4.M):(0)',
+            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).numberOfSourceCandidatePtrs):(0)',
+            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").flightDistance(0).value):(0)',
+            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").flightDistance(0).significance):(0)',
+            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).p4.x):(0)',
+            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).p4.y):(0)',
+            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).p4.z):(0)',
+            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).vertex.x):(0)',
+            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).vertex.y):(0)',
+            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).vertex.z):(0)',
+            )
+    process.patJetsAK4PFCHS.userData.userFunctionLabels = cms.vstring('vtxMass','vtxNtracks','vtx3DVal','vtx3DSig','vtxPx','vtxPy','vtxPz','vtxPosX','vtxPosY','vtxPosZ')
+    process.patJetsAK4PFCHS.tagInfoSources = cms.VInputTag(cms.InputTag("pfSecondaryVertexTagInfosAK4PFCHS"))
+    process.patJetsAK4PFCHS.addTagInfos = cms.bool(True)
+
+    # Pile-up jet id
+    process.load('RecoJets.JetProducers.PileupJetID_cfi')
+    process.pileupJetId.applyJec = False
+    process.pileupJetId.vertexes = cms.InputTag('offlineSlimmedPrimaryVertices')
+    process.patJetsAK4PFCHS.userData.userFloats.src = [ cms.InputTag("pileupJetId:fullDiscriminant"), ]
+
+
+def setup_met_(process, isData):
+    from PhysicsTools.PatAlgos.tools.metTools import addMETCollection
+
+    ## Gen MET
+    ### Copied from https://github.com/cms-sw/cmssw/blob/2b75137e278b50fc967f95929388d430ef64710b/RecoMET/Configuration/python/GenMETParticles_cff.py#L37
+    process.genParticlesForMETAllVisible = cms.EDProducer(
+            "InputGenJetsParticleSelector",
+            src = cms.InputTag("prunedGenParticles"),
+            partonicFinalState = cms.bool(False),
+            excludeResonances = cms.bool(False),
+            excludeFromResonancePids = cms.vuint32(),
+            tausAsJets = cms.bool(False),
+
+            ignoreParticleIDs = cms.vuint32(
+                1000022,
+                1000012, 1000014, 1000016,
+                2000012, 2000014, 2000016,
+                1000039, 5100039,
+                4000012, 4000014, 4000016,
+                9900012, 9900014, 9900016,
+                39, 12, 14, 16
+                )
+            )
+    process.load('RecoMET.METProducers.genMetTrue_cfi')
+
+    # MET is done from all PF candidates, and Type-I corrections are computed from non-CHS ak4 PF jets
+
+    ## Run AK4 PF jets without CHS
+    from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
+    jetToolbox(process, 'ak4', 'ak4JetSequence', 'out', PUMethod='Plain', runOnMC=not isData, miniAOD=True, addPUJetID=False, bTagDiscriminators=['jetProbabilityBJetTags'])
+
+    ## Raw PF METs
+    process.load('RecoMET.METProducers.PFMET_cfi')
+
+    process.pfMet.src = cms.InputTag('packedPFCandidates')
+    addMETCollection(process, labelName='patPFMet', metSource='pfMet') # RAW MET
+    process.patPFMet.addGenMET = False
+
+    ## Type 1 corrections
+    process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
+    from JetMETCorrections.Type1MET.correctionTermsPfMetType1Type2_cff import corrPfMetType1
+    from JetMETCorrections.Type1MET.correctedMet_cff import pfMetT1
+
+    if not hasattr(process, 'ak4PFJets'):
+        print("WARNING: No AK4 jets produced. Type 1 corrections for MET are not available.")
+    else:
+        process.corrPfMetType1 = corrPfMetType1.clone(
+            src = 'ak4PFJets',
+            jetCorrLabel = 'ak4PFL1FastL2L3Corrector' if not isData else 'ak4PFL1FastL2L3ResidualCorrector',
+            offsetCorrLabel = 'ak4PFL1FastjetCorrector'
+        )
+        process.pfMetT1 = pfMetT1.clone(
+            src = 'pfMet',
+            srcCorrections = [cms.InputTag("corrPfMetType1", "type1")]
+        )
+
+        addMETCollection(process, labelName='patMET', metSource='pfMetT1') # T1 MET
+        process.patMET.addGenMET = False
+
+    ## Slimmed METs
+
+    from PhysicsTools.PatAlgos.slimming.slimmedMETs_cfi import slimmedMETs
+    #### CaloMET is not available in MiniAOD
+    del slimmedMETs.caloMET
+
+    process.slimmedMETs = slimmedMETs.clone()
+    if hasattr(process, "patMET"):
+        # Create MET from Type 1 PF collection
+        process.patMET.addGenMET = not isData
+        process.slimmedMETs.src = cms.InputTag("patMET")
+        process.slimmedMETs.rawUncertainties = cms.InputTag("patPFMet") # only central value
+    else:
+        # Create MET from RAW PF collection
+        process.patPFMet.addGenMET = not isData
+        process.slimmedMETs.src = cms.InputTag("patPFMet")
+        del process.slimmedMETs.rawUncertainties # not available
+
+    del process.slimmedMETs.type1Uncertainties # not available
+    del process.slimmedMETs.type1p2Uncertainties # not available
+
+
+def create(era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
     """Create the CMSSW python configuration for the Framework
 
     Args:
         era (Configuration.StandardSequences.Eras.eras): The era of the data sample. Use ``None`` for simulated samples
         globalTag (str): The global tag to use for this workflow. If set to ``None``, a command-line argument named ``globalTag`` must be specified
         analyzers (cms.PSet()): A list of analyzers to run. By default, it's empty, and you can still add one to the list afterwards.
+        redoJEC (bool): If True, a new jet collection will be created, starting from MiniAOD jets but with latest JEC, pulled from the global tag.
 
     Returns:
         The ``process`` object for the CMSSW framework
@@ -97,6 +210,15 @@ def create(era, globalTag=None, analyzers=cms.PSet()):
     process.load('FWCore.MessageLogger.MessageLogger_cfi')
     process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
+    bTagDiscriminators = [
+            'pfCombinedInclusiveSecondaryVertexV2BJetTags', 'pfJetProbabilityBJetTags', 'pfCombinedMVABJetTags',
+            'pfSimpleSecondaryVertexHighEffBJetTags', 'pfSimpleSecondaryVertexHighPurBJetTags'
+            ]
+
+    if redoJEC:
+        setup_jets_(process, isData, bTagDiscriminators)
+        setup_met_(process, isData)
+
     # Producers
     from cp3_llbb.Framework import EventProducer
     from cp3_llbb.Framework import GenParticlesProducer
@@ -136,6 +258,7 @@ def create(era, globalTag=None, analyzers=cms.PSet()):
             )
 
     process.framework.producers.jets.parameters.cut = cms.untracked.string("pt > 10")
+    process.framework.producers.jets.parameters.btags = cms.untracked.vstring(bTagDiscriminators)
 
     path = cms.Path()
 
@@ -154,6 +277,9 @@ def create(era, globalTag=None, analyzers=cms.PSet()):
         )
 
         path += cms.Sequence(process.filterOnHBHENoiseFilter) 
+
+    if redoJEC:
+        process.framework.producers.jets.parameters.jets = cms.untracked.InputTag('selectedPatJetsAK4PFCHS')
 
     path += cms.Sequence(
             process.egmGsfElectronIDSequence *

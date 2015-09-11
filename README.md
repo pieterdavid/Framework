@@ -25,6 +25,12 @@ cd ${CMSSW_BASE}/src
 # Electron ID as from [EGamma twiki (as on September 1st 2015)](https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2)
 git cms-merge-topic ikrav:egm_id_747_v2
 
+# Jet tool box
+git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox
+
+# Backport of new pileup jet id. Not needed for CMSSW 7.4.12+
+git cms-merge-topic 11007
+
 # CP3-llbb framework itself
 git clone -o upstream git@github.com:blinkseb/TreeWrapper.git cp3_llbb/TreeWrapper
 git clone -o upstream git@github.com:cp3-llbb/Framework.git cp3_llbb/Framework
