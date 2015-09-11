@@ -112,11 +112,12 @@ def setup_met_(process, isData):
     del process.slimmedMETs.type1p2Uncertainties # not available
 
 
-def create(era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
+def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
     """Create the CMSSW python configuration for the Framework
 
     Args:
-        era (Configuration.StandardSequences.Eras.eras): The era of the data sample. Use ``None`` for simulated samples
+        isData (bool): Set to True if you run over data, or False for simulated samples
+        era (Configuration.StandardSequences.Eras.eras): The era of the sample. Used to distringuish between 50ns and 25ns
         globalTag (str): The global tag to use for this workflow. If set to ``None``, a command-line argument named ``globalTag`` must be specified
         analyzers (cms.PSet()): A list of analyzers to run. By default, it's empty, and you can still add one to the list afterwards.
         redoJEC (bool): If True, a new jet collection will be created, starting from MiniAOD jets but with latest JEC, pulled from the global tag.
@@ -134,13 +135,13 @@ def create(era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
         from cp3_llbb.Framework import Framework
 
         # Run on 50ns data sample
-        process = Framework.create(eras.Run2_50ns, '74X_dataRun2_Prompt_v1')
+        process = Framework.create(True, eras.Run2_50ns, '74X_dataRun2_Prompt_v1')
 
         # Run on 25ns data sample
-        process = Framework.create(eras.Run2_25ns, '74X_dataRun2_Prompt_v2')
+        process = Framework.create(True, eras.Run2_25ns, '74X_dataRun2_Prompt_v2')
 
-        # For MC
-        process = Framework.create(None, 'MCRUN2_74_V9', cms.PSet(
+        # For MC 50ns
+        process = Framework.create(False, eras.Run2_50ns, 'MCRUN2_74_V9', cms.PSet(
                 test = cms.PSet(
                     type = cms.string('test_analyzer'),
                     prefix = cms.string('test_'),
@@ -170,17 +171,12 @@ def create(era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
     if globalTag is None:
         raise Exception("No global tag specified. Use the 'globalTag' command line argument to set one.\n\tcmsRun <configuration> --globalTag=<global_tag>")
 
-    if era is not None:
-        process = cms.Process("ETM", era)
-    else:
-        process = cms.Process("ETM")
+    process = cms.Process("ETM", era)
 
     process.options = cms.untracked.PSet(
             wantSummary = cms.untracked.bool(False),
             allowUnscheduled = cms.untracked.bool(True)
             )
-
-    isData = era is not None
 
     process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
     process.load("Configuration.EventContent.EventContent_cff")
