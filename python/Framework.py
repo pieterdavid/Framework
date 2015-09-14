@@ -97,6 +97,81 @@ def setup_met_(process, isData):
     del process.slimmedMETs.type1Uncertainties # not available
     del process.slimmedMETs.type1p2Uncertainties # not available
 
+def setup_nohf_met_(process, isData):
+    from PhysicsTools.PatAlgos.tools.metTools import addMETCollection
+
+    process.noHFCands = cms.EDFilter("CandPtrSelector",
+            src=cms.InputTag("packedPFCandidates"),
+            cut=cms.string("abs(pdgId)!=1 && abs(pdgId)!=2 && abs(eta)<3.0")
+            )
+
+    if not isData and not hasattr(process, 'genMetExtractor'):
+        process.genMetExtractor = cms.EDProducer("GenMETExtractor",
+                metSource = cms.InputTag("slimmedMETs", "" , cms.InputTag.skipCurrentProcess())
+                )
+
+    if not hasattr(process, 'pfMet'):
+        from RecoMET.METProducers.PFMET_cfi import pfMet
+        process.pfMetNoHF = pfMet.clone()
+    else:
+        process.pfMetNoHF = process.pfMet.clone()
+
+    process.pfMetNoHF.calculateSignificance = False
+    process.pfMetNoHF.src = cms.InputTag('noHFCands')
+    addMETCollection(process, labelName='patPFMetNoHF', metSource='pfMetNoHF') # RAW MET
+    process.patPFMetNoHF.addGenMET = False
+
+    ## Type 1 corrections
+    if not hasattr(process, 'ak4PFCHSL1FastL2L3Corrector'):
+        process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
+
+    from JetMETCorrections.Type1MET.correctionTermsPfMetType1Type2_cff import corrPfMetType1
+    from JetMETCorrections.Type1MET.correctedMet_cff import pfMetT1
+
+    if not hasattr(process, 'ak4PFJetsCHS'):
+        print("WARNING: No AK4 CHS jets produced. Type 1 corrections for MET are not available.")
+    else:
+        if not hasattr(process, 'corrPfMetType1'):
+            process.corrPfMetType1 = corrPfMetType1.clone(
+                src = 'ak4PFJetsCHS',
+                jetCorrLabel = 'ak4PFCHSL1FastL2L3Corrector' if not isData else 'ak4PFCHSL1FastL2L3ResidualCorrector',
+                offsetCorrLabel = 'ak4PFCHSL1FastjetCorrector'
+            )
+
+        process.pfMetT1NoHF = pfMetT1.clone(
+            src = 'pfMetNoHF',
+            srcCorrections = [cms.InputTag("corrPfMetType1", "type1")]
+        )
+
+        addMETCollection(process, labelName='patMETNoHF', metSource='pfMetT1NoHF') # T1 MET
+        process.patMETNoHF.addGenMET = False
+
+    ## Slimmed METs
+
+    from PhysicsTools.PatAlgos.slimming.slimmedMETs_cfi import slimmedMETs
+    #### CaloMET is not available in MiniAOD
+    if hasattr(slimmedMETs, 'caloMET'):
+        del slimmedMETs.caloMET
+
+    process.slimmedMETsNoHF = slimmedMETs.clone()
+    if hasattr(process, "patMETNoHF"):
+        # Create MET from Type 1 PF collection
+        process.patMETNoHF.addGenMET = not isData
+        if not isData:
+            process.patMETNoHF.genMETSource = cms.InputTag("genMetExtractor")
+        process.slimmedMETsNoHF.src = cms.InputTag("patMETNoHF")
+        process.slimmedMETsNoHF.rawUncertainties = cms.InputTag("patPFMetNoHF") # only central value
+    else:
+        # Create MET from RAW PF collection
+        process.patPFMetNoHF.addGenMET = not isData
+        if not isData:
+            process.patPFMetNoHF.genMETSource = cms.InputTag("genMetExtractor")
+        process.slimmedMETsNoHF.src = cms.InputTag("patPFMetNoHF")
+        del process.slimmedMETsNoHF.rawUncertainties # not available
+
+    del process.slimmedMETsNoHF.type1Uncertainties # not available
+    del process.slimmedMETsNoHF.type1p2Uncertainties # not available
+
 
 def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
     """Create the CMSSW python configuration for the Framework
@@ -150,7 +225,7 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
         options.register('globalTag',
                 '',
                 VarParsing.multiplicity.singleton,
-                VarParsing.varType.string,
+            VarParsing.varType.string,
                 'The globaltag to use')
 
         options.register('era',
@@ -193,6 +268,9 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
             allowUnscheduled = cms.untracked.bool(True)
             )
 
+    # Flags
+    createNoHFMet = True
+
     process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
     process.load("Configuration.EventContent.EventContent_cff")
     process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
@@ -229,6 +307,9 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
     if redoJEC:
         setup_jets_(process, isData, bTagDiscriminators)
         setup_met_(process, isData)
+
+    if createNoHFMet:
+        setup_nohf_met_(process, isData)
 
     # Producers
     from cp3_llbb.Framework import EventProducer
@@ -275,6 +356,11 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
         process.framework.producers.electrons.parameters.ea_R03 = cms.untracked.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt')
     else:
         process.framework.producers.electrons.parameters.ea_R03 = cms.untracked.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_50ns.txt')
+
+    if createNoHFMet:
+        process.framework.producers.nohf_met = cms.PSet(METProducer.default_configuration.clone())
+        process.framework.producers.nohf_met.prefix = 'nohf_met_'
+        process.framework.producers.nohf_met.parameters.met = cms.untracked.InputTag('slimmedMETsNoHF')
 
     path = cms.Path()
 
