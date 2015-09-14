@@ -35,26 +35,10 @@ def setup_met_(process, isData):
     from PhysicsTools.PatAlgos.tools.metTools import addMETCollection
 
     ## Gen MET
-    ### Copied from https://github.com/cms-sw/cmssw/blob/2b75137e278b50fc967f95929388d430ef64710b/RecoMET/Configuration/python/GenMETParticles_cff.py#L37
-    process.genParticlesForMETAllVisible = cms.EDProducer(
-            "InputGenJetsParticleSelector",
-            src = cms.InputTag("prunedGenParticles"),
-            partonicFinalState = cms.bool(False),
-            excludeResonances = cms.bool(False),
-            excludeFromResonancePids = cms.vuint32(),
-            tausAsJets = cms.bool(False),
-
-            ignoreParticleIDs = cms.vuint32(
-                1000022,
-                1000012, 1000014, 1000016,
-                2000012, 2000014, 2000016,
-                1000039, 5100039,
-                4000012, 4000014, 4000016,
-                9900012, 9900014, 9900016,
-                39, 12, 14, 16
+    if not isData:
+        process.genMetExtractor = cms.EDProducer("GenMETExtractor",
+                metSource = cms.InputTag("slimmedMETs", "" , cms.InputTag.skipCurrentProcess())
                 )
-            )
-    process.load('RecoMET.METProducers.genMetTrue_cfi')
 
     # MET is done from all PF candidates, and Type-I corrections are computed from non-CHS ak4 PF jets
 
@@ -100,11 +84,15 @@ def setup_met_(process, isData):
     if hasattr(process, "patMET"):
         # Create MET from Type 1 PF collection
         process.patMET.addGenMET = not isData
+        if not isData:
+            process.patMET.genMETSource = cms.InputTag("genMetExtractor")
         process.slimmedMETs.src = cms.InputTag("patMET")
         process.slimmedMETs.rawUncertainties = cms.InputTag("patPFMet") # only central value
     else:
         # Create MET from RAW PF collection
         process.patPFMet.addGenMET = not isData
+        if not isData:
+            process.patPFMet.genMETSource = cms.InputTag("genMetExtractor")
         process.slimmedMETs.src = cms.InputTag("patPFMet")
         del process.slimmedMETs.rawUncertainties # not available
 
