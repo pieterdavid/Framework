@@ -31,6 +31,9 @@ git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox
 # Backport of new pileup jet id. Not needed for CMSSW 7.4.12+
 git cms-merge-topic 11007
 
+# MET stuff
+git cms-merge-topic -u cms-met:METCorUnc74X
+
 # CP3-llbb framework itself
 git clone -o upstream git@github.com:blinkseb/TreeWrapper.git cp3_llbb/TreeWrapper
 git clone -o upstream git@github.com:cp3-llbb/Framework.git cp3_llbb/Framework
