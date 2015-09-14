@@ -24,6 +24,7 @@
 
 # Compiled bytecode of Python source files
 *.pyc
+python/__init__.py
 
 # Executables
 *.exe
