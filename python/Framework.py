@@ -40,11 +40,8 @@ def setup_met_(process, isData):
                 metSource = cms.InputTag("slimmedMETs", "" , cms.InputTag.skipCurrentProcess())
                 )
 
-    # MET is done from all PF candidates, and Type-I corrections are computed from non-CHS ak4 PF jets
-
-    ## Run AK4 PF jets without CHS
-    from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
-    jetToolbox(process, 'ak4', 'ak4JetSequence', 'out', PUMethod='Plain', runOnMC=not isData, miniAOD=True, addPUJetID=False, bTagDiscriminators=['jetProbabilityBJetTags'])
+    # MET is done from all PF candidates, and Type-I corrections are computed from CHS ak4 PF jets
+    # https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETRun2Corrections#type_1_PF_MET_recommended
 
     ## Raw PF METs
     process.load('RecoMET.METProducers.PFMET_cfi')
@@ -58,13 +55,13 @@ def setup_met_(process, isData):
     from JetMETCorrections.Type1MET.correctionTermsPfMetType1Type2_cff import corrPfMetType1
     from JetMETCorrections.Type1MET.correctedMet_cff import pfMetT1
 
-    if not hasattr(process, 'ak4PFJets'):
-        print("WARNING: No AK4 jets produced. Type 1 corrections for MET are not available.")
+    if not hasattr(process, 'ak4PFJetsCHS'):
+        print("WARNING: No AK4 CHS jets produced. Type 1 corrections for MET are not available.")
     else:
         process.corrPfMetType1 = corrPfMetType1.clone(
-            src = 'ak4PFJets',
-            jetCorrLabel = 'ak4PFL1FastL2L3Corrector' if not isData else 'ak4PFL1FastL2L3ResidualCorrector',
-            offsetCorrLabel = 'ak4PFL1FastjetCorrector'
+            src = 'ak4PFJetsCHS',
+            jetCorrLabel = 'ak4PFCHSL1FastL2L3Corrector' if not isData else 'ak4PFCHSL1FastL2L3ResidualCorrector',
+            offsetCorrLabel = 'ak4PFCHSL1FastjetCorrector'
         )
         process.pfMetT1 = pfMetT1.clone(
             src = 'pfMet',
