@@ -3,5 +3,6 @@
     <class name="std::vector<int16_t>"/>
     <class name="std::vector<uint16_t>"/>
     <class name="std::vector<std::vector<uint16_t>>"/>
+    <class name="std::vector<std::vector<ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<float>>>>"/>
     <class name="std::vector<std::map<std::string, bool>>"/>
 </lcgdict>
