@@ -25,8 +25,44 @@ process.framework.analyzers.test = cms.PSet(
         prefix = cms.string('test_'),
         enable = cms.bool(True)
         )
+    
+process.framework.analyzers.bTagsLoose = cms.PSet(
+        type = cms.string('btags_analyzer'),
+        prefix = cms.string('btags_CSVv2_loose'),
+        enable = cms.bool(True),
+        parameters = cms.PSet(
+            discr_name = cms.untracked.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
+            discr_cut = cms.untracked.double(0.605),
+            eta_cut = cms.untracked.double(2.4),
+            pt_cut = cms.untracked.double(30)
+            )
+        )
 
-Framework.schedule(process, ['dilepton', 'test'])
+process.framework.analyzers.bTagsMedium = cms.PSet(
+        type = cms.string('btags_analyzer'),
+        prefix = cms.string('btags_CSVv2_medium'),
+        enable = cms.bool(True),
+        parameters = cms.PSet(
+            discr_name = cms.untracked.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
+            discr_cut = cms.untracked.double(0.89),
+            eta_cut = cms.untracked.double(2.4),
+            pt_cut = cms.untracked.double(30)
+            )
+        )
+
+process.framework.analyzers.bTagsTight = cms.PSet(
+        type = cms.string('btags_analyzer'),
+        prefix = cms.string('btags_CSVv2_tight'),
+        enable = cms.bool(True),
+        parameters = cms.PSet(
+            discr_name = cms.untracked.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
+            discr_cut = cms.untracked.double(0.97),
+            eta_cut = cms.untracked.double(2.4),
+            pt_cut = cms.untracked.double(30)
+            )
+        )
+
+Framework.schedule(process, ['dilepton', 'bTagsLoose', 'bTagsMedium', 'bTagsTight', 'test'])
 
 process.source.fileNames = cms.untracked.vstring(
         '/store/data/Run2015B/DoubleMuon/MINIAOD/17Jul2015-v1/30000/D8ED75E7-C12E-E511-8CBF-0025905A608C.root'

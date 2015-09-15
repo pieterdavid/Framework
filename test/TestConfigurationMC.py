@@ -19,16 +19,57 @@ process = Framework.create(False, eras.Run2_25ns, '74X_mcRun2_asymptotic_v2', cm
             )
         ),
 
+    bTagsLoose = cms.PSet(
+        type = cms.string('btags_analyzer'),
+        prefix = cms.string('btags_CSVv2_loose'),
+        enable = cms.bool(True),
+        parameters = cms.PSet(
+            discr_name = cms.untracked.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
+            discr_cut = cms.untracked.double(0.605),
+            eta_cut = cms.untracked.double(2.4),
+            pt_cut = cms.untracked.double(30)
+            )
+        ),
+
+    bTagsMedium = cms.PSet(
+        type = cms.string('btags_analyzer'),
+        prefix = cms.string('btags_CSVv2_medium'),
+        enable = cms.bool(True),
+        parameters = cms.PSet(
+            discr_name = cms.untracked.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
+            discr_cut = cms.untracked.double(0.89),
+            eta_cut = cms.untracked.double(2.4),
+            pt_cut = cms.untracked.double(30)
+            )
+        ),
+
+    bTagsTight = cms.PSet(
+        type = cms.string('btags_analyzer'),
+        prefix = cms.string('btags_CSVv2_tight'),
+        enable = cms.bool(True),
+        parameters = cms.PSet(
+            discr_name = cms.untracked.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
+            discr_cut = cms.untracked.double(0.97),
+            eta_cut = cms.untracked.double(2.4),
+            pt_cut = cms.untracked.double(30)
+            )
+        ),
+
     test = cms.PSet(
         type = cms.string('test_analyzer'),
         prefix = cms.string('test_'),
         enable = cms.bool(True)
         )
-    ), redoJEC=True
+    ), 
+    
+    redoJEC=True,
+
     )
 
-Framework.schedule(process, ['dilepton', 'test'])
+Framework.schedule(process, ['dilepton', 'bTagsLoose', 'bTagsMedium', 'bTagsTight', 'test'])
 
 process.source.fileNames = cms.untracked.vstring(
         'file:///home/fynu/sbrochet/storage/MINIAODSIM/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_Asympt25ns_MCRUN2_74_V9_reduced.root'
         )
+
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))
