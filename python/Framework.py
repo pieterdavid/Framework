@@ -1,6 +1,32 @@
 import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 
+def change_input_tag_process_(input_tag, process_name_from, process_name_to):
+    if not isinstance(input_tag, cms.InputTag):
+        input_tag = cms.untracked.InputTag(input_tag)
+
+    if len(input_tag.getProcessName()) > 0 and input_tag.getProcessName() == process_name_from:
+        old_input_tag = input_tag.value()
+        input_tag.setProcessName(process_name_to)
+        print("Changing input tag from %r to %r" % (old_input_tag, input_tag.value()))
+
+    return input_tag
+
+def change_process_name_(module, process_name_from, process_name_to):
+    if isinstance(module, cms._Parameterizable):
+        for name in module.parameters_().keys():
+            value = getattr(module, name)
+            type = value.pythonTypeName()
+
+            if 'VInputTag' in type:
+                for (i, tag) in enumerate(value):
+                    value[i] = change_input_tag_process_(tag, process_name_from, process_name_to)
+            elif 'InputTag' in type:
+                change_input_tag_process_(value, process_name_from, process_name_to)
+
+            if isinstance(value, cms._Parameterizable):
+                change_process_name_(value, process_name_from, process_name_to)
+
 def setup_jets_(process, isData, bTagDiscriminators):
     from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
     jetToolbox(process, 'ak4', 'ak4CHSJetSequence', 'out', PUMethod='CHS', runOnMC=not isData, miniAOD=True, addPUJetID=False, bTagDiscriminators=bTagDiscriminators + ['pfSimpleSecondaryVertexHighEffBJetTags'])
@@ -215,10 +241,11 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
     parseCommandLine = False
     import sys
     for argv in sys.argv:
-        if 'globalTag' in argv or 'era' in argv:
+        if 'globalTag' in argv or 'era' in argv or 'process' in argv:
             parseCommandLine = True
             break
 
+    miniaod_process_name = None
     if parseCommandLine:
         from FWCore.ParameterSet.VarParsing import VarParsing
         options = VarParsing()
@@ -234,6 +261,12 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
                 VarParsing.varType.string,
                 'Era of the dataset')
 
+        options.register('process',
+                '',
+                VarParsing.multiplicity.singleton,
+                VarParsing.varType.string,
+                'Process name of the MiniAOD production.')
+
         options.parseArguments()
 
         if options.globalTag:
@@ -245,6 +278,9 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
                 era = eras.Run2_25ns
             else:
                 era = eras.Run2_50ns
+
+        if options.process:
+            miniaod_process_name = options.process
 
 
 
@@ -395,10 +431,17 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
 
     process.p = path
 
+    if miniaod_process_name:
+        print("")
+        print("Changing process name from %r to %r..." % ('PAT', miniaod_process_name))
+        change_process_name_(process.framework, 'PAT', miniaod_process_name)
+
+
     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     #! Output and Log
     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+    print("")
     return process
 
 def schedule(process, analyzers):
