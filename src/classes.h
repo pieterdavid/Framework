@@ -1,6 +1,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <Math/Vector4D.h>
 
 namespace {
     struct dictionary {
@@ -10,5 +11,6 @@ namespace {
         std::vector<std::vector<uint16_t>> dummy4;
         std::vector<std::map<std::string, bool>> dummy5;
         std::pair<std::string, bool> dummy6;
+        std::vector<std::vector<ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<float>>>> dummy7;
     };
 }

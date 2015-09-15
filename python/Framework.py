@@ -316,6 +316,7 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
     from cp3_llbb.Framework import GenParticlesProducer
     from cp3_llbb.Framework import HLTProducer
     from cp3_llbb.Framework import JetsProducer
+    from cp3_llbb.Framework import FatJetsProducer
     from cp3_llbb.Framework import METProducer
     from cp3_llbb.Framework import MuonsProducer
     from cp3_llbb.Framework import ElectronsProducer
@@ -337,6 +338,8 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
 
                 jets = JetsProducer.default_configuration,
 
+                fat_jets = FatJetsProducer.default_configuration,
+
                 met = METProducer.default_configuration,
 
                 muons = MuonsProducer.default_configuration,
@@ -351,6 +354,8 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
 
     process.framework.producers.jets.parameters.cut = cms.untracked.string("pt > 10")
     process.framework.producers.jets.parameters.btags = cms.untracked.vstring(bTagDiscriminators)
+
+    process.framework.producers.fat_jets.parameters.cut = cms.untracked.string("pt > 200")
 
     if era == eras.Run2_25ns:
         process.framework.producers.electrons.parameters.ea_R03 = cms.untracked.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt')
