@@ -26,14 +26,14 @@ class DileptonAnalyzer: public Framework::Analyzer {
 
         virtual void registerCategories(CategoryManager& manager, const edm::ParameterSet&) override;
 
-        BRANCH(dileptons_mumu, std::vector<LorentzVector>);
-        BRANCH(dileptons_elel, std::vector<LorentzVector>);
-        BRANCH(dileptons_elmu, std::vector<LorentzVector>);
-        BRANCH(dileptons_muel, std::vector<LorentzVector>);
-        BRANCH(dileptons_mumu_indices, std::vector<std::pair<unsigned int,unsigned int>>);
-        BRANCH(dileptons_elel_indices, std::vector<std::pair<unsigned int,unsigned int>>);
-        BRANCH(dileptons_elmu_indices, std::vector<std::pair<unsigned int,unsigned int>>);
-        BRANCH(dileptons_muel_indices, std::vector<std::pair<unsigned int,unsigned int>>);
+        BRANCH(mumu, std::vector<LorentzVector>);
+        BRANCH(elel, std::vector<LorentzVector>);
+        BRANCH(elmu, std::vector<LorentzVector>);
+        BRANCH(muel, std::vector<LorentzVector>);
+        BRANCH(mumu_indices, std::vector<std::pair<unsigned int,unsigned int>>);
+        BRANCH(elel_indices, std::vector<std::pair<unsigned int,unsigned int>>);
+        BRANCH(elmu_indices, std::vector<std::pair<unsigned int,unsigned int>>);
+        BRANCH(muel_indices, std::vector<std::pair<unsigned int,unsigned int>>);
 
     private:
         WorkingPoint string_to_wp(const std::string& wp) {
