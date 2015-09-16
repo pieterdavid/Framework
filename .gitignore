@@ -36,3 +36,6 @@ python/__init__.py
 
 # vim
 *.sw*
+
+# docs
+docs/out/
