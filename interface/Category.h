@@ -91,6 +91,10 @@ class CategoryManager {
     public:
         template<class T>
         void new_category(const std::string& name, const std::string& description, const edm::ParameterSet& config) {
+            if (m_categories.count(name) > 0) {
+                throw edm::Exception(edm::errors::InsertFailure, "A category named '" + name + "' already exists.");
+            }
+
             std::unique_ptr<Category> category(new T());
             category->configure(config);
             m_categories.emplace(name, CategoryData(name, description, std::move(category), m_tree));
