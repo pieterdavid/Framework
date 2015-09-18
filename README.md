@@ -64,3 +64,37 @@ cmsRun TestConfigurationMC.py
 # When willing to commit things
   * Remember to *branch before committing anything*: ```git checkout -b my-new-branch```
   * The ```setup.sh``` script took care of adding ```origin``` as your own repo, so to push just do the usual ```git push origin my-new-branch```
+
+# Jenkins
+
+When opening a new Pull Request, an automated tool, [Jenkins](https://jenkins-ci.org/), takes care of launching a full build. It allows to see directly if your code can be merged without breaking everything. We have a dedicated Jenkins instance running at CERN, accessible via https://jenkins.cern.ch/cp3-llbb/ ; Only members of the ``cp3-llbb`` CERN e-group can access this page.
+
+Jenkins runs every 5 minutes to check if there's something new. If a new Pull Request is detected, or if an already opened Pull Request is updated, an automatic build is launched. Only one build can be executed at the same time: every other builds are queued. A build typically takes about 1 hour.
+
+Once a build is started, the Pull Request status on GitHub is updated. Once done, the status will either be green (the code compiles) or red (something is wrong). You can click on the ``Details`` link to access the Jenkins job report and the compilation log. For more information, see https://github.com/blog/1935-see-results-from-all-pull-request-status-checks
+
+The Pull Request won't be mergeable until the Pull Request status is green.
+
+## Bootstrap
+
+**This part is very important**
+
+Since the build is automatized, Jenkins needs to know how-to setup the CMSSW env by itself. To do that, two files are necessary:
+
+ - ``CMSSW.release``: This file must contains only a string representing the CMSSW version to use to setup the framework. Be careful not to add a line break at the end of the line.
+ - ``bootstrap_jenkins.sh``: This file is a bash script executed by Jenkins just before building the framework, but after the CMSSW env is setup. You **must** use this file to install all the dependencies of the framework.
+
+**Do not forget to update these files when changes are done to the release or the dependencies, otherwise the build will fails.**
+
+## Technical details
+
+ - Jenkins instance: https://jenkins.cern.ch/info/cp3-llbb
+ - Jenkins instance informations: https://jenkins.cern.ch/info/cp3-llbb
+ - CERN forge: https://cernforge.cern.ch/jenkins/details/cp3-llbb (only accessible by the Administrator, Sébastien B.)
+
+The builds are done on a custom VM hosted on CERN OpenStack servers, because Jenkins instance does not have access to either AFS or CVMFS. The VM instance is accessible only from CERN network:
+
+ - Hostname: cp3-llbb-buildbot
+ - SSH access only via key pair. Only accessible by the Administrator, Sébastien B.
+
+A github bot also exists: https://github.com/cp3-llbb-bot ; it's a generic github user, member of the cp3-llbb organization. It needs push authorization to a repository to properly update the PR status. Password for this user can be found on the protected CP3 [wiki](https://cp3.irmp.ucl.ac.be/projects/cp3admin/wiki/UsersPage/Private/Physics/Exp/llbb)
