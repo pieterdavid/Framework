@@ -50,11 +50,11 @@ class ExTreeMaker: public edm::EDProducer, ProducerGetter, AnalyzerGetter {
         std::string m_output_filename;
         std::unique_ptr<TFile> m_output;
         std::unique_ptr<ROOT::TreeWrapper> m_wrapper;
-        std::unordered_map<std::string, std::shared_ptr<Framework::Producer>> m_producers;
+
         std::unordered_map<std::string, std::shared_ptr<Framework::Filter>> m_filters;
 
-
         // Order is important, we can't use a map here
+        std::vector<std::pair<std::string, std::shared_ptr<Framework::Producer>>> m_producers;
         std::vector<std::shared_ptr<Framework::Analyzer>> m_analyzers;
         std::vector<std::string> m_analyzers_name;
 
