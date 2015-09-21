@@ -1,0 +1,4 @@
+<bin   name="Testcp3_llbbFramework" file="TestDriver.cc">
+  <flags TEST_RUNNER_ARGS="/bin/bash cp3_llbb/Framework/test run_tests.sh"/>
+  <use   name="FWCore/Utilities" />
+</bin>
