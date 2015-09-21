@@ -90,6 +90,14 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
         std::cout << std::endl << "producers: " << std::endl;
         const edm::ParameterSet& producers = iConfig.getParameterSet("producers");
         std::vector<std::string> producersName = producers.getParameterNames();
+
+        if (iConfig.exists("producers_scheduling")) {
+            const std::vector<std::string>& scheduling = iConfig.getUntrackedParameter<std::vector<std::string>>("producers_scheduling");
+            auto p = get_permutations(scheduling, producersName);
+
+            apply_permutations(producersName, p);
+        }
+
         for (std::string& producerName: producersName) {
             edm::ParameterSet producerData = producers.getParameterSet(producerName);
             bool enable = producerData.getParameter<bool>("enable");
@@ -106,7 +114,7 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
             auto producer = std::shared_ptr<Framework::Producer>(ExTreeMakerProducerFactory::get()->create(type, producerName, m_wrapper->group(tree_prefix), producerParameters));
             producer->doConsumes(producerParameters, consumesCollector());
 
-            m_producers.emplace(producerName, producer);
+            m_producers.push_back(std::make_pair(producerName, producer));
         }
 
         if (!iConfig.existsAs<edm::ParameterSet>("analyzers")) {
@@ -274,7 +282,7 @@ void ExTreeMaker::endLuminosityBlock(const edm::LuminosityBlock& lumi, const edm
 }
 
 const Framework::Producer& ExTreeMaker::getProducer(const std::string& name) const {
-    const auto& producer = m_producers.find(name);
+    const auto producer = std::find_if(m_producers.begin(), m_producers.end(), [&name](const std::pair<std::string, std::shared_ptr<Framework::Producer>>& element) { return element.first == name; });
     if (producer == m_producers.end()) {
         std::stringstream details;
         details << "Producer '" << name << "' not found. Please load it first in the python configuration";
@@ -285,7 +293,7 @@ const Framework::Producer& ExTreeMaker::getProducer(const std::string& name) con
 }
 
 bool ExTreeMaker::producerExists(const std::string& name) const {
-    const auto& producer = m_producers.find(name);
+    const auto producer = std::find_if(m_producers.begin(), m_producers.end(), [&name](const std::pair<std::string, std::shared_ptr<Framework::Producer>>& element) { return element.first == name; });
     return (producer != m_producers.end());
 }
 
