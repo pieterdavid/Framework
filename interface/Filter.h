@@ -9,7 +9,7 @@
 #include <FWCore/Framework/interface/ConsumesCollector.h>
 #include <FWCore/Utilities/interface/InputTag.h>
 
-#include <cp3_llbb/Framework/interface/Tools.h>
+#include <cp3_llbb/Framework/interface/Types.h>
 #include <cp3_llbb/Framework/interface/MetadataManager.h>
 
 #include <Math/Vector4D.h>

@@ -14,12 +14,10 @@
 #include <cp3_llbb/Framework/interface/MetadataManager.h>
 #include <cp3_llbb/TreeWrapper/interface/TreeWrapper.h>
 
-#include <Math/Vector4D.h>
+#include <cp3_llbb/Framework/interface/Types.h>
 
 #include <vector>
 #include <map>
-
-typedef ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<float>> LorentzVector;
 
 class CategoryManager;
 
