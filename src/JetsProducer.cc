@@ -1,5 +1,5 @@
-
 #include <cp3_llbb/Framework/interface/JetsProducer.h>
+#include <cp3_llbb/Framework/interface/Tools.h>
 
 void JetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup) {
 
@@ -16,6 +16,10 @@ void JetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup)
         area.push_back(jet.jetArea());
         partonFlavor.push_back(jet.partonFlavour());
         hadronFlavor.push_back(jet.hadronFlavour());
+
+        passLooseID.push_back(Tools::Jets::passLooseId(jet));
+        passTightID.push_back(Tools::Jets::passTightId(jet));
+        passTightLeptonVetoID.push_back(Tools::Jets::passTightLeptonVetoId(jet));
 
         if (jet.hasUserFloat("pileupJetId:fullDiscriminant"))
             puJetID.push_back(jet.userFloat("pileupJetId:fullDiscriminant"));
