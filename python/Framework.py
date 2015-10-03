@@ -28,7 +28,7 @@ def change_process_name_(module, process_name_from, process_name_to):
                 change_process_name_(value, process_name_from, process_name_to)
 
 
-def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
+def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False, process_name=None):
     """Create the CMSSW python configuration for the Framework
 
     Args:
@@ -37,6 +37,7 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
         globalTag (str): The global tag to use for this workflow. If set to ``None``, a command-line argument named ``globalTag`` must be specified
         analyzers (cms.PSet()): A list of analyzers to run. By default, it's empty, and you can still add one to the list afterwards.
         redoJEC (bool): If True, a new jet collection will be created, starting from MiniAOD jets but with latest JEC, pulled from the global tag.
+        process_name (str): The process name used for the MiniAOD step. Default to 'PAT'.
 
     Returns:
         The ``process`` object for the CMSSW framework
@@ -74,7 +75,7 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
             parseCommandLine = True
             break
 
-    miniaod_process_name = None
+    miniaod_process_name = process_name
     if parseCommandLine:
         from FWCore.ParameterSet.VarParsing import VarParsing
         options = VarParsing()
