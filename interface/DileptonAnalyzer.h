@@ -18,8 +18,8 @@ class DileptonAnalyzer: public Framework::Analyzer {
                 m_muons_wp = string_to_wp(config.getUntrackedParameter<std::string>("muons_wp", "loose"));
                 m_electrons_wp = string_to_wp(config.getUntrackedParameter<std::string>("electrons_wp", "loose"));
 
-                m_electron_loose_wp_name = config.getUntrackedParameter<std::string>("electrons_loose_wp_name", "cutBasedElectronID-Spring15-50ns-V1-standalone-loose");
-                m_electron_tight_wp_name = config.getUntrackedParameter<std::string>("electrons_tight_wp_name", "cutBasedElectronID-Spring15-50ns-V1-standalone-tight");
+                m_electron_loose_wp_name = config.getUntrackedParameter<std::string>("electrons_loose_wp_name", "cutBasedElectronID-Spring15-25ns-V1-standalone-loose");
+                m_electron_tight_wp_name = config.getUntrackedParameter<std::string>("electrons_tight_wp_name", "cutBasedElectronID-Spring15-25ns-V1-standalone-tight");
         }
 
         virtual void analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager&, const CategoryManager&) override;

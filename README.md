@@ -24,6 +24,8 @@ cmsenv
 git cms-init
 cd ${CMSSW_BASE}/src 
 
+git cms-merge-topic ikrav:egm_id_7.4.12_v1
+
 # Fix MET crash: https://github.com/cms-sw/cmssw/pull/11413
 git cms-addpkg DataFormats/PatCandidates
 git remote add blinkseb https://github.com/blinkseb/cmssw.git
