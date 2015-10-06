@@ -153,7 +153,7 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False, pro
     switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
 
     id_modules = [
-            'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_50ns_V1_cff',
+            'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_50ns_V2_cff',
             'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
             'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff',
             'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff'
