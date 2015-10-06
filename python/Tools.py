@@ -78,7 +78,8 @@ def setup_jets_mets_(process, isData, bTagDiscriminators, createNoHFMet=False):
     process.corrPfMetType1 = corrPfMetType1.clone(
         src = 'ak4PFJetsCHS',
         jetCorrLabel = 'ak4PFCHSL1FastL2L3Corrector' if not isData else 'ak4PFCHSL1FastL2L3ResidualCorrector',
-        offsetCorrLabel = 'ak4PFCHSL1FastjetCorrector'
+        offsetCorrLabel = 'ak4PFCHSL1FastjetCorrector',
+        type1JetPtThreshold = cms.double(15.0)
     )
     process.pfMetT1 = pfMetT1.clone(
         src = 'pfMet',
