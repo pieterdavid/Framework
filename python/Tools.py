@@ -139,3 +139,64 @@ def setup_jets_mets_(process, isData, bTagDiscriminators, createNoHFMet=False):
 
         # Only central values are available
         configure_slimmedmet_(process.slimmedMETsNoHF)
+
+
+def check_tag_(db_file, tag):
+    import sqlite3
+
+    db_file = db_file.replace('sqlite:', '')
+    connection = sqlite3.connect(db_file)
+    res = connection.execute('select TAG_NAME from IOV where TAG_NAME=?', tag).fetchall()
+
+    return len(res) != 0
+
+def append_jec_to_db_(process, label, prefix):
+
+    for set in process.jec.toGet:
+        if set.label == label:
+            return
+
+    tag = 'JetCorrectorParametersCollection_%s_%s' % (prefix, label)
+    if not check_tag_(process.jec.connect.value(), (tag,)):
+        print("WARNING: The JEC payload %r is not present in the database you want to use. Corrections for this payload will be loaded from the Global Tag" % label)
+        return
+
+    process.jec.toGet += [cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string(tag),
+            label  = cms.untracked.string(label)
+            )]
+
+def load_jec_from_db(process, db, algorithmes):
+    """
+    Inform CMSSW to read the JEC from a database instead of the GT for the given list of algorithmes
+    """
+
+    import os
+    if not os.path.isfile(db):
+        raise ValueError('Database %r does not exist.' % db)
+
+    if os.path.isabs(db):
+        raise ValueError('You cannot use an absolute for the database, as it breaks crab submission. Please put the database in the same folder as your python configuration file and pass only the filename as argument of the create function')
+
+    process.load("CondCore.DBCommon.CondDBCommon_cfi")
+
+    print("Using database %r for JECs\n" % db)
+
+    process.jec = cms.ESSource("PoolDBESSource",
+            DBParameters = cms.PSet(
+                messageLevel = cms.untracked.int32(0)
+                ),
+            timetype = cms.string('runnumber'),
+            toGet = cms.VPSet(),
+
+            connect = cms.string('sqlite:%s' % db)
+            )
+
+    process.gridin.input_files += [os.path.abspath(db)]
+
+    process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
+
+    prefix = os.path.splitext(db)[0]
+    for algo in algorithmes:
+        append_jec_to_db_(process, algo, prefix)

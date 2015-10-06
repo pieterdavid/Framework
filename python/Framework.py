@@ -28,7 +28,7 @@ def change_process_name_(module, process_name_from, process_name_to):
                 change_process_name_(value, process_name_from, process_name_to)
 
 
-def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False, process_name=None):
+def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False, JECDatabase=None, process_name=None):
     """Create the CMSSW python configuration for the Framework
 
     Args:
@@ -37,6 +37,7 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False, pro
         globalTag (str): The global tag to use for this workflow. If set to ``None``, a command-line argument named ``globalTag`` must be specified
         analyzers (cms.PSet()): A list of analyzers to run. By default, it's empty, and you can still add one to the list afterwards.
         redoJEC (bool): If True, a new jet collection will be created, starting from MiniAOD jets but with latest JEC, pulled from the global tag.
+        JECDatabase (str): If not `None`, then JECs will be read from this database.
         process_name (str): The process name used for the MiniAOD step. Default to 'PAT'.
 
     Returns:
@@ -133,6 +134,24 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False, pro
             wantSummary = cms.untracked.bool(False),
             allowUnscheduled = cms.untracked.bool(True)
             )
+
+    # Create an empty PSet for communication with GridIn
+    process.gridin = cms.PSet(
+            input_files = cms.vstring()
+            )
+
+    if JECDatabase:
+        # Read the JEC from a database
+        from cp3_llbb.Framework.Tools import load_jec_from_db
+        algo_sizes = {'ak': [4, 8]}
+        jet_types = ['pf', 'pfchs', 'puppi']
+        jet_algos = []
+        for k, v in algo_sizes.iteritems():
+            for s in v:
+                for j in jet_types:
+                    jet_algos.append(str(k.upper() + str(s) + j.upper().replace("CHS", "chs").replace("PUPPI", "PFPuppi")))
+
+        load_jec_from_db(process, JECDatabase, jet_algos)
 
     # Flags
     createNoHFMet = True
