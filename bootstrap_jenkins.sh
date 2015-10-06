@@ -3,6 +3,7 @@
 # CMSSW env is already configured
 # Current working dir is $CMSSW_BASE/src
 
+git cms-merge-topic ikrav:egm_id_7.4.12_v1
 git cms-addpkg DataFormats/PatCandidates
 git remote add blinkseb https://github.com/blinkseb/cmssw.git
 git fetch blinkseb
