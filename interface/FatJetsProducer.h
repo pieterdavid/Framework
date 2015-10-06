@@ -64,6 +64,10 @@ class FatJetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScale
         std::vector<int8_t>& hadronFlavor = tree["hadronFlavor"].write<std::vector<int8_t>>();
         std::vector<float>& jecFactor = tree["jecFactor"].write<std::vector<float>>();
 
+        BRANCH(passLooseID, std::vector<bool>);
+        BRANCH(passTightID, std::vector<bool>);
+        BRANCH(passTightLeptonVetoID, std::vector<bool>);
+
         BRANCH(tau1, std::vector<float>);
         BRANCH(tau2, std::vector<float>);
         BRANCH(tau3, std::vector<float>);

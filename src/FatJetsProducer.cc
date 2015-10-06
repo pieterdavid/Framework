@@ -1,6 +1,6 @@
 #include <cp3_llbb/Framework/interface/FatJetsProducer.h>
+#include <cp3_llbb/Framework/interface/Tools.h>
 #include <DataFormats/BTauReco/interface/CATopJetTagInfo.h>
-
 
 void FatJetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup) {
 
@@ -17,6 +17,10 @@ void FatJetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSet
         area.push_back(jet.jetArea());
         partonFlavor.push_back(jet.partonFlavour());
         hadronFlavor.push_back(jet.hadronFlavour());
+
+        passLooseID.push_back(Tools::Jets::passLooseId(jet));
+        passTightID.push_back(Tools::Jets::passTightId(jet));
+        passTightLeptonVetoID.push_back(Tools::Jets::passTightLeptonVetoId(jet));
 
         tau1.push_back(jet.userFloat("NjettinessAK8:tau1"));
         tau2.push_back(jet.userFloat("NjettinessAK8:tau2"));

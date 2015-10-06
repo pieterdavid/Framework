@@ -6,6 +6,7 @@
 
 #include <DataFormats/PatCandidates/interface/Jet.h>
 
+
 class JetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScaleFactors {
     public:
         JetsProducer(const std::string& name, const ROOT::TreeGroup& tree, const edm::ParameterSet& config):
@@ -49,6 +50,10 @@ class JetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScaleFac
         std::vector<float>& jecFactor = tree["jecFactor"].write<std::vector<float>>();
         std::vector<float>& puJetID = tree["puJetID"].write<std::vector<float>>();
         std::vector<float>& vtxMass = tree["vtxMass"].write<std::vector<float>>();
+
+        BRANCH(passLooseID, std::vector<bool>);
+        BRANCH(passTightID, std::vector<bool>);
+        BRANCH(passTightLeptonVetoID, std::vector<bool>);
 };
 
 #endif
