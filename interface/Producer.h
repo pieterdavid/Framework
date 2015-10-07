@@ -38,6 +38,10 @@ namespace Framework {
             virtual void beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) {}
             virtual void endLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) {}
 
+            // Disable copy of producer
+            Producer(const Producer&) = delete;
+            Producer& operator=(const Producer&) = delete;
+
         protected:
             std::string m_name;
             ROOT::TreeGroup tree;
