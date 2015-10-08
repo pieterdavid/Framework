@@ -27,179 +27,8 @@ def change_process_name_(module, process_name_from, process_name_to):
             if isinstance(value, cms._Parameterizable):
                 change_process_name_(value, process_name_from, process_name_to)
 
-def setup_jets_(process, isData, bTagDiscriminators):
-    from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
-    jetToolbox(process, 'ak4', 'ak4CHSJetSequence', 'out', PUMethod='CHS', runOnMC=not isData, miniAOD=True, addPUJetID=False, bTagDiscriminators=bTagDiscriminators + ['pfSimpleSecondaryVertexHighEffBJetTags'])
-    process.softPFElectronsTagInfosAK4PFCHS.electrons = cms.InputTag('slimmedElectrons')
-    process.softPFMuonsTagInfosAK4PFCHS.muons = cms.InputTag('slimmedMuons')
 
-    # b-tagging information. From
-    # https://github.com/cms-sw/cmssw/blob/CMSSW_7_4_X/PhysicsTools/PatAlgos/python/slimming/miniAOD_tools.py#L130
-    process.patJetsAK4PFCHS.userData.userFunctions = cms.vstring(
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).p4.M):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).numberOfSourceCandidatePtrs):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").flightDistance(0).value):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").flightDistance(0).significance):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).p4.x):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).p4.y):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).p4.z):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).vertex.x):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).vertex.y):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).vertex.z):(0)',
-            )
-    process.patJetsAK4PFCHS.userData.userFunctionLabels = cms.vstring('vtxMass','vtxNtracks','vtx3DVal','vtx3DSig','vtxPx','vtxPy','vtxPz','vtxPosX','vtxPosY','vtxPosZ')
-    process.patJetsAK4PFCHS.tagInfoSources = cms.VInputTag(cms.InputTag("pfSecondaryVertexTagInfosAK4PFCHS"))
-    process.patJetsAK4PFCHS.addTagInfos = cms.bool(True)
-
-    # Pile-up jet id
-    process.load('RecoJets.JetProducers.PileupJetID_cfi')
-    process.pileupJetId.applyJec = False
-    process.pileupJetId.vertexes = cms.InputTag('offlineSlimmedPrimaryVertices')
-    process.patJetsAK4PFCHS.userData.userFloats.src = [ cms.InputTag("pileupJetId:fullDiscriminant"), ]
-
-
-def setup_met_(process, isData):
-    from PhysicsTools.PatAlgos.tools.metTools import addMETCollection
-
-    ## Gen MET
-    if not isData:
-        process.genMetExtractor = cms.EDProducer("GenMETExtractor",
-                metSource = cms.InputTag("slimmedMETs", "" , cms.InputTag.skipCurrentProcess())
-                )
-
-    # MET is done from all PF candidates, and Type-I corrections are computed from CHS ak4 PF jets
-    # https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETRun2Corrections#type_1_PF_MET_recommended
-
-    ## Raw PF METs
-    process.load('RecoMET.METProducers.PFMET_cfi')
-
-    process.pfMet.src = cms.InputTag('packedPFCandidates')
-    addMETCollection(process, labelName='patPFMet', metSource='pfMet') # RAW MET
-    process.patPFMet.addGenMET = False
-
-    ## Type 1 corrections
-    process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
-    from JetMETCorrections.Type1MET.correctionTermsPfMetType1Type2_cff import corrPfMetType1
-    from JetMETCorrections.Type1MET.correctedMet_cff import pfMetT1
-
-    if not hasattr(process, 'ak4PFJetsCHS'):
-        print("WARNING: No AK4 CHS jets produced. Type 1 corrections for MET are not available.")
-    else:
-        process.corrPfMetType1 = corrPfMetType1.clone(
-            src = 'ak4PFJetsCHS',
-            jetCorrLabel = 'ak4PFCHSL1FastL2L3Corrector' if not isData else 'ak4PFCHSL1FastL2L3ResidualCorrector',
-            offsetCorrLabel = 'ak4PFCHSL1FastjetCorrector'
-        )
-        process.pfMetT1 = pfMetT1.clone(
-            src = 'pfMet',
-            srcCorrections = [cms.InputTag("corrPfMetType1", "type1")]
-        )
-
-        addMETCollection(process, labelName='patMET', metSource='pfMetT1') # T1 MET
-        process.patMET.addGenMET = False
-
-    ## Slimmed METs
-
-    from PhysicsTools.PatAlgos.slimming.slimmedMETs_cfi import slimmedMETs
-    #### CaloMET is not available in MiniAOD
-    del slimmedMETs.caloMET
-
-    process.slimmedMETs = slimmedMETs.clone()
-    if hasattr(process, "patMET"):
-        # Create MET from Type 1 PF collection
-        process.patMET.addGenMET = not isData
-        if not isData:
-            process.patMET.genMETSource = cms.InputTag("genMetExtractor")
-        process.slimmedMETs.src = cms.InputTag("patMET")
-        process.slimmedMETs.rawUncertainties = cms.InputTag("patPFMet") # only central value
-    else:
-        # Create MET from RAW PF collection
-        process.patPFMet.addGenMET = not isData
-        if not isData:
-            process.patPFMet.genMETSource = cms.InputTag("genMetExtractor")
-        process.slimmedMETs.src = cms.InputTag("patPFMet")
-        del process.slimmedMETs.rawUncertainties # not available
-
-    del process.slimmedMETs.type1Uncertainties # not available
-    del process.slimmedMETs.type1p2Uncertainties # not available
-
-def setup_nohf_met_(process, isData):
-    from PhysicsTools.PatAlgos.tools.metTools import addMETCollection
-
-    process.noHFCands = cms.EDFilter("CandPtrSelector",
-            src=cms.InputTag("packedPFCandidates"),
-            cut=cms.string("abs(pdgId)!=1 && abs(pdgId)!=2 && abs(eta)<3.0")
-            )
-
-    if not isData and not hasattr(process, 'genMetExtractor'):
-        process.genMetExtractor = cms.EDProducer("GenMETExtractor",
-                metSource = cms.InputTag("slimmedMETs", "" , cms.InputTag.skipCurrentProcess())
-                )
-
-    if not hasattr(process, 'pfMet'):
-        from RecoMET.METProducers.PFMET_cfi import pfMet
-        process.pfMetNoHF = pfMet.clone()
-    else:
-        process.pfMetNoHF = process.pfMet.clone()
-
-    process.pfMetNoHF.calculateSignificance = False
-    process.pfMetNoHF.src = cms.InputTag('noHFCands')
-    addMETCollection(process, labelName='patPFMetNoHF', metSource='pfMetNoHF') # RAW MET
-    process.patPFMetNoHF.addGenMET = False
-
-    ## Type 1 corrections
-    if not hasattr(process, 'ak4PFCHSL1FastL2L3Corrector'):
-        process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
-
-    from JetMETCorrections.Type1MET.correctionTermsPfMetType1Type2_cff import corrPfMetType1
-    from JetMETCorrections.Type1MET.correctedMet_cff import pfMetT1
-
-    if not hasattr(process, 'ak4PFJetsCHS'):
-        print("WARNING: No AK4 CHS jets produced. Type 1 corrections for MET are not available.")
-    else:
-        if not hasattr(process, 'corrPfMetType1'):
-            process.corrPfMetType1 = corrPfMetType1.clone(
-                src = 'ak4PFJetsCHS',
-                jetCorrLabel = 'ak4PFCHSL1FastL2L3Corrector' if not isData else 'ak4PFCHSL1FastL2L3ResidualCorrector',
-                offsetCorrLabel = 'ak4PFCHSL1FastjetCorrector'
-            )
-
-        process.pfMetT1NoHF = pfMetT1.clone(
-            src = 'pfMetNoHF',
-            srcCorrections = [cms.InputTag("corrPfMetType1", "type1")]
-        )
-
-        addMETCollection(process, labelName='patMETNoHF', metSource='pfMetT1NoHF') # T1 MET
-        process.patMETNoHF.addGenMET = False
-
-    ## Slimmed METs
-
-    from PhysicsTools.PatAlgos.slimming.slimmedMETs_cfi import slimmedMETs
-    #### CaloMET is not available in MiniAOD
-    if hasattr(slimmedMETs, 'caloMET'):
-        del slimmedMETs.caloMET
-
-    process.slimmedMETsNoHF = slimmedMETs.clone()
-    if hasattr(process, "patMETNoHF"):
-        # Create MET from Type 1 PF collection
-        process.patMETNoHF.addGenMET = not isData
-        if not isData:
-            process.patMETNoHF.genMETSource = cms.InputTag("genMetExtractor")
-        process.slimmedMETsNoHF.src = cms.InputTag("patMETNoHF")
-        process.slimmedMETsNoHF.rawUncertainties = cms.InputTag("patPFMetNoHF") # only central value
-    else:
-        # Create MET from RAW PF collection
-        process.patPFMetNoHF.addGenMET = not isData
-        if not isData:
-            process.patPFMetNoHF.genMETSource = cms.InputTag("genMetExtractor")
-        process.slimmedMETsNoHF.src = cms.InputTag("patPFMetNoHF")
-        del process.slimmedMETsNoHF.rawUncertainties # not available
-
-    del process.slimmedMETsNoHF.type1Uncertainties # not available
-    del process.slimmedMETsNoHF.type1p2Uncertainties # not available
-
-
-def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
+def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False, JECDatabase=None, process_name=None):
     """Create the CMSSW python configuration for the Framework
 
     Args:
@@ -208,6 +37,8 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
         globalTag (str): The global tag to use for this workflow. If set to ``None``, a command-line argument named ``globalTag`` must be specified
         analyzers (cms.PSet()): A list of analyzers to run. By default, it's empty, and you can still add one to the list afterwards.
         redoJEC (bool): If True, a new jet collection will be created, starting from MiniAOD jets but with latest JEC, pulled from the global tag.
+        JECDatabase (str): If not `None`, then JECs will be read from this database.
+        process_name (str): The process name used for the MiniAOD step. Default to 'PAT'.
 
     Returns:
         The ``process`` object for the CMSSW framework
@@ -245,7 +76,7 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
             parseCommandLine = True
             break
 
-    miniaod_process_name = None
+    miniaod_process_name = process_name
     if parseCommandLine:
         from FWCore.ParameterSet.VarParsing import VarParsing
         options = VarParsing()
@@ -304,6 +135,24 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
             allowUnscheduled = cms.untracked.bool(True)
             )
 
+    # Create an empty PSet for communication with GridIn
+    process.gridin = cms.PSet(
+            input_files = cms.vstring()
+            )
+
+    if JECDatabase:
+        # Read the JEC from a database
+        from cp3_llbb.Framework.Tools import load_jec_from_db
+        algo_sizes = {'ak': [4, 8]}
+        jet_types = ['pf', 'pfchs', 'puppi']
+        jet_algos = []
+        for k, v in algo_sizes.iteritems():
+            for s in v:
+                for j in jet_types:
+                    jet_algos.append(str(k.upper() + str(s) + j.upper().replace("CHS", "chs").replace("PUPPI", "PFPuppi")))
+
+        load_jec_from_db(process, JECDatabase, jet_algos)
+
     # Flags
     createNoHFMet = True
 
@@ -323,7 +172,7 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
     switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
 
     id_modules = [
-            'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_50ns_V1_cff',
+            'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_50ns_V2_cff',
             'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
             'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff',
             'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff'
@@ -341,11 +190,8 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False):
             ]
 
     if redoJEC:
-        setup_jets_(process, isData, bTagDiscriminators)
-        setup_met_(process, isData)
-
-    if createNoHFMet:
-        setup_nohf_met_(process, isData)
+        from cp3_llbb.Framework.Tools import setup_jets_mets_
+        setup_jets_mets_(process, isData, bTagDiscriminators, createNoHFMet=createNoHFMet);
 
     # Producers
     from cp3_llbb.Framework import EventProducer
