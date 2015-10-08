@@ -49,6 +49,10 @@ namespace Framework {
             virtual void beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) {}
             virtual void endLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) {}
 
+            // Disable copy of analyzer
+            Analyzer(const Analyzer&) = delete;
+            Analyzer& operator=(const Analyzer&) = delete;
+
         protected:
             std::string m_name;
             ROOT::TreeGroup tree;
