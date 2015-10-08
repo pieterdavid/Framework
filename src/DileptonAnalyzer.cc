@@ -34,10 +34,10 @@ bool DileptonAnalyzer::passID(const ElectronsProducer& electrons, size_t index) 
 
 void DileptonAnalyzer::registerCategories(CategoryManager& manager, const edm::ParameterSet& config) {
     if (m_standalone_mode) {
-        manager.new_category<MuMuCategory>("mumu", "Category with leading leptons as two muons", config);
-        manager.new_category<ElElCategory>("elel", "Category with leading leptons as two electrons", config);
-        manager.new_category<MuElCategory>("muel", "Category with leading leptons as muon, electron", config);
-        manager.new_category<ElMuCategory>("elmu", "Category with leading leptons as electron, muon", config);
+        manager.new_category<Framework::MuMuCategory>("mumu", "Category with leading leptons as two muons", config);
+        manager.new_category<Framework::ElElCategory>("elel", "Category with leading leptons as two electrons", config);
+        manager.new_category<Framework::MuElCategory>("muel", "Category with leading leptons as muon, electron", config);
+        manager.new_category<Framework::ElMuCategory>("elmu", "Category with leading leptons as electron, muon", config);
     }
 }
 
