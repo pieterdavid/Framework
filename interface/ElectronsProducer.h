@@ -30,6 +30,8 @@ class ElectronsProducer: public LeptonsProducer<pat::Electron>, public Identifia
 
     public:
         // Tree members
+        BRANCH(isEB, std::vector<bool>); 
+        BRANCH(isEE, std::vector<bool>); 
 };
 
 #endif
