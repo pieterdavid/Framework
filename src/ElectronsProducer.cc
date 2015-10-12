@@ -26,6 +26,9 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
         const pat::ElectronRef electronRef(electrons, index++);
         Identifiable::produce_id(electronRef);
 
+        isEB.push_back(electron.isEB());
+        isEE.push_back(electron.isEE());
+
         ScaleFactors::store_scale_factors({static_cast<float>(fabs(electron.eta())), static_cast<float>(electron.pt())});
     }
     Identifiable::clean();
