@@ -33,6 +33,10 @@ class FatJetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScale
                             &CandidatesProducer<pat::Jet>::tree["toptag_" + btag].write<std::vector<std::vector<float>>>());
                 }
             }
+            Njettinesstau1 = config.getUntrackedParameter<std::string>("Njettinesstau1","NjettinessAK8:tau1");
+            Njettinesstau2 = config.getUntrackedParameter<std::string>("Njettinesstau2","NjettinessAK8:tau2");
+            Njettinesstau3 = config.getUntrackedParameter<std::string>("Njettinesstau3","NjettinessAK8:tau3");
+
         }
 
         virtual ~FatJetsProducer() {}
@@ -57,6 +61,12 @@ class FatJetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScale
         std::vector<std::string> m_subjets_btag_discriminators;
         std::map<std::string, std::vector<std::vector<float>>*> m_softdrop_btag_discriminators_branches;
         std::map<std::string, std::vector<std::vector<float>>*> m_toptag_btag_discriminators_branches;
+
+        std::string Njettinesstau1;
+        std::string Njettinesstau2;
+        std::string Njettinesstau3;
+
+
     public:
         // Tree members
         std::vector<float>& area = tree["area"].write<std::vector<float>>();
