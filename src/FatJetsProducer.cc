@@ -22,9 +22,9 @@ void FatJetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSet
         passTightID.push_back(Tools::Jets::passTightId(jet));
         passTightLeptonVetoID.push_back(Tools::Jets::passTightLeptonVetoId(jet));
 
-        tau1.push_back(jet.userFloat("NjettinessAK8:tau1"));
-        tau2.push_back(jet.userFloat("NjettinessAK8:tau2"));
-        tau3.push_back(jet.userFloat("NjettinessAK8:tau3"));
+        tau1.push_back(jet.userFloat(Njettinesstau1));
+        tau2.push_back(jet.userFloat(Njettinesstau2));
+        tau3.push_back(jet.userFloat(Njettinesstau3));
 
         softdrop_mass.push_back(jet.userFloat("ak8PFJetsCHSSoftDropMass"));
         trimmed_mass.push_back(jet.userFloat("ak8PFJetsCHSTrimmedMass"));
