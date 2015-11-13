@@ -48,7 +48,7 @@ void FatJetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSet
 
         // Subjets
         // 1) SoftDrop
-        const auto& wSubjets = jet.subjets("SoftDrop");
+        const auto& wSubjets = jet.subjets(SoftDropSubjets);
         std::map<std::string, std::vector<float>> subjets_btag_discriminators;
         std::vector<LorentzVector> subjets_p4;
         for (const auto& iw: wSubjets) {
@@ -64,7 +64,7 @@ void FatJetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSet
         }
 
         // 2) Top tagger
-        const auto& wTopjets = jet.subjets("CMSTopTag");
+        const auto& wTopjets = jet.subjets(TopTagSubjets);
         subjets_p4.clear();
         subjets_btag_discriminators.clear();
         for (const auto& it: wTopjets) {

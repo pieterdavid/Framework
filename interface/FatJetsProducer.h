@@ -36,7 +36,8 @@ class FatJetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScale
             Njettinesstau1 = config.getUntrackedParameter<std::string>("Njettinesstau1","NjettinessAK8:tau1");
             Njettinesstau2 = config.getUntrackedParameter<std::string>("Njettinesstau2","NjettinessAK8:tau2");
             Njettinesstau3 = config.getUntrackedParameter<std::string>("Njettinesstau3","NjettinessAK8:tau3");
-
+            SoftDropSubjets = config.getUntrackedParameter<std::string>("SoftDropSubjets","SoftDrop");
+            TopTagSubjets = config.getUntrackedParameter<std::string>("TopTagSubjets","CMSTopTag");
         }
 
         virtual ~FatJetsProducer() {}
@@ -49,6 +50,14 @@ class FatJetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScale
 
         float getBTagDiscriminant(size_t index, const std::string& name) const {
             return m_btag_discriminators.at(name)->at(index);
+        }
+
+        float getSoftDropBTagDiscriminant(size_t index, size_t sj_index, const std::string& btag_name) const {
+            return m_softdrop_btag_discriminators_branches.at("softdrop_" + btag_name)->at(index).at(sj_index);
+        }
+
+        float getTopTagBTagDiscriminant(size_t index, size_t sj_index, const std::string& btag_name) const {
+            return m_toptag_btag_discriminators_branches.at("toptag_" + btag_name)->at(index).at(sj_index);
         }
 
     private:
@@ -65,7 +74,8 @@ class FatJetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScale
         std::string Njettinesstau1;
         std::string Njettinesstau2;
         std::string Njettinesstau3;
-
+        std::string SoftDropSubjets;
+        std::string TopTagSubjets;
 
     public:
         // Tree members
