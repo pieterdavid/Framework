@@ -20,18 +20,22 @@ class ElectronsProducer: public LeptonsProducer<pat::Electron>, public Identifia
         virtual void doConsumes(const edm::ParameterSet& config, edm::ConsumesCollector&& collector) override {
             LeptonsProducer::doConsumes(config, std::forward<edm::ConsumesCollector>(collector));
             Identifiable::consumes_id_tokens(config, std::forward<edm::ConsumesCollector>(collector));
+            m_vertices_token = collector.consumes<std::vector<reco::Vertex>>(config.getUntrackedParameter<edm::InputTag>("vertices", edm::InputTag("offlineSlimmedPrimaryVertices")));
         }
 
         virtual void produce(edm::Event& event, const edm::EventSetup& eventSetup) override;
 
     private:
-
         // Tokens
+        edm::EDGetTokenT<std::vector<reco::Vertex>> m_vertices_token;
 
     public:
         // Tree members
         BRANCH(isEB, std::vector<bool>); 
         BRANCH(isEE, std::vector<bool>); 
+
+        BRANCH(dxy, std::vector<float>);
+        BRANCH(dz, std::vector<float>);
 };
 
 #endif
