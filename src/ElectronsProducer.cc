@@ -10,6 +10,11 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
     edm::Handle<double> rho_handle;
     event.getByToken(m_rho_token, rho_handle);
 
+    edm::Handle<std::vector<reco::Vertex>> vertices_handle;
+    event.getByToken(m_vertices_token, vertices_handle);
+
+    const reco::Vertex& primary_vertex = (*vertices_handle)[0];
+
     double rho = *rho_handle;
 
     size_t index = 0;
@@ -28,6 +33,12 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
 
         isEB.push_back(electron.isEB());
         isEE.push_back(electron.isEE());
+
+        // Same values used for cut-based electron ID. See:
+        //     https://github.com/cms-sw/cmssw/blob/CMSSW_7_4_15/RecoEgamma/ElectronIdentification/plugins/cuts/GsfEleDzCut.cc#L64
+        //     https://github.com/cms-sw/cmssw/blob/CMSSW_7_4_15/RecoEgamma/ElectronIdentification/plugins/cuts/GsfEleDxyCut.cc#L64
+        dxy.push_back(electron.gsfTrack()->dxy(primary_vertex.position()));
+        dz.push_back(electron.gsfTrack()->dz(primary_vertex.position()));
 
         ScaleFactors::store_scale_factors({static_cast<float>(fabs(electron.eta())), static_cast<float>(electron.pt())});
     }

@@ -38,6 +38,9 @@ class MuonsProducer: public LeptonsProducer<pat::Muon>, public ScaleFactors {
         std::vector<bool>& isMedium = tree["isMedium"].write<std::vector<bool>>();
         std::vector<bool>& isTight = tree["isTight"].write<std::vector<bool>>();
         std::vector<bool>& isHighPt = tree["isHighPt"].write<std::vector<bool>>();
+
+        BRANCH(dxy, std::vector<float>);
+        BRANCH(dz, std::vector<float>);
 };
 
 #endif

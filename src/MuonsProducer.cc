@@ -1,3 +1,5 @@
+#include <DataFormats/PatCandidates/interface/PackedCandidate.h>
+
 #include <cp3_llbb/Framework/interface/MuonsProducer.h>
 
 void MuonsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup) {
@@ -32,6 +34,11 @@ void MuonsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup
         isSoft.push_back(muon.isSoftMuon(primary_vertex));
         isTight.push_back(muon.isTightMuon(primary_vertex));
         isHighPt.push_back(muon.isHighPtMuon(primary_vertex));
+
+        // Same values used for cut-based muon ID. See:
+        //     https://github.com/cms-sw/cmssw/blob/CMSSW_7_4_15/DataFormats/MuonReco/src/MuonSelectors.cc#L756
+        dxy.push_back(muon.muonBestTrack()->dxy(primary_vertex.position()));
+        dz.push_back(muon.muonBestTrack()->dz(primary_vertex.position()));
 
         ScaleFactors::store_scale_factors({static_cast<float>(fabs(muon.eta())), static_cast<float>(muon.pt())});
     }
