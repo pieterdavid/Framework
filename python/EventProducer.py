@@ -5,5 +5,6 @@ default_configuration = cms.PSet(
         prefix = cms.string('event_'),
         enable = cms.bool(True),
         parameters = cms.PSet(
+            pu_summary = cms.untracked.InputTag('slimmedAddPileupInfo')
             )
         )
