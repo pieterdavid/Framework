@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 namespace pat {
     class Jet;
 }
@@ -23,4 +25,8 @@ namespace Tools {
         bool passTightId(const pat::Jet& jet);
         bool passTightLeptonVetoId(const pat::Jet& jet);
     };
+
+    inline bool caseInsensitiveEquals(const std::string& a, const std::string& b) {
+        return std::equal(a.begin(), a.end(), b.begin(), [](char a, char b) { return std::tolower(a) == std::tolower(b); });
+    }
 };

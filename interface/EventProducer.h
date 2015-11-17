@@ -2,6 +2,7 @@
 #define EVENT_PRODUCER
 
 #include <cp3_llbb/Framework/interface/Producer.h>
+#include <cp3_llbb/Framework/interface/PUReweighter.h>
 
 #include <SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h>
 #include <SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h>
@@ -12,6 +13,9 @@ class EventProducer: public Framework::Producer {
         EventProducer(const std::string& name, const ROOT::TreeGroup& tree, const edm::ParameterSet& config):
             Producer(name, tree, config)
         {
+
+            if (config.getUntrackedParameter<bool>("compute_pu_weights", true))
+                m_pu_reweighter = std::make_shared<Framework::PUReweighter>(config.getParameterSet("pu_reweighter"), Framework::PUProfile::Run2015_25ns);
 
         }
 
@@ -38,6 +42,8 @@ class EventProducer: public Framework::Producer {
 
         float m_event_weight_sum = 0;
 
+        std::shared_ptr<Framework::PUReweighter> m_pu_reweighter;
+
     public:
         // Tree members
 
@@ -49,6 +55,7 @@ class EventProducer: public Framework::Producer {
 
         BRANCH(npu, int);
         BRANCH(true_interactions, float);
+        BRANCH(pu_weight, float);
 
         BRANCH(pt_hat, float);
         BRANCH(weight, float);

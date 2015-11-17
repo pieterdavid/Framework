@@ -11,6 +11,8 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
     
     rho = *rho_handle;
 
+    pu_weight = 1;
+
     edm::Handle<std::vector<PileupSummaryInfo>> pu_infos;
     if (event_.getByToken(m_pu_info_token, pu_infos)) {
         for (const auto& pu_info: *pu_infos) {
@@ -19,6 +21,9 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
 
             npu = pu_info.getPU_NumInteractions();
             true_interactions = pu_info.getTrueNumInteractions();
+
+            if (m_pu_reweighter.get())
+                pu_weight = m_pu_reweighter->getWeight(true_interactions);
         }
     }
 
