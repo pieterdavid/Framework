@@ -99,3 +99,7 @@ The builds are done on a custom VM hosted on CERN OpenStack servers, because Jen
  - SSH access only via key pair. Only accessible by the Administrator, Sébastien B.
 
 A github bot also exists: https://github.com/cp3-llbb-bot ; it's a generic github user, member of the cp3-llbb organization. It needs push authorization to a repository to properly update the PR status. Password for this user can be found on the protected CP3 [wiki](https://cp3.irmp.ucl.ac.be/projects/cp3admin/wiki/UsersPage/Private/Physics/Exp/llbb)
+
+## Troubleshooting
+
+  - If a build/test fails because of unexpected connection glitch, you can re-trigger jenkins by commenting `test this please` to the pull request
