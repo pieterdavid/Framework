@@ -4,6 +4,7 @@ import math
 import argparse
 import csv
 import sys
+import copy
 
 def operating_point_to_string(operating_point):
     if operating_point == 0:
@@ -73,23 +74,37 @@ with open(args.file, 'r') as f:
         eta_bin = [float(row[4]), float(row[5])]
         pt_bin = [float(row[6]), float(row[7])]
         discr_bin = [float(row[8]), float(row[9])]
-        formula = row[10]
+        formula = row[10].strip()
 
-        def get_bin(bin, data):
+        def get_bin(bin, data, syst_type):
 
             for d in data:
                 if d['bin'] == bin:
                     return d
 
-            # Not found. Create bin and add it
-            d = {'bin': bin, 'values': []}
-            data.append(d)
+            if syst_type == 'central':
+                # Not found. Create bin and add it
+                d = {'bin': bin, 'values': []}
+                data.append(d)
+                return d
 
-            return d
+            # We are looking for a bin for a systematic variation (ie, different than nominal)
+            # If we are at this point, it means the bin does not exist for the nominal variation
+            # This happen because the binning is not necesserally the same between nominal, up
+            # or down variation
 
+            # Look for a bin containg our bin, and copy its nominal value
+            for d in data:
+                if bin[0] >= d['bin'][0] and bin[1] <= d['bin'][1]:
+                    d_copy = copy.deepcopy(d)
+                    d_copy['bin'] = bin
+                    data.append(d_copy)
+                    return d_copy
 
-        x_bin = get_bin(eta_bin, json_content_data)
-        y_bin = get_bin(pt_bin, x_bin['values'])
+            raise Exception('Invalid state: this should not be possible')
+
+        x_bin = get_bin(eta_bin, json_content_data, syst_type)
+        y_bin = get_bin(pt_bin, x_bin['values'], syst_type)
 
         if syst_type == 'central':
             # Create bin
@@ -97,10 +112,21 @@ with open(args.file, 'r') as f:
             y_bin['values'].append(z_bin)
 
         else:
-            z_bin = get_bin(discr_bin, y_bin['values'])
+            z_bin = get_bin(discr_bin, y_bin['values'], syst_type)
             z_bin['error_high' if syst_type == 'up' else 'error_low'] = formula
 
 for (operating_point, measurement_type, jet_flavor), json_content in all_json_content.items():
+
+    # Iterate over all bins, and remove ones without systematic variations
+    def remove_bins(data):
+        for d in data[:]:
+            if 'value' in d and (not 'error_low' in d or not 'error_high' in d):
+                data.remove(d)
+            elif 'values' in d:
+                remove_bins(d['values'])
+                if len(d['values']) == 0:
+                    data.remove(d)
+
     # Create binning
     def create_binning(root):
         binning = []
@@ -113,6 +139,8 @@ for (operating_point, measurement_type, jet_flavor), json_content in all_json_co
         return binning
 
     json_content_data = json_content['data']
+
+    remove_bins(json_content_data)
 
     json_content['binning']['x'] = create_binning(json_content_data)
     json_content['binning']['y'] = create_binning(json_content_data[0]['values'])
