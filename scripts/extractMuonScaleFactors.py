@@ -3,8 +3,28 @@
 import argparse
 import pickle
 
+def extract_binning(data):
+    """ Assume format of bin of 'B:[x,y]'"""
+    binning = []
+
+    for bin_ in data:
+        b = eval(bin_.split(':')[1])
+        binning += b
+
+    # Binning is not always correctly ordered
+    return sorted(list(set(binning)))
+
 def format_eta_bin(eta_bin):
-    return 'ptabseta<%.1f' % (eta_bin[1]) if (eta_bin[0] == 0) else 'ptabseta%.1f-%.1f' % (eta_bin[0], eta_bin[1])
+    return 'abseta:[%.1f,%.1f]' % (eta_bin[0], eta_bin[1])
+
+def format_pt_bin(bin):
+    return 'pt:[%.1f,%.1f]' % (bin[0], bin[1])
+
+def clean_wp(wp):
+    """ Assume format NUM_<WP>_DEN_A_PAR_B """
+
+    data = wp.split('_')
+    return "%s_%s" % (data[1], data[3])
 
 parser = argparse.ArgumentParser()
 parser.add_argument('pkl', help='Pickle file containing muon scale factors')
@@ -12,46 +32,58 @@ parser.add_argument('-s', '--suffix', help='Suffix to append at the end of the o
 
 args = parser.parse_args()
 
-eta_binning = [0, 0.9, 1.2, 2.1, 2.4]
-
 with open(args.pkl) as f:
     d = pickle.load(f)
 
     for wp, wp_data in d.items():
 
+        if not 'pt_spliteta' in wp:
+            continue
+
+        if not 'abseta_pt_ratio' in wp_data:
+            continue
+
+        print("Working on working point %r" % wp)
+
+        wp_data = wp_data['abseta_pt_ratio']
+
+        # Extract binning
+        eta_binning = extract_binning(wp_data)
+
+        pt_binning = None
+
         json_content = {'dimension': 2, 'binning': {'x': eta_binning, 'y': []}, 'data': []}
         json_content_data = json_content['data']
 
         for i in range(0, len(eta_binning) - 1):
-
             eta_bin = format_eta_bin([eta_binning[i], eta_binning[i + 1]])
 
             if eta_bin not in wp_data:
+                print('Error: eta bin not found in input file. This should not happen!')
                 continue
+
+            if pt_binning is None:
+                pt_binning = extract_binning(wp_data[eta_bin])
+                json_content['binning']['y'] = pt_binning
 
             eta_data = {'bin': [eta_binning[i], eta_binning[i + 1]], 'values': []}
 
-            pt_binning = []
-            for pt_bin_str, d in wp_data[eta_bin].items():
+            for pt_bin_index in range(0, len(pt_binning) - 1):
+                pt_bin = format_pt_bin([pt_binning[pt_bin_index], pt_binning[pt_bin_index + 1]])
+                if pt_bin not in wp_data[eta_bin]:
+                    print("Error: pt bin not found in input file. This should not happpen!")
+                    continue
 
-                pt_bin = pt_bin_str.split('_')
-                pt_bin = [float(x) for x in pt_bin]
-                pt_binning.extend(pt_bin)
-                content = d['data/mc']
+                content = wp_data[eta_bin][pt_bin]
 
-                pt_data = {'bin': pt_bin, 'value': content['efficiency_ratio'], 'error_low': content['err_low'], 'error_high': content['err_hi']}
+                pt_data = {'bin': [pt_binning[pt_bin_index], pt_binning[pt_bin_index + 1]], 'value': content['value'], 'error_low': content['error'], 'error_high': content['error']}
 
                 eta_data['values'].append(pt_data)
 
             json_content_data.append(eta_data)
-            # Remove duplicates
-            pt_binning = list(set(pt_binning))
-            pt_binning.sort()
-
-            json_content['binning']['y'] = pt_binning
 
         # Save JSON file
-        filename = 'Muon_%s_%s.json' % (wp, args.suffix)
+        filename = 'Muon_%s_%s.json' % (clean_wp(wp), args.suffix)
         with open(filename, 'w') as j:
             import json
             json.dump(json_content, j, indent=2)
