@@ -53,11 +53,11 @@ class FatJetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScale
         }
 
         float getSoftDropBTagDiscriminant(size_t index, size_t sj_index, const std::string& btag_name) const {
-            return m_softdrop_btag_discriminators_branches.at("softdrop_" + btag_name)->at(index).at(sj_index);
+            return m_softdrop_btag_discriminators_branches.at(btag_name)->at(index).at(sj_index);
         }
 
         float getTopTagBTagDiscriminant(size_t index, size_t sj_index, const std::string& btag_name) const {
-            return m_toptag_btag_discriminators_branches.at("toptag_" + btag_name)->at(index).at(sj_index);
+            return m_toptag_btag_discriminators_branches.at(btag_name)->at(index).at(sj_index);
         }
 
     private:

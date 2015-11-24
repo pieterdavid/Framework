@@ -59,8 +59,8 @@ void FatJetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSet
         }
 
         softdrop_subjets_p4.push_back(subjets_p4);
-        for (const auto& it: subjets_btag_discriminators) {
-            m_softdrop_btag_discriminators_branches[it.first]->push_back(it.second);
+        for (const auto& subjet_btag: m_subjets_btag_discriminators) {
+            m_softdrop_btag_discriminators_branches[subjet_btag]->push_back(subjets_btag_discriminators[subjet_btag]);
         }
 
         // 2) Top tagger
@@ -75,8 +75,8 @@ void FatJetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSet
         }
 
         toptag_subjets_p4.push_back(subjets_p4);
-        for (const auto& it: subjets_btag_discriminators) {
-            m_toptag_btag_discriminators_branches[it.first]->push_back(it.second);
+        for (const auto& subjet_btag: m_subjets_btag_discriminators) {
+            m_toptag_btag_discriminators_branches[subjet_btag]->push_back(subjets_btag_discriminators[subjet_btag]);
         }
 
         for (auto& it: m_btag_discriminators) {
