@@ -33,7 +33,7 @@ void JetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup)
 
             Algorithm algo = string_to_algorithm(it.first);
             if (algo != Algorithm::UNKNOWN && BTaggingScaleFactors::has_scale_factors(algo)) {
-                BTaggingScaleFactors::store_scale_factors(algo, get_flavor(jet.hadronFlavour()), {static_cast<float>(fabs(jet.eta())), static_cast<float>(jet.pt()), btag_discriminator});
+                BTaggingScaleFactors::store_scale_factors(algo, get_flavor(jet.hadronFlavour()), {static_cast<float>(fabs(jet.eta())), static_cast<float>(jet.pt()), btag_discriminator},event.isRealData());
             }
         }
     }

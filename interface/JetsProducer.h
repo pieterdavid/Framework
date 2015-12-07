@@ -32,6 +32,7 @@ class JetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScaleFac
 
         virtual void produce(edm::Event& event, const edm::EventSetup& eventSetup) override;
 
+
         float getBTagDiscriminant(size_t index, const std::string& name) const {
             return m_btag_discriminators.at(name)->at(index);
         }
