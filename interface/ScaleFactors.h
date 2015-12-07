@@ -26,7 +26,7 @@ class ScaleFactors {
         virtual void create_branches(const edm::ParameterSet&) final;
         virtual void create_branch(const std::string& scale_factor, const std::string& branch_name);
 
-        virtual void store_scale_factors(const std::vector<float>& values) final;
+        virtual void store_scale_factors(const std::vector<float>& values,bool isData) final;
 
         virtual float get_scale_factor(const std::string& tag, size_t index, Variation variation = Variation::Nominal) final;
 

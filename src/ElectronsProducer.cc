@@ -40,7 +40,7 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
         dxy.push_back(electron.gsfTrack()->dxy(primary_vertex.position()));
         dz.push_back(electron.gsfTrack()->dz(primary_vertex.position()));
 
-        ScaleFactors::store_scale_factors({static_cast<float>(fabs(electron.eta())), static_cast<float>(electron.pt())});
+        ScaleFactors::store_scale_factors({static_cast<float>(fabs(electron.eta())), static_cast<float>(electron.pt())},event.isRealData());
     }
     Identifiable::clean();
 }

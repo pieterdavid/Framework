@@ -40,6 +40,6 @@ void MuonsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup
         dxy.push_back(muon.muonBestTrack()->dxy(primary_vertex.position()));
         dz.push_back(muon.muonBestTrack()->dz(primary_vertex.position()));
 
-        ScaleFactors::store_scale_factors({static_cast<float>(fabs(muon.eta())), static_cast<float>(muon.pt())});
+        ScaleFactors::store_scale_factors({static_cast<float>(fabs(muon.eta())), static_cast<float>(muon.pt())},event.isRealData());
     }
 }
