@@ -21,26 +21,99 @@ class ExTreeMaker;
 
 namespace Framework {
 
+    //! Base class for Framework producers
+    /*!
+     *  A producer is a simple module *producing* quantities from an event. A lot of producers are included in the framework, one for each
+     *  high-level object (jets, muons, electrons, ...). These producers usually only convert CMS PAT objet into a plain ROOT tree representation.
+     *
+     *  Machinery for IDs and scale-factors is also included.
+     *
+     *  When creating a new producer, you must inherit from this pure-virtual class, and implement the @ref produce method. You'll also need to register your producer into the plugin factory. See content of the file Producers.cc for an example of how to do so.
+     */
     class Producer {
         friend class ::ExTreeMaker;
 
         public:
+            //! Base constructor
+            /*!
+             * @param name The name of the producer
+             * @param tree_ Abstraction of the output tree. Use this to create new branches
+             * @param config A link to the python configuration
+             *
+             * @sa ROOT::TreeGroup / ROOT::TreeWrapper documentation: http://blinkseb.github.io/TreeWrapper/#ROOT::TreeWrapper/ROOT::TreeWrapper
+             * @sa tree
+             */
             Producer(const std::string& name, const ROOT::TreeGroup& tree_, const edm::ParameterSet& config):
                 m_name(name),
                 tree(tree_) {
                 }
 
-            virtual void produce(edm::Event&, const edm::EventSetup&) = 0;
-            virtual void doConsumes(const edm::ParameterSet&, edm::ConsumesCollector&& collector) {}
+            //! Main method of the producer, called for each event.
+            /*!
+             * You have direct access to the event via the CMSSW interface with the @p event and @p setup parameters.
+             *
+             * @param event The CMSSW event
+             * @param setup The CMSSW event setup
+             * @sa https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookCMSSWFramework#EdM
+             * @sa CMSSW reference manual: https://cmssdt.cern.ch/SDT/doxygen/
+             */
+            virtual void produce(edm::Event& event, const edm::EventSetup& setup) = 0;
+            //! Hook for the CMSSW consumes interface
+            /*!
+             * Override this method to register your tokens into the CMSSW framework via the @p collector interface
+             *
+             * @param pset A link to the python configuration
+             * @param collector The consumes collector. Use it to register your tokens.
+             *
+             * @sa https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideEDMGetDataFromEvent
+             */
+            virtual void doConsumes(const edm::ParameterSet& pset, edm::ConsumesCollector&& collector) {}
 
-            virtual void beginJob(MetadataManager&) {}
-            virtual void endJob(MetadataManager&) {}
+            //! Called once at the beginning of the job
+            /*!
+             * @param manager The MetadataManager of the framework. Use this to store metadata to the output file
+             */
+            virtual void beginJob(MetadataManager& manager) {}
+            //! Called once at the end of the job
+            /*!
+             * @param manager The MetadataManager of the framework. Use this to store metadata to the output file
+             */
+            virtual void endJob(MetadataManager& manager) {}
 
-            virtual void beginRun(const edm::Run&, const edm::EventSetup&) {}
-            virtual void endRun(const edm::Run&, const edm::EventSetup&) {}
+            //! Called at the beginning of a new run
+            /*!
+             * You have direct access to the run via the CMSSW interface with the @p run and @p setup parameters.
+             *
+             * @param run The CMSSW run
+             * @param setup The CMSSW event setup
+             */
+            virtual void beginRun(const edm::Run& run, const edm::EventSetup& setup) {}
+            //! Called at the end of a run
+            /*!
+             * You have direct access to the run via the CMSSW interface with the @p run and @p setup parameters.
+             *
+             * @param run The CMSSW run
+             * @param setup The CMSSW event setup
+             */
+            virtual void endRun(const edm::Run& run, const edm::EventSetup& setup) {}
 
-            virtual void beginLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) {}
-            virtual void endLuminosityBlock(const edm::LuminosityBlock&, const edm::EventSetup&) {}
+            //! Called at the beginning of a new luminosity section
+            /*!
+             * You have direct access to the luminosity block via the CMSSW interface with the @p lumi and @p setup parameters.
+             *
+             * @param run The CMSSW luminosity block
+             * @param setup The CMSSW event setup
+             */
+            virtual void beginLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup& setup) {}
+            //! Called at the end of a luminosity section
+            //
+            /*!
+             * You have direct access to the luminosity block via the CMSSW interface with the @p lumi and @p setup parameters.
+             *
+             * @param run The CMSSW luminosity block
+             * @param setup The CMSSW event setup
+             */
+            virtual void endLuminosityBlock(const edm::LuminosityBlock& lumi, const edm::EventSetup& setup) {}
 
             // Disable copy of producer
             Producer(const Producer&) = delete;
@@ -48,6 +121,12 @@ namespace Framework {
 
         protected:
             std::string m_name;
+            //! Access point to output tree
+            /*!
+             * Use this variable to create new branches.
+             *
+             * @sa http://blinkseb.github.io/TreeWrapper/#ROOT::TreeWrapper/ROOT::TreeWrapper
+             */
             ROOT::TreeGroup tree;
 
         private:
