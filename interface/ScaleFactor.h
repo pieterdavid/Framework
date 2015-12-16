@@ -49,6 +49,9 @@ struct ScaleFactor {
     public:
     std::vector<float> get(const std::vector<float>& variables) const {
         if (!use_formula) {
+            if (! binned.get())
+                return {0., 0., 0.};
+
             std::vector<float> values = get<float>(*binned.get(), variables);
 
             if (absolute_errors && !values.empty()) {
@@ -58,6 +61,9 @@ struct ScaleFactor {
 
             return values;
         } else {
+            if (! formula.get())
+                return {0., 0., 0.};
+
             std::vector<std::shared_ptr<TFormula>> formulas = get<std::shared_ptr<TFormula>>(*formula.get(), variables);
             std::vector<float> values;
             for (auto& formula: formulas) {
