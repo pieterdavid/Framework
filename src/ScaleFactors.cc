@@ -46,18 +46,5 @@ float ScaleFactors::get_scale_factor(const std::string& name, size_t index, Vari
     if (index >= sf->second->size())
         return 0;
 
-    switch (variation) {
-        case Variation::Nominal:
-            return (*sf->second)[index][0];
-
-        case Variation::Down:
-            return (*sf->second)[index][0] - (*sf->second)[index][1];
-
-        case Variation::Up:
-            return (*sf->second)[index][0] + (*sf->second)[index][2];
-
-        default:
-            return 0;
-    }
-    return 0;
+    return (*sf->second)[index][static_cast<size_t>(variation)];
 }

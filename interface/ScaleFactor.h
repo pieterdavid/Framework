@@ -48,15 +48,23 @@ struct ScaleFactor {
 
     public:
     std::vector<float> get(const std::vector<float>& variables) const {
+        auto relative_to_absolute = [](const std::vector<float>& array) {
+            std::vector<float> result(3);
+            result[0] = array[0];
+            result[1] = array[0] + array[1];
+            result[2] = array[0] - array[2];
+
+            return result;
+        };
+
         if (!use_formula) {
             if (! binned.get())
                 return {0., 0., 0.};
 
             std::vector<float> values = get<float>(*binned.get(), variables);
 
-            if (absolute_errors && !values.empty()) {
-                values[1] = fabs(values[1] - values[0]);    
-                values[2] = fabs(values[0] - values[2]);
+            if (!absolute_errors && !values.empty()) {
+                values = relative_to_absolute(values);
             }
 
             return values;
@@ -70,9 +78,8 @@ struct ScaleFactor {
                 values.push_back(formula->Eval(variables[formula_variable_index]));
             }
 
-            if (absolute_errors && !values.empty()) {
-                values[1] = fabs(values[1] - values[0]);    
-                values[2] = fabs(values[0] - values[2]);
+            if (!absolute_errors && !values.empty()) {
+                values = relative_to_absolute(values);
             }
 
             return values;
