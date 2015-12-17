@@ -28,13 +28,10 @@ void ScaleFactors::create_branch(const std::string& scale_factor, const std::str
 
 void ScaleFactors::store_scale_factors(const std::vector<float>& values,bool isData) {
     for (const auto& sf: m_scale_factors) {
-        std::vector<float> v = sf.second.get(values);
-	if(isData)
-	     (*m_branches[sf.first]).push_back({1., 0., 0.});
-        else if (v.empty())
-            (*m_branches[sf.first]).push_back({0., 0., 0.});
+        if (isData)
+            (*m_branches[sf.first]).push_back({1., 0., 0.});
         else
-            (*m_branches[sf.first]).push_back(v);
+            (*m_branches[sf.first]).push_back(sf.second.get(values));
     }
 }
 
