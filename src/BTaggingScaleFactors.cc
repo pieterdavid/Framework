@@ -68,13 +68,10 @@ void BTaggingScaleFactors::store_scale_factors(Algorithm algo_, Flavor flavor, c
         sf_key_type sf_key = std::make_tuple(algo_, flavor, wp);
         branch_key_type branch_key = std::make_tuple(algo_, wp);
 
-        std::vector<float> sfs = m_scale_factors[sf_key].get(values);
-        if(isData)
-		(*m_branches[branch_key]).push_back({1., 0., 0.});
-        else if (sfs.empty())
-            (*m_branches[branch_key]).push_back({0., 0., 0.});
+        if (isData)
+            (*m_branches[branch_key]).push_back({1., 0., 0.});
         else
-            (*m_branches[branch_key]).push_back(sfs);
+            (*m_branches[branch_key]).push_back(m_scale_factors[sf_key].get(values));
     }
 }
 
@@ -89,18 +86,5 @@ float BTaggingScaleFactors::get_scale_factor(Algorithm algo, const std::string& 
     if (index >= sf->second->size())
         return 0;
 
-    switch (variation) {
-        case Variation::Nominal:
-            return (*sf->second)[index][0];
-
-        case Variation::Down:
-            return (*sf->second)[index][0] - (*sf->second)[index][1];
-
-        case Variation::Up:
-            return (*sf->second)[index][0] + (*sf->second)[index][2];
-
-        default:
-            return 0;
-    }
-    return 0;
+    return (*sf->second)[index][static_cast<size_t>(variation)];
 }
