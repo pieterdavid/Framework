@@ -27,12 +27,13 @@ struct ScaleFactor {
 
     private:
     template <typename _Value>
-        std::vector<_Value> get(Histogram<_Value, float>& h, const std::vector<float>& bins) const {
-            std::size_t bin = h.findBin(bins);
-            if (bin > 0)
-                return {h.getBinContent(bin), h.getBinErrorLow(bin), h.getBinErrorHigh(bin)};
-            else
-                return {};
+        std::vector<_Value> get(Histogram<_Value, float>& h, const std::vector<float>& bins, bool& outOfRange) const {
+            std::size_t bin = h.findClosestBin(bins, &outOfRange);
+            if (bin == 0) {
+                throw std::runtime_error("Failed to found the right bin for a scale-factor. This should not happend");
+            }
+
+            return {h.getBinContent(bin), h.getBinErrorLow(bin), h.getBinErrorHigh(bin)};
         }
 
     bool use_formula = false;
@@ -48,26 +49,52 @@ struct ScaleFactor {
 
     public:
     std::vector<float> get(const std::vector<float>& variables) const {
-        if (!use_formula) {
-            std::vector<float> values = get<float>(*binned.get(), variables);
+        auto relative_to_absolute = [](const std::vector<float>& array) {
+            std::vector<float> result(3);
+            result[0] = array[0];
+            result[1] = array[0] + array[1];
+            result[2] = array[0] - array[2];
 
-            if (absolute_errors && !values.empty()) {
-                values[1] = fabs(values[1] - values[0]);    
-                values[2] = fabs(values[0] - values[2]);
+            return result;
+        };
+
+        auto double_errors = [](std::vector<float>& values) {
+            values[1] = values[0] + 2 * (values[1] - values[0]);
+            values[2] = values[0] - 2 * (values[0] - values[2]);
+        };
+
+        bool outOfRange = false;
+
+        if (!use_formula) {
+            if (! binned.get())
+                return {0., 0., 0.};
+
+            std::vector<float> values = get<float>(*binned.get(), variables, outOfRange);
+
+            if (!absolute_errors) {
+                values = relative_to_absolute(values);
             }
+
+            if (outOfRange)
+                double_errors(values);
 
             return values;
         } else {
-            std::vector<std::shared_ptr<TFormula>> formulas = get<std::shared_ptr<TFormula>>(*formula.get(), variables);
+            if (! formula.get())
+                return {0., 0., 0.};
+
+            std::vector<std::shared_ptr<TFormula>> formulas = get<std::shared_ptr<TFormula>>(*formula.get(), variables, outOfRange);
             std::vector<float> values;
             for (auto& formula: formulas) {
                 values.push_back(formula->Eval(variables[formula_variable_index]));
             }
 
-            if (absolute_errors && !values.empty()) {
-                values[1] = fabs(values[1] - values[0]);    
-                values[2] = fabs(values[0] - values[2]);
+            if (!absolute_errors) {
+                values = relative_to_absolute(values);
             }
+
+            if (outOfRange)
+                double_errors(values);
 
             return values;
         }

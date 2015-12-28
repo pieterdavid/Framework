@@ -2,13 +2,13 @@
 
 #include <memory>
 #include <vector>
-#include <iostream>
 
 template<typename T, typename _Bin = T>
 class Histogram {
     public:
 
         virtual std::size_t findBin(const std::vector<_Bin>& values) = 0;
+        virtual std::size_t findClosestBin(const std::vector<_Bin>& values, bool* outOfRange = nullptr) = 0;
         virtual bool inRange(const std::vector<_Bin>& values) = 0;
 
         T getBinContent(std::size_t bin) {
@@ -39,6 +39,10 @@ class Histogram {
             setBinContent(bin, content);
         }
 
+        size_t size() const {
+            return m_size;
+        }
+
     protected:
         Histogram(std::size_t size) {
             m_size = size;
@@ -55,6 +59,23 @@ class Histogram {
             }
 
             return 0;
+        }
+
+        static size_t findClosestBin(const std::vector<_Bin>& array, _Bin value, bool* outOfRange = nullptr) {
+            if (outOfRange)
+                *outOfRange = false;
+
+            if (value < array.front()) {
+                if (outOfRange)
+                    *outOfRange = true;
+                return 1;
+            } else if (value >= array.back()) {
+                if (outOfRange)
+                    *outOfRange = true;
+                return array.size() - 1;
+            } else {
+                return findBin(array, value);
+            }
         }
 
         static bool inRange(const std::vector<_Bin>& array, _Bin value) {
@@ -91,6 +112,15 @@ class OneDimensionHistogram: public Histogram<T, _Bin> {
             return Histogram<T, _Bin>::findBin(m_bins, value);
         }
 
+        virtual std::size_t findClosestBin(const std::vector<_Bin>& values, bool* outOfRange = nullptr) override {
+            if (values.size() != 1)
+                return 0;
+
+            _Bin value = values[0];
+
+            return Histogram<T, _Bin>::findClosestBin(m_bins, value, outOfRange);
+        }
+
         virtual bool inRange(const std::vector<_Bin>& values) override {
             if (values.size() != 1) {
                 return false;
@@ -125,6 +155,37 @@ class TwoDimensionsHistogram: public Histogram<T, _Bin> {
                 return 0;
 
             size_t bin_y = Histogram<T, _Bin>::findBin(m_bins_y, value_y);
+            if (bin_y == 0)
+                return 0;
+
+            return bin_x + (m_bins_x.size() - 1) * (bin_y - 1);
+        }
+
+        virtual std::size_t findClosestBin(const std::vector<_Bin>& values, bool* outOfRange = nullptr) override {
+            if (values.size() != 2)
+                return 0;
+
+            _Bin value_x = values[0];
+            _Bin value_y = values[1];
+            bool local_outOfRange = false;
+
+            if (outOfRange)
+                *outOfRange = false;
+
+            size_t bin_x = Histogram<T, _Bin>::findClosestBin(m_bins_x, value_x, &local_outOfRange);
+
+            if (outOfRange)
+                *outOfRange |= local_outOfRange;
+
+            if (bin_x == 0)
+                return 0;
+
+            size_t bin_y = Histogram<T, _Bin>::findClosestBin(m_bins_y, value_y, &local_outOfRange);
+
+
+            if (outOfRange)
+                *outOfRange |= local_outOfRange;
+
             if (bin_y == 0)
                 return 0;
 
@@ -174,6 +235,42 @@ class ThreeDimensionsHistogram: public Histogram<T, _Bin> {
                 return 0;
 
             size_t bin_z = Histogram<T, _Bin>::findBin(m_bins_z, value_z);
+            if (bin_z == 0)
+                return 0;
+
+            return bin_x + (m_bins_x.size() - 1) * ((bin_y - 1) + (m_bins_y.size() - 1) * (bin_z - 1));
+        }
+
+        virtual std::size_t findClosestBin(const std::vector<_Bin>& values, bool* outOfRange = nullptr) override {
+            if (values.size() != 3)
+                return 0;
+
+            _Bin value_x = values[0];
+            _Bin value_y = values[1];
+            _Bin value_z = values[2];
+            bool local_outOfRange = false;
+
+            size_t bin_x = Histogram<T, _Bin>::findClosestBin(m_bins_x, value_x, &local_outOfRange);
+
+            if (outOfRange)
+                *outOfRange |= local_outOfRange;
+
+            if (bin_x == 0)
+                return 0;
+
+            size_t bin_y = Histogram<T, _Bin>::findClosestBin(m_bins_y, value_y, &local_outOfRange);
+
+            if (outOfRange)
+                *outOfRange |= local_outOfRange;
+
+            if (bin_y == 0)
+                return 0;
+
+            size_t bin_z = Histogram<T, _Bin>::findClosestBin(m_bins_z, value_z, &local_outOfRange);
+
+            if (outOfRange)
+                *outOfRange |= local_outOfRange;
+
             if (bin_z == 0)
                 return 0;
 
