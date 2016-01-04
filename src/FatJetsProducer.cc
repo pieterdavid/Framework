@@ -82,11 +82,15 @@ void FatJetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSet
         for (auto& it: m_btag_discriminators) {
 
             float btag_discriminator = jet.bDiscriminator(it.first);
+            // Protect against NaN discriminant
+            if (std::isnan(btag_discriminator))
+                btag_discriminator = -10;
+
             it.second->push_back(btag_discriminator);
 
             Algorithm algo = string_to_algorithm(it.first);
             if (algo != Algorithm::UNKNOWN && BTaggingScaleFactors::has_scale_factors(algo)) {
-                BTaggingScaleFactors::store_scale_factors(algo, get_flavor(jet.hadronFlavour()), {static_cast<float>(fabs(jet.eta())), static_cast<float>(jet.pt()), btag_discriminator},event.isRealData());
+                BTaggingScaleFactors::store_scale_factors(algo, get_flavor(jet.hadronFlavour()), {static_cast<float>(std::abs(jet.eta())), static_cast<float>(jet.pt()), btag_discriminator}, event.isRealData());
             }
         }
     }
