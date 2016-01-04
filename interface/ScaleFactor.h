@@ -30,7 +30,16 @@ struct ScaleFactor {
         std::vector<_Value> get(Histogram<_Value, float>& h, const std::vector<float>& bins, bool& outOfRange) const {
             std::size_t bin = h.findClosestBin(bins, &outOfRange);
             if (bin == 0) {
-                throw std::runtime_error("Failed to found the right bin for a scale-factor. This should not happend");
+                std::stringstream msg;
+                msg << "Failed to found the right bin for a scale-factor. This should not happend. Bins: [";
+                for (float b: bins) {
+                    msg << b << ", ";
+                }
+
+                msg.seekp(msg.tellp() - 2l);
+                msg << "]";
+
+                throw std::runtime_error(msg.str());
             }
 
             return {h.getBinContent(bin), h.getBinErrorLow(bin), h.getBinErrorHigh(bin)};
