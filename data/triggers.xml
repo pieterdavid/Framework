@@ -8,6 +8,8 @@
         <!-- Muon + electron -->
         <path>HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v.*</path>
         <path>HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v.*</path>
+        <!-- Single mu -->
+        <path>HLT_IsoMu27_v.*</path>
     </runs>
 </triggers>
 
