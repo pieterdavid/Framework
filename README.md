@@ -9,28 +9,19 @@ Common framework for all cp3-llbb analyses
 
 ## CMSSW release
 
-**CMSSW 7.4.15**
+**CMSSW 7.6.3**
 
 ## First time setup instructions
 
 ```bash
 source /nfs/soft/grid/ui_sl6/setup/grid-env.sh
 source /cvmfs/cms.cern.ch/cmsset_default.sh
-export SCRAM_ARCH=slc6_amd64_gcc491
-cmsrel CMSSW_7_4_15
-cd CMSSW_7_4_15/src
+export SCRAM_ARCH=slc6_amd64_gcc493
+cmsrel CMSSW_7_6_3
+cd CMSSW_7_6_3/src
 cmsenv
 
-git cms-init
 cd ${CMSSW_BASE}/src 
-
-git cms-merge-topic ikrav:egm_id_7.4.12_v1
-
-# Fix MET crash: https://github.com/cms-sw/cmssw/pull/11413
-git cms-addpkg DataFormats/PatCandidates
-git remote add blinkseb https://github.com/blinkseb/cmssw.git
-git fetch blinkseb
-git cherry-pick 794364a7352f045d7eed1fcc166fb92ece8ce68f
 
 # Jet tool box
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox
@@ -39,7 +30,6 @@ git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox
 git clone -o upstream git@github.com:blinkseb/TreeWrapper.git cp3_llbb/TreeWrapper
 git clone -b CMSSW_7_4_12p -o upstream git@github.com:cp3-llbb/Framework.git cp3_llbb/Framework
 
-cd ${CMSSW_BASE}/src
 scram b -j 4
 
 cd ${CMSSW_BASE}/src/cp3_llbb/Framework
