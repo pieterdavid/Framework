@@ -73,6 +73,7 @@ The Pull Request won't be mergeable until the Pull Request status is green.
 Since the build is automatized, Jenkins needs to know how-to setup the CMSSW env by itself. To do that, two files are necessary:
 
  - ``CMSSW.release``: This file must contains only a string representing the CMSSW version to use to setup the framework. Be careful not to add a line break at the end of the line.
+ - `` CMSSW.arch``: The ``SCRAM_ARCH`` of the CMSSW release.
  - ``bootstrap_jenkins.sh``: This file is a bash script executed by Jenkins just before building the framework, but after the CMSSW env is setup. You **must** use this file to install all the dependencies of the framework.
 
 **Do not forget to update these files when changes are done to the release or the dependencies, otherwise the build will fails.**
