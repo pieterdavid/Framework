@@ -6,6 +6,7 @@
 #include <FWCore/Framework/interface/ConsumesCollector.h>
 #include <FWCore/Utilities/interface/InputTag.h>
 #include <DataFormats/Common/interface/ValueMap.h>
+#include <DataFormats/Common/interface/Ref.h>
 
 #include <cp3_llbb/TreeWrapper/interface/TreeWrapper.h>
 

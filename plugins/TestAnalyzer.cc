@@ -8,9 +8,10 @@
 
 void TestAnalyzer::analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager& producers, const AnalyzersManager& analyzers, const CategoryManager& categories) {
 
+    /*
     const JetsProducer& jets = producers.get<JetsProducer>("jets");
-
     const DileptonAnalyzer& di = analyzers.get<DileptonAnalyzer>("dilepton");
+    */
 
 /*
     if (producers.exists("gen_particles")) {
