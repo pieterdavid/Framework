@@ -63,7 +63,7 @@ process.framework.analyzers.bTagsTight = cms.PSet(
         )
 
 Framework.schedule(process, analyzers=['dilepton', 'bTagsLoose', 'bTagsMedium', 'bTagsTight', 'test'],
-        producers=['event', 'hlt', 'vertices', 'electrons', 'muons', 'jets', 'fat_jets', 'met', 'nohf_met'])
+        producers=['event', 'hlt', 'vertices', 'electrons', 'muons', 'jets', 'fat_jets', 'met'])
 
 process.source.fileNames = cms.untracked.vstring(
         '/store/data/Run2015D/DoubleMuon/MINIAOD/PromptReco-v3/000/256/675/00000/4AA27F21-8B5F-E511-9AED-02163E014472.root'
