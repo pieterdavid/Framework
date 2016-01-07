@@ -4,7 +4,7 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 from cp3_llbb.Framework import Framework
 
-process = Framework.create(False, eras.Run2_25ns, '74X_mcRun2_asymptotic_v2', cms.PSet(
+process = Framework.create(False, eras.Run2_25ns, '76X_mcRun2_asymptotic_v12', cms.PSet(
     dilepton = cms.PSet(
         type = cms.string('dilepton_analyzer'),
         prefix = cms.string('dilepton_'),
@@ -62,15 +62,14 @@ process = Framework.create(False, eras.Run2_25ns, '74X_mcRun2_asymptotic_v2', cm
         )
     ), 
     
-    redoJEC=True,
-
+    redoJEC=False
     )
 
 Framework.schedule(process, analyzers=['dilepton', 'bTagsLoose', 'bTagsMedium', 'bTagsTight', 'test'],
         producers=['event', 'gen_particles', 'hlt', 'vertices', 'electrons', 'muons', 'jets', 'fat_jets', 'met'])
 
 process.source.fileNames = cms.untracked.vstring(
-        '/store/mc/RunIISpring15MiniAODv2/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/00000/0014DC94-DC5C-E511-82FB-7845C4FC39F5.root'
+        '/store/mc/RunIIFall15MiniAODv1/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/30000/2EE074B2-0EA2-E511-9505-44A842CFD619.root'
         )
 
 # Only run on a specific event. Useful for debugging

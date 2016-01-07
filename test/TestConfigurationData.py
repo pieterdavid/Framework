@@ -4,7 +4,7 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 from cp3_llbb.Framework import Framework
 
-process = Framework.create(True, eras.Run2_50ns, '74X_dataRun2_v2', redoJEC=True, process_name='RECO')
+process = Framework.create(True, eras.Run2_25ns, '76X_dataRun2_v15', redoJEC=False, process_name='RECO')
 
 process.framework.analyzers.dilepton = cms.PSet(
         type = cms.string('dilepton_analyzer'),
@@ -66,5 +66,5 @@ Framework.schedule(process, analyzers=['dilepton', 'bTagsLoose', 'bTagsMedium', 
         producers=['event', 'hlt', 'vertices', 'electrons', 'muons', 'jets', 'fat_jets', 'met'])
 
 process.source.fileNames = cms.untracked.vstring(
-        '/store/data/Run2015D/DoubleMuon/MINIAOD/PromptReco-v3/000/256/675/00000/4AA27F21-8B5F-E511-9AED-02163E014472.root'
+        '/store/data/Run2015D/DoubleMuonLowMass/MINIAOD/16Dec2015-v1/00000/00E488D1-5CAF-E511-92E3-0025904CF93E.root'
         )
