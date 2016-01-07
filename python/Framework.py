@@ -154,7 +154,7 @@ def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False, JEC
         load_jec_from_db(process, JECDatabase, jet_algos)
 
     # Flags
-    createNoHFMet = True
+    createNoHFMet = False
 
     process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
     process.load("Configuration.EventContent.EventContent_cff")
