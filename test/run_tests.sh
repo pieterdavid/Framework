@@ -9,6 +9,10 @@ F1=${LOCAL_TEST_DIR}/unit_tests_mc.py
 F2=${LOCAL_TEST_DIR}/unit_tests_data.py
 (cmsRun $F2 ) || die "Failure using $F2" $?
 
-wget https://github.com/cms-jet/JECDatabase/raw/master/SQLiteFiles/Summer15_25nsV5_MC.db
-F3=${LOCAL_TEST_DIR}/unit_tests_mc_with_db.py
-(cmsRun $F3 ) || die "Failure using $F3" $?
+# FIXME:
+# Test failing in CMSSW 7.6.3 because of a CMSSW bug
+# See https://hypernews.cern.ch/HyperNews/CMS/get/calibrations/2196/1.html
+# Re-enable with CMSSW 7.6.4+
+# wget https://github.com/cms-jet/JECDatabase/raw/master/SQLiteFiles/Summer15_25nsV5_MC.db
+# F3=${LOCAL_TEST_DIR}/unit_tests_mc_with_db.py
+# (cmsRun $F3 ) || die "Failure using $F3" $?
