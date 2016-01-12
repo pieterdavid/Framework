@@ -17,18 +17,19 @@ Common framework for all cp3-llbb analyses
 source /nfs/soft/grid/ui_sl6/setup/grid-env.sh
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 export SCRAM_ARCH=slc6_amd64_gcc493
-cmsrel CMSSW_7_6_3
-cd CMSSW_7_6_3/src
+cmsrel CMSSW_7_6_3_patch2
+cd CMSSW_7_6_3_patch2/src
 cmsenv
 
-cd ${CMSSW_BASE}/src 
+# JER stuff
+git cms-merge-topic blinkseb:smeared_jet_producer
 
 # Jet tool box
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox
 
 # CP3-llbb framework itself
 git clone -o upstream git@github.com:blinkseb/TreeWrapper.git cp3_llbb/TreeWrapper
-git clone -b CMSSW_7_4_12p -o upstream git@github.com:cp3-llbb/Framework.git cp3_llbb/Framework
+git clone -b CMSSW_7_6_3p -o upstream git@github.com:cp3-llbb/Framework.git cp3_llbb/Framework
 
 scram b -j 4
 

@@ -58,15 +58,21 @@ process = Framework.create(False, eras.Run2_25ns, '76X_mcRun2_asymptotic_v12', c
     test = cms.PSet(
         type = cms.string('test_analyzer'),
         prefix = cms.string('test_'),
-        enable = cms.bool(True)
+        enable = cms.bool(True),
+        parameters = cms.PSet(
+            test = cms.untracked.string('jets'),
+            test2 = cms.untracked.string('met')
+            )
         )
     ), 
     
-    redoJEC=False
+    redoJEC=False,
+
+    doSystematics=['jec', 'jer']
     )
 
-Framework.schedule(process, analyzers=['dilepton', 'bTagsLoose', 'bTagsMedium', 'bTagsTight', 'test'],
-        producers=['event', 'gen_particles', 'hlt', 'vertices', 'electrons', 'muons', 'jets', 'fat_jets', 'met'])
+#Framework.schedule(process, analyzers=['dilepton', 'bTagsLoose', 'bTagsMedium', 'bTagsTight', 'test'],
+        #producers=['event', 'gen_particles', 'hlt', 'vertices', 'electrons', 'muons', 'jets', 'fat_jets', 'met', 'nohf_met'])
 
 process.source.fileNames = cms.untracked.vstring(
         '/store/mc/RunIIFall15MiniAODv1/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/30000/2EE074B2-0EA2-E511-9505-44A842CFD619.root'
@@ -80,4 +86,4 @@ process.source.fileNames = cms.untracked.vstring(
         #'1:25002:4987798',
         #)
 
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(400))
