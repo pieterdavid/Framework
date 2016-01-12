@@ -5,6 +5,7 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
     run = event_.id().run();
     lumi = event_.id().luminosityBlock();
     event = event_.id().event();
+    is_data = event_.isRealData();
 
     edm::Handle<double> rho_handle;
     event_.getByToken(m_rho_token, rho_handle);
