@@ -93,7 +93,7 @@ class CategoryManager {
         void new_category(const std::string& name, const std::string& description, const edm::ParameterSet& config) {
             std::string internal_name = m_current_prefix + name;
             if (m_categories.count(internal_name) > 0) {
-                throw edm::Exception(edm::errors::InsertFailure, "A category named '" + name + "' already exists for this analyzer.");
+                throw edm::Exception(edm::errors::InsertFailure, "A category named '" + internal_name + "' already exists for this analyzer.");
             }
 
             std::unique_ptr<Category> category(new T());

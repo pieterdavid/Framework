@@ -5,5 +5,6 @@ default_configuration = cms.PSet(
         prefix = cms.string('met_'),
         enable = cms.bool(True),
         parameters = cms.PSet(
+            met = cms.untracked.InputTag('slimmedMETs')
             )
         )
