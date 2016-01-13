@@ -1,5 +1,35 @@
+import os
+import sys
+
 import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
+
+verbosity = True
+
+class StdStreamSilenter(object):
+    """
+    Temporarily redirect stdout to /dev/null
+    """
+
+    def __init__(self):
+        self.__stdout = sys.stdout
+        self.__stderr = sys.stderr
+
+    def __enter__(self):
+        self.__stdout.flush()
+        self.__stderr.flush()
+        self.__devnull = open(os.devnull, 'w')
+
+        sys.stdout = self.__devnull
+        sys.stderr = self.__devnull
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.__stdout.flush()
+        self.__stderr.flush()
+        self.__devnull.close()
+
+        sys.stdout = self.__stdout
+        sys.stderr = self.__stderr
 
 def change_input_tag_process_(input_tag, process_name_from, process_name_to):
     if not isinstance(input_tag, cms.InputTag):
@@ -8,15 +38,24 @@ def change_input_tag_process_(input_tag, process_name_from, process_name_to):
     if len(input_tag.getProcessName()) > 0 and input_tag.getProcessName() == process_name_from:
         old_input_tag = input_tag.value()
         input_tag.setProcessName(process_name_to)
-        print("Changing input tag from %r to %r" % (old_input_tag, input_tag.value()))
+        if verbosity:
+            print("Changing input tag from %r to %r" % (old_input_tag, input_tag.value()))
 
     return input_tag
 
 def change_input_tag_(input_tag, from_, to_, parameter_name, padding=''):
-    if input_tag.getModuleLabel() == from_:
-        old_input_tag = input_tag.value()
-        input_tag.setModuleLabel(to_)
-        print("%sChanging value of parameter %s (input tag) from %r to %r" % (padding, parameter_name, old_input_tag, input_tag.value()))
+    if isinstance(input_tag, str):
+        if input_tag == from_:
+            old_input_tag = input_tag
+            input_tag = to_
+            if verbosity:
+                print("%sChanging value of parameter %s (input tag) from %r to %r" % (padding, parameter_name, old_input_tag, input_tag))
+    else:
+        if input_tag.getModuleLabel() == from_:
+            old_input_tag = input_tag.value()
+            input_tag.setModuleLabel(to_)
+            if verbosity:
+                print("%sChanging value of parameter %s (input tag) from %r to %r" % (padding, parameter_name, old_input_tag, input_tag.value()))
 
     return input_tag
 
@@ -24,7 +63,8 @@ def change_string_(string_, from_, to_, parameter_name, padding=''):
     if string_.value() == from_:
         old_string = string_.value()
         string_.setValue(to_)
-        print("%sChanging value of parameter %s (string) from %r to %r" % (padding, parameter_name, old_string, to_))
+        if verbosity:
+            print("%sChanging value of parameter %s (string) from %r to %r" % (padding, parameter_name, old_string, to_))
 
     return string_
 
@@ -44,6 +84,9 @@ def change_process_name(module, process_name_from, process_name_to):
                 change_process_name(value, process_name_from, process_name_to)
 
 def change_input_tags_and_strings(module, from_, to_, parameter_name, padding=''):
+    if from_ == to_:
+        return
+
     if isinstance(module, cms._Parameterizable):
         for name in module.parameters_().keys():
             value = getattr(module, name)
@@ -96,7 +139,11 @@ def configure_slimmedmet_(met):
 
 def add_ak4_chs_jets_(process, isData, bTagDiscriminators):
     from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
-    jetToolbox(process, 'ak4', 'ak4CHSJetSequence', 'out', PUMethod='CHS', runOnMC=not isData, miniAOD=True, addPUJetID=False, bTagDiscriminators=bTagDiscriminators)
+    if verbosity:
+        jetToolbox(process, 'ak4', 'ak4CHSJetSequence', 'out', PUMethod='CHS', runOnMC=not isData, miniAOD=True, addPUJetID=False, bTagDiscriminators=bTagDiscriminators)
+    else:
+        with StdStreamSilenter():
+            jetToolbox(process, 'ak4', 'ak4CHSJetSequence', 'out', PUMethod='CHS', runOnMC=not isData, miniAOD=True, addPUJetID=False, bTagDiscriminators=bTagDiscriminators)
 
     if (hasattr(process, 'softPFElectronsTagInfosAK4PFCHS')):
         process.softPFElectronsTagInfosAK4PFCHS.electrons = cms.InputTag('slimmedElectrons')
@@ -104,7 +151,12 @@ def add_ak4_chs_jets_(process, isData, bTagDiscriminators):
     if (hasattr(process, 'softPFMuonsTagInfosAK4PFCHS')):
         process.softPFMuonsTagInfosAK4PFCHS.muons = cms.InputTag('slimmedMuons')
 
-def setup_jets_mets_(process, isData, bTagDiscriminators, createNoHFMet=False):
+def setup_jets_mets_(process, isData, bTagDiscriminators):
+    """
+    Create a new jets collection and a new MET collection with new JECs applied
+
+    Return a tuple of newly created collections (jet, met)
+    """
 
     # Jets
 
@@ -189,39 +241,10 @@ def setup_jets_mets_(process, isData, bTagDiscriminators, createNoHFMet=False):
     # Only central values are available
     configure_slimmedmet_(process.slimmedMETs)
 
-    if createNoHFMet:
-        process.noHFCands = cms.EDFilter("CandPtrSelector",
-                src=cms.InputTag("packedPFCandidates"),
-                cut=cms.string("abs(pdgId)!=1 && abs(pdgId)!=2 && abs(eta)<3.0")
-                )
+    process.slimmedJetsNewJEC = process.selectedPatJetsAK4PFCHS.clone()
+    process.slimmedMETsNewJEC = process.slimmedMETs.clone()
 
-        process.pfMetNoHF = process.pfMet.clone()
-
-        process.pfMetNoHF.calculateSignificance = False
-        process.pfMetNoHF.src = cms.InputTag('noHFCands')
-        addMETCollection(process, labelName='patPFMetNoHF', metSource='pfMetNoHF') # RAW MET
-        process.patPFMetNoHF.addGenMET = False
-
-        ## Type 1 corrections
-        process.pfMetT1NoHF = pfMetT1.clone(
-            src = 'pfMetNoHF',
-            srcCorrections = [cms.InputTag("corrPfMetType1", "type1")]
-        )
-
-        addMETCollection(process, labelName='patMETNoHF', metSource='pfMetT1NoHF') # T1 MET
-        process.patMETNoHF.addGenMET = False
-
-        process.slimmedMETsNoHF = slimmedMETs.clone()
-
-        # Create MET from Type 1 PF collection
-        process.patMETNoHF.addGenMET = not isData
-        if not isData:
-            process.patMETNoHF.genMETSource = cms.InputTag("genMetExtractor")
-        process.slimmedMETsNoHF.src = cms.InputTag("patMETNoHF")
-        process.slimmedMETsNoHF.rawVariation = cms.InputTag("patPFMetNoHF") # only central value
-
-        # Only central values are available
-        configure_slimmedmet_(process.slimmedMETsNoHF)
+    return ('slimmedJetsNewJEC', 'slimmedMETsNewJEC')
 
 
 def check_tag_(db_file, tag):
@@ -264,7 +287,8 @@ def load_jec_from_db(process, db, algorithmes):
 
     process.load("CondCore.DBCommon.CondDBCommon_cfi")
 
-    print("Using database %r for JECs\n" % db)
+    if verbosity:
+        print("Using database %r for JECs\n" % db)
 
     process.jec = cms.ESSource("PoolDBESSource",
             DBParameters = cms.PSet(

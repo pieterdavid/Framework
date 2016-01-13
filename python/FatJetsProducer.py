@@ -1,67 +1,15 @@
+import copy
+
 import FWCore.ParameterSet.Config as cms
 
-default_configuration = cms.PSet(
-        type = cms.string('fat_jets'),
-        prefix = cms.string('fatjet_'),
-        enable = cms.bool(True),
-        parameters = cms.PSet(
-            btags = cms.untracked.vstring('pfCombinedInclusiveSecondaryVertexV2BJetTags', 'pfJetProbabilityBJetTags', 'pfCombinedMVABJetTags'),
-            subjets_btags = cms.untracked.vstring('pfCombinedSecondaryVertexV2BJetTags', 'pfCombinedInclusiveSecondaryVertexV2BJetTags'),
-            scale_factors = cms.untracked.PSet(
-                csvv2_loose = cms.untracked.PSet(
-                    algorithm = cms.untracked.string('csvv2'),
-                    working_point = cms.untracked.string('loose'),
-                    files = cms.untracked.VPSet(
-                        cms.untracked.PSet(
-                            flavor = cms.untracked.string('bjets'),
-                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_loose_bjets_mujets_CSVv2_25ns.json'),
-                            ),
-                        cms.untracked.PSet(
-                            flavor = cms.untracked.string('cjets'),
-                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_loose_cjets_mujets_CSVv2_25ns.json'),
-                            ),
-                        cms.untracked.PSet(
-                            flavor = cms.untracked.string('lightjets'),
-                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_loose_lightjets_comb_CSVv2_25ns.json'),
-                            ),
-                        )
-                    ),
-                csvv2_medium = cms.untracked.PSet(
-                    algorithm = cms.untracked.string('csvv2'),
-                    working_point = cms.untracked.string('medium'),
-                    files = cms.untracked.VPSet(
-                        cms.untracked.PSet(
-                            flavor = cms.untracked.string('bjets'),
-                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_medium_bjets_mujets_CSVv2_25ns.json'),
-                            ),
-                        cms.untracked.PSet(
-                            flavor = cms.untracked.string('cjets'),
-                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_medium_cjets_mujets_CSVv2_25ns.json'),
-                            ),
-                        cms.untracked.PSet(
-                            flavor = cms.untracked.string('lightjets'),
-                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_medium_lightjets_comb_CSVv2_25ns.json'),
-                            ),
-                        )
-                    ),
-                csvv2_tight = cms.untracked.PSet(
-                    algorithm = cms.untracked.string('csvv2'),
-                    working_point = cms.untracked.string('tight'),
-                    files = cms.untracked.VPSet(
-                        cms.untracked.PSet(
-                            flavor = cms.untracked.string('bjets'),
-                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_tight_bjets_mujets_CSVv2_25ns.json'),
-                            ),
-                        cms.untracked.PSet(
-                            flavor = cms.untracked.string('cjets'),
-                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_tight_cjets_mujets_CSVv2_25ns.json'),
-                            ),
-                        cms.untracked.PSet(
-                            flavor = cms.untracked.string('lightjets'),
-                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_tight_lightjets_comb_CSVv2_25ns.json'),
-                            ),
-                        )
-                    )
-                )
-            )
-        )
+from cp3_llbb.Framework import JetsProducer
+
+# Clone standard jet configuration
+default_configuration = copy.deepcopy(JetsProducer.default_configuration)
+
+# And override some parameters
+default_configuration.type = cms.string('fat_jets')
+default_configuration.prefix = cms.string('fatjet_')
+default_configuration.parameters.jets = cms.untracked.InputTag('slimmedJetsAK8')
+default_configuration.parameters.cut = cms.untracked.string("pt > 150")
+default_configuration.parameters.subjets_btags = cms.untracked.vstring('pfCombinedSecondaryVertexV2BJetTags', 'pfCombinedInclusiveSecondaryVertexV2BJetTags')

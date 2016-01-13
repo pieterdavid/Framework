@@ -4,9 +4,9 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 from cp3_llbb.Framework import Framework
 
-process = Framework.create(True, eras.Run2_50ns, '74X_dataRun2_v2', redoJEC=True, process_name='RECO')
+framework = Framework.Framework(True, eras.Run2_50ns, globalTag='74X_dataRun2_v2', processName='RECO')
 
-process.framework.analyzers.dilepton = cms.PSet(
+framework.addAnalyzer('dilepton', cms.PSet(
         type = cms.string('dilepton_analyzer'),
         prefix = cms.string('dilepton_'),
         enable = cms.bool(True),
@@ -18,52 +18,17 @@ process.framework.analyzers.dilepton = cms.PSet(
             muons_wp = cms.untracked.string('loose'),
             electrons_wp = cms.untracked.string('loose')
             )
-        )
+        ))
 
-process.framework.analyzers.test = cms.PSet(
+framework.addAnalyzer('test', cms.PSet(
         type = cms.string('test_analyzer'),
         prefix = cms.string('test_'),
         enable = cms.bool(True)
-        )
+        ))
+
+framework.doSystematics(['jec', 'jer'])
     
-process.framework.analyzers.bTagsLoose = cms.PSet(
-        type = cms.string('btags_analyzer'),
-        prefix = cms.string('btags_CSVv2_loose'),
-        enable = cms.bool(True),
-        parameters = cms.PSet(
-            discr_name = cms.untracked.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
-            discr_cut = cms.untracked.double(0.605),
-            eta_cut = cms.untracked.double(2.4),
-            pt_cut = cms.untracked.double(30)
-            )
-        )
-
-process.framework.analyzers.bTagsMedium = cms.PSet(
-        type = cms.string('btags_analyzer'),
-        prefix = cms.string('btags_CSVv2_medium'),
-        enable = cms.bool(True),
-        parameters = cms.PSet(
-            discr_name = cms.untracked.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
-            discr_cut = cms.untracked.double(0.89),
-            eta_cut = cms.untracked.double(2.4),
-            pt_cut = cms.untracked.double(30)
-            )
-        )
-
-process.framework.analyzers.bTagsTight = cms.PSet(
-        type = cms.string('btags_analyzer'),
-        prefix = cms.string('btags_CSVv2_tight'),
-        enable = cms.bool(True),
-        parameters = cms.PSet(
-            discr_name = cms.untracked.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
-            discr_cut = cms.untracked.double(0.97),
-            eta_cut = cms.untracked.double(2.4),
-            pt_cut = cms.untracked.double(30)
-            )
-        )
-
-Framework.schedule(process, analyzers=['dilepton', 'bTagsLoose', 'bTagsMedium', 'bTagsTight', 'test'],
-        producers=['event', 'hlt', 'vertices', 'electrons', 'muons', 'jets', 'fat_jets', 'met', 'nohf_met'])
+process = framework.create()
 
 process.source.fileNames = cms.untracked.vstring(
         '/store/data/Run2015D/DoubleMuon/MINIAOD/PromptReco-v3/000/256/675/00000/4AA27F21-8B5F-E511-9AED-02163E014472.root'
