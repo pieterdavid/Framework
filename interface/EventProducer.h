@@ -50,6 +50,7 @@ class EventProducer: public Framework::Producer {
         BRANCH(run, ULong64_t);
         BRANCH(lumi, ULong64_t);
         BRANCH(event, ULong64_t);
+        BRANCH(is_data, bool);
 
         BRANCH(rho, float);
 
