@@ -6,6 +6,7 @@ default_configuration = cms.PSet(
         enable = cms.bool(True),
         parameters = cms.PSet(
             src = cms.untracked.InputTag('slimmedMuons'),
+            applyRochester = cms.untracked.bool(False),
             ea_R03 = cms.untracked.FileInPath('cp3_llbb/Framework/data/effAreaMuons_cone03_pfNeuHadronsAndPhotons.txt'),
             ea_R04 = cms.untracked.FileInPath('cp3_llbb/Framework/data/effAreaMuons_cone04_pfNeuHadronsAndPhotons.txt'),
             scale_factors = cms.untracked.PSet(
