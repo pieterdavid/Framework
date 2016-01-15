@@ -16,6 +16,8 @@ class EventProducer: public Framework::Producer {
 
             if (config.getUntrackedParameter<bool>("compute_pu_weights", true))
                 m_pu_reweighter = std::make_shared<Framework::PUReweighter>(config.getParameterSet("pu_reweighter"), Framework::PUProfile::Run2015_25ns);
+                m_pu_reweighter_up = std::make_shared<Framework::PUReweighter>(config.getParameterSet("pu_reweighter_up"), Framework::PUProfile::Run2015_25ns);
+                m_pu_reweighter_down = std::make_shared<Framework::PUReweighter>(config.getParameterSet("pu_reweighter_down"), Framework::PUProfile::Run2015_25ns);
 
         }
 
@@ -43,6 +45,8 @@ class EventProducer: public Framework::Producer {
         float m_event_weight_sum = 0;
 
         std::shared_ptr<Framework::PUReweighter> m_pu_reweighter;
+        std::shared_ptr<Framework::PUReweighter> m_pu_reweighter_up;
+        std::shared_ptr<Framework::PUReweighter> m_pu_reweighter_down;
 
     public:
         // Tree members
@@ -57,6 +61,8 @@ class EventProducer: public Framework::Producer {
         BRANCH(npu, int);
         BRANCH(true_interactions, float);
         BRANCH(pu_weight, float);
+        BRANCH(pu_weight_up, float);
+        BRANCH(pu_weight_down, float);
 
         BRANCH(pt_hat, float);
         BRANCH(weight, float);
