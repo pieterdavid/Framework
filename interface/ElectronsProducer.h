@@ -36,6 +36,7 @@ class ElectronsProducer: public LeptonsProducer<pat::Electron>, public Identifia
 
         BRANCH(dxy, std::vector<float>);
         BRANCH(dz, std::vector<float>);
+        BRANCH(dca, std::vector<float>);
 };
 
 #endif

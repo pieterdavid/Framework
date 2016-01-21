@@ -42,6 +42,7 @@ void MuonsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup
         //     https://github.com/cms-sw/cmssw/blob/CMSSW_7_4_15/DataFormats/MuonReco/src/MuonSelectors.cc#L756
         dxy.push_back(muon.muonBestTrack()->dxy(primary_vertex.position()));
         dz.push_back(muon.muonBestTrack()->dz(primary_vertex.position()));
+        dca.push_back(muon.dB(pat::Muon::PV3D)/muon.edB(pat::Muon::PV3D));
         ScaleFactors::store_scale_factors({static_cast<float>(fabs(muon.eta())), static_cast<float>(muon.pt())},event.isRealData());
     }
 }
