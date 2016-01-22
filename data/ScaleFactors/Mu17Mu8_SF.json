@@ -177,6 +177,7 @@
       ]
     } 
   ], 
+  "error_type": "relative",
   "dimension": 2, 
   "binning": {
     "y": [
