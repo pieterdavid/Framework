@@ -266,6 +266,7 @@
       ]
     }
   ], 
+  "error_type": "absolute",
   "dimension": 2, 
   "binning": {
     "y": [
