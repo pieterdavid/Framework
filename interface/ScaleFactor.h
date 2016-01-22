@@ -13,13 +13,25 @@ enum class Variation {
 
 struct ScaleFactor {
 
+    /**
+     * Type of possible errors: Suppose we have E +- ΔE
+     *   - ABSOLUTE = ΔE
+     *   - RELATIVE = ΔE / E
+     *   - VARIATED = E + ΔE or E - ΔE
+     */
+    enum class ErrorType {
+        ABSOLUTE,
+        RELATIVE,
+        VARIATED
+    };
+
     friend class ScaleFactorParser;
 
     ScaleFactor(ScaleFactor&& rhs) {
         binned = std::move(rhs.binned);
         formula = std::move(rhs.formula);
         use_formula = rhs.use_formula;
-        absolute_errors = rhs.absolute_errors;
+        error_type = rhs.error_type;
         formula_variable_index = rhs.formula_variable_index;
     }
 
@@ -53,23 +65,53 @@ struct ScaleFactor {
     // Formula data
     std::shared_ptr<Histogram<std::shared_ptr<TFormula>, float>> formula;
 
-    bool absolute_errors = false;
+    ErrorType error_type;
     size_t formula_variable_index = -1; // Only used in formula mode
+
+    /**
+     * Convert relative errors to absolute errors
+     **/
+    std::vector<float> relative_errors_to_absolute(const std::vector<float>& array) const {
+        std::vector<float> result(3);
+        result[0] = array[0];
+        result[1] = array[0] * (1 + array[1]);
+        result[2] = array[0] * (1 - array[2]);
+
+        return result;
+    };
+
+    /**
+     * Convert variated errors to absolute errors
+     **/
+    std::vector<float> variated_errors_to_absolute(const std::vector<float>& array) const {
+        std::vector<float> result(3);
+        result[0] = array[0];
+        result[1] = std::abs(array[1] - array[0]);
+        result[2] = std::abs(array[0] - array[2]);
+
+        return result;
+    };
+
+    std::vector<float> convert_errors(const std::vector<float>& array) const {
+        switch (error_type) {
+            case ErrorType::ABSOLUTE:
+                return array;
+
+            case ErrorType::RELATIVE:
+                return relative_errors_to_absolute(array);
+
+            case ErrorType::VARIATED:
+                return variated_errors_to_absolute(array);
+        }
+
+        throw std::runtime_error("Invalid error type");
+    }
 
     public:
     std::vector<float> get(const std::vector<float>& variables) const {
-        auto relative_to_absolute = [](const std::vector<float>& array) {
-            std::vector<float> result(3);
-            result[0] = array[0];
-            result[1] = array[0] + array[1];
-            result[2] = array[0] - array[2];
-
-            return result;
-        };
-
-        auto double_errors = [](std::vector<float>& values) {
-            values[1] = values[0] + 2 * (values[1] - values[0]);
-            values[2] = values[0] - 2 * (values[0] - values[2]);
+        static auto double_errors = [](std::vector<float>& values) {
+            values[1] *= 2;
+            values[2] *= 2;
         };
 
         bool outOfRange = false;
@@ -78,11 +120,7 @@ struct ScaleFactor {
             if (! binned.get())
                 return {0., 0., 0.};
 
-            std::vector<float> values = get<float>(*binned.get(), variables, outOfRange);
-
-            if (!absolute_errors) {
-                values = relative_to_absolute(values);
-            }
+            std::vector<float> values = convert_errors(get<float>(*binned.get(), variables, outOfRange));
 
             if (outOfRange)
                 double_errors(values);
@@ -98,9 +136,7 @@ struct ScaleFactor {
                 values.push_back(formula->Eval(variables[formula_variable_index]));
             }
 
-            if (!absolute_errors) {
-                values = relative_to_absolute(values);
-            }
+            values = convert_errors(values);
 
             if (outOfRange)
                 double_errors(values);
