@@ -1,324 +1,468 @@
+import copy
+
 import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 
-def change_input_tag_process_(input_tag, process_name_from, process_name_to):
-    if not isinstance(input_tag, cms.InputTag):
-        input_tag = cms.untracked.InputTag(input_tag)
+from cp3_llbb.Framework.Tools import change_process_name, change_input_tags_and_strings, StdStreamSilenter
+from cp3_llbb.Framework import Tools
+import cp3_llbb.Framework.Systematics as Systematics
 
-    if len(input_tag.getProcessName()) > 0 and input_tag.getProcessName() == process_name_from:
-        old_input_tag = input_tag.value()
-        input_tag.setProcessName(process_name_to)
-        print("Changing input tag from %r to %r" % (old_input_tag, input_tag.value()))
+class Framework(object):
 
-    return input_tag
+    def __init__(self, isData, era, **kwargs):
+        self.__created = False
+        self.__systematics = []
+        self.__jec_done = False
+        self.__jer_done = False
 
-def change_process_name_(module, process_name_from, process_name_to):
-    if isinstance(module, cms._Parameterizable):
-        for name in module.parameters_().keys():
-            value = getattr(module, name)
-            type = value.pythonTypeName()
+        # Default configuration
+        self.__miniaod_jet_collection = 'slimmedJets'
+        self.__miniaod_gen_jet_collection = 'slimmedGenJets'
+        self.__miniaod_met_collection = 'slimmedMETs'
+        self.__jer_resolution_file = 'cp3_llbb/Framework/data/Systematics/Summer15_25nsV6_MC_PtResolution_AK4PFchs.txt'
+        self.__jer_scale_factor_file = 'cp3_llbb/Framework/data/Systematics/Summer15_25nsV6_DATAMCSF_AK4PFchs.txt'
 
-            if 'VInputTag' in type:
-                for (i, tag) in enumerate(value):
-                    value[i] = change_input_tag_process_(tag, process_name_from, process_name_to)
-            elif 'InputTag' in type:
-                change_input_tag_process_(value, process_name_from, process_name_to)
+        self.isData = isData
+        self.era = era
+        self.processName = kwargs['processName'] if 'processName' in kwargs else 'PAT'
+        self.globalTag = kwargs['globalTag'] if 'globalTag' in kwargs else None
+        self.verbose = kwargs['verbose'] if 'verbose' in kwargs else True
+        self.btagDiscriminators = kwargs['btagDiscriminators'] if 'btagDiscriminators' in kwargs else ['pfCombinedInclusiveSecondaryVertexV2BJetTags', 'pfJetProbabilityBJetTags', 'pfCombinedMVABJetTags', 'pfSimpleSecondaryVertexHighEffBJetTags', 'pfSimpleSecondaryVertexHighPurBJetTags']
+        self.output_filename = 'output_data.root' if isData else 'output_mc.root'
+        self.producers = []
+        self.analyzers = []
 
-            if isinstance(value, cms._Parameterizable):
-                change_process_name_(value, process_name_from, process_name_to)
+        Tools.verbosity = self.verbose
 
+        self.parseCommandLine_()
 
-def create(isData, era, globalTag=None, analyzers=cms.PSet(), redoJEC=False, JECDatabase=None, process_name=None):
-    """Create the CMSSW python configuration for the Framework
+        if self.globalTag is None:
+            raise Exception("No global tag specified. Use the 'globalTag' command line argument to set one.\n\tcmsRun <configuration> globalTag=<global_tag>")
 
-    Args:
-        isData (bool): Set to True if you run over data, or False for simulated samples
-        era (Configuration.StandardSequences.Eras.eras): The era of the sample. Used to distringuish between 50ns and 25ns
-        globalTag (str): The global tag to use for this workflow. If set to ``None``, a command-line argument named ``globalTag`` must be specified
-        analyzers (cms.PSet()): A list of analyzers to run. By default, it's empty, and you can still add one to the list afterwards.
-        redoJEC (bool): If True, a new jet collection will be created, starting from MiniAOD jets but with latest JEC, pulled from the global tag.
-        JECDatabase (str): If not `None`, then JECs will be read from this database.
-        process_name (str): The process name used for the MiniAOD step. Default to 'PAT'.
+        if self.era is None:
+            raise Exception("No era specified. Use the 'era' command line argument to set one.\n\tcmsRun <configuration> era=[25ns|50ns]")
 
-    Returns:
-        The ``process`` object for the CMSSW framework
+        if self.verbose:
+            print("")
+            print("CP3 llbb framework:")
+            print("    - Running over %s" % ("data" if self.isData else "simulation"))
+            print("    - global tag: %s" % self.globalTag)
+            print("    - era: %s" % ("25ns" if self.era == eras.Run2_25ns else "50ns"))
+            print("")
 
-        You can use the returned object to add / remove producers, analyzers from the default framework configuration.
+        # Create CMSSW process and configure it with sane default values
 
-    Examples:
+        process = cms.Process("ETM", era)
+        self.process = process
+        self.path = cms.Path()
 
-        import FWCore.ParameterSet.Config as cms
-        from Configuration.StandardSequences.Eras import eras
-
-        from cp3_llbb.Framework import Framework
-
-        # Run on 50ns data sample
-        process = Framework.create(True, eras.Run2_50ns, '74X_dataRun2_Prompt_v1')
-
-        # Run on 25ns data sample
-        process = Framework.create(True, eras.Run2_25ns, '74X_dataRun2_Prompt_v2')
-
-        # For MC 50ns
-        process = Framework.create(False, eras.Run2_50ns, 'MCRUN2_74_V9', cms.PSet(
-                test = cms.PSet(
-                    type = cms.string('test_analyzer'),
-                    prefix = cms.string('test_'),
-                    enable = cms.bool(True)
-                    )
+        process.options = cms.untracked.PSet(
+                wantSummary = cms.untracked.bool(False),
+                allowUnscheduled = cms.untracked.bool(True)
                 )
-            )
-    """
 
-    parseCommandLine = False
-    import sys
-    for argv in sys.argv:
-        if 'globalTag' in argv or 'era' in argv or 'process' in argv:
-            parseCommandLine = True
-            break
+        # Create an empty PSet for communication with GridIn
+        process.gridin = cms.PSet(
+                input_files = cms.vstring()
+                )
 
-    miniaod_process_name = process_name
-    if parseCommandLine:
-        from FWCore.ParameterSet.VarParsing import VarParsing
-        options = VarParsing()
-        options.register('globalTag',
-                '',
-                VarParsing.multiplicity.singleton,
-            VarParsing.varType.string,
-                'The globaltag to use')
-
-        options.register('era',
-                '',
-                VarParsing.multiplicity.singleton,
-                VarParsing.varType.string,
-                'Era of the dataset')
-
-        options.register('process',
-                '',
-                VarParsing.multiplicity.singleton,
-                VarParsing.varType.string,
-                'Process name of the MiniAOD production.')
-
-        options.parseArguments()
-
-        if options.globalTag:
-            globalTag = options.globalTag
-
-        if options.era:
-            assert options.era == '25ns' or options.era == '50ns'
-            if options.era == '25ns':
-                era = eras.Run2_25ns
-            else:
-                era = eras.Run2_50ns
-
-        if options.process:
-            miniaod_process_name = options.process
+        process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
+        process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
+        process.load('Configuration.StandardSequences.MagneticField_38T_cff')
+        process.load('FWCore.MessageLogger.MessageLogger_cfi')
 
 
+        process.GlobalTag.globaltag = self.globalTag
 
-    if globalTag is None:
-        raise Exception("No global tag specified. Use the 'globalTag' command line argument to set one.\n\tcmsRun <configuration> globalTag=<global_tag>")
+        process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
-    if era is None:
-        raise Exception("No era specified. Use the 'era' command line argument to set one.\n\tcmsRun <configuration> era=[25ns|50ns]")
+        process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
+        process.source = cms.Source("PoolSource")
 
-    print("")
-    print("CP3 llbb framework:")
-    print("\t - Running over %s" % ("data" if isData else "simulation"))
-    print("\t - global tag: %s" % globalTag)
-    print("\t - era: %s" % ("25ns" if era == eras.Run2_25ns else "50ns"))
-    print("")
+        self.configureElectronId_()
+        self.configureFramework_()
 
-    process = cms.Process("ETM", era)
+    def create(self):
+        """
+        Terminate the process configuration and return the final CMSSW process
+        """
 
-    process.options = cms.untracked.PSet(
-            wantSummary = cms.untracked.bool(False),
-            allowUnscheduled = cms.untracked.bool(True)
-            )
+        if self.__created:
+            return self.process
 
-    # Create an empty PSet for communication with GridIn
-    process.gridin = cms.PSet(
-            input_files = cms.vstring()
-            )
+        # Change process name if needed
+        if self.processName is not None and self.processName != 'PAT':
+            if self.verbose:
+                print("")
+                print("Changing process name from %r to %r..." % ('PAT', self.processName))
+            change_process_name(self.process.framework, 'PAT', self.processName)
 
-    if JECDatabase:
-        # Read the JEC from a database
-        from cp3_llbb.Framework.Tools import load_jec_from_db
-        algo_sizes = {'ak': [4, 8]}
-        jet_types = ['pf', 'pfchs', 'puppi']
-        jet_algos = []
-        for k, v in algo_sizes.iteritems():
-            for s in v:
-                for j in jet_types:
-                    jet_algos.append(str(k.upper() + str(s) + j.upper().replace("CHS", "chs").replace("PUPPI", "PFPuppi")))
+        if len(self.__systematics) > 0:
+            if self.verbose:
+                print("")
 
-        load_jec_from_db(process, JECDatabase, jet_algos)
+            systematics_options = {
+                    'jec': {'jetCollection': self.__miniaod_jet_collection,
+                             'metCollection': self.__miniaod_met_collection,
+                             'uncertaintiesFile': 'cp3_llbb/Framework/data/Systematics/Summer15_25nsV6_MC_UncertaintySources_AK4PFchs.txt'},
+                    'jer': {'jetCollection': self.__miniaod_jet_collection,
+                            'metCollection': self.__miniaod_met_collection,
+                            'genJetCollection': self.__miniaod_gen_jet_collection,
+                            'resolutionFile': self.__jer_resolution_file,
+                            'scaleFactorFile': self.__jer_scale_factor_file}
+                    }
 
-    # Flags
-    createNoHFMet = False
+            systematics = {}
+            for syst in self.__systematics:
+                systematics[syst] = systematics_options[syst]
 
-    process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
-    process.load("Configuration.EventContent.EventContent_cff")
-    process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
-    process.load('Configuration.StandardSequences.MagneticField_38T_cff')
+            print("")
+            Systematics.doSystematics(self, systematics)
 
-    process.GlobalTag.globaltag = globalTag
 
-    process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
-    process.source = cms.Source("PoolSource")
+        # Add the framework to the path as the last element
+        self.path += cms.Sequence(self.process.framework)
+        self.process.p = self.path
 
-    # Electron ID recipe
-    from PhysicsTools.SelectorUtils.tools.vid_id_tools import DataFormat, switchOnVIDElectronIdProducer, setupAllVIDIdsInModule, setupVIDElectronSelection
-    dataFormat = DataFormat.MiniAOD
-    switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
+        if self.verbose:
+            print("")
+            print("Framework configuration done.")
+            print("    Producers: %s" % ', '.join(self.producers))
+            print("    Analyzers: %s" % ', '.join(self.analyzers))
+            print("")
 
-    id_modules = [
-            'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_50ns_V2_cff',
-            'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
-            'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff',
-            'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff'
-            ]
-    for idmod in id_modules:
-        setupAllVIDIdsInModule(process, idmod, setupVIDElectronSelection)
+        # Specify scheduling of analyzers and producers
+        self.process.framework.analyzers_scheduling = cms.untracked.vstring(self.analyzers)
+        self.process.framework.producers_scheduling = cms.untracked.vstring(self.producers)
 
-    # Services
-    process.load('FWCore.MessageLogger.MessageLogger_cfi')
-    process.MessageLogger.cerr.FwkReport.reportEvery = 100
+        self.__created = True
+        return self.process
 
-    bTagDiscriminators = [
-            'pfCombinedInclusiveSecondaryVertexV2BJetTags', 'pfJetProbabilityBJetTags', 'pfCombinedMVABJetTags',
-            'pfSimpleSecondaryVertexHighEffBJetTags', 'pfSimpleSecondaryVertexHighPurBJetTags'
-            ]
+    def addAnalyzer(self, name, configuration, index=None):
+        """
+        Add an analyzer in the framework configuration with a given name and configuration
+        """
 
-    if redoJEC:
+        self.ensureNotCreated()
+
+        if name in self.analyzers:
+            raise Exception('An analyzer named %r is already added to the configuration' % name)
+
+        index = index if index is not None else len(self.analyzers)
+
+        self.analyzers.insert(index, name)
+        setattr(self.process.framework.analyzers, name, configuration)
+
+    def addProducer(self, name, configuration, index=None):
+        """
+        Add a producer in the framework configuration with a given name and configuration
+        """
+
+        self.ensureNotCreated()
+
+        if name in self.producers:
+            raise Exception('A producer named %r is already added to the configuration' % name)
+
+        index = index if index is not None else len(self.producers)
+
+        self.producers.insert(index, name)
+        setattr(self.process.framework.producers, name, configuration)
+
+    def removeAnalyzer(self, name):
+        """
+        Remove an analyzer from the framework configuration
+        """
+
+        self.ensureNotCreated()
+
+        if not name in self.analyzers:
+            raise Exception('Analyzer %r is not present in the framework configuration' % name)
+
+        self.analyzers.remove(name)
+        delattr(self.process.framework.analyzers, name)
+
+    def removeProducer(self, name):
+        """
+        Remove a producer from the framework configuration
+        """
+
+        self.ensureNotCreated()
+
+        if not name in self.producers:
+            raise Exception('Producer %r is not present in the framework configuration' % name)
+
+        self.producers.remove(name)
+        delattr(self.process.framework.producers, name)
+
+    def getAnalyzerIndex(self, name):
+        """
+        Return the current index of an analyzer
+        """
+
+        self.ensureNotCreated()
+
+        if not name in self.analyzers:
+            raise Exception('Analyzer %r is not present in the framework configuration' % name)
+
+        return self.analyzers.index(name)
+
+    def getProducerIndex(self, name):
+        """
+        Return the current index of a producer
+        """
+
+        self.ensureNotCreated()
+
+        if not name in self.producers:
+            raise Exception('Producer %r is not present in the framework configuration' % name)
+
+        return self.producers.index(name)
+
+
+    def redoJEC(self, JECDatabase=None):
+        """
+        Redo the Jet Energy Corrections for the default AK4 jet collection
+        FIXME: Some love is needed for AK8 jets
+        """
+
+        self.ensureNotCreated()
+
+        if self.__jer_done:
+            raise Exception("You must smear the jets after doing the Jet Energy Corrections. Please call 'redoJEC' before 'smearJets'")
+
+        if self.verbose:
+            print("")
+            print("Redoing Jet Energy Corrections")
+
+        if JECDatabase:
+            # Read the JEC from a database
+            from cp3_llbb.Framework.Tools import load_jec_from_db
+            algo_sizes = {'ak': [4, 8]}
+            jet_types = ['pf', 'pfchs', 'puppi']
+            jet_algos = []
+            for k, v in algo_sizes.iteritems():
+                for s in v:
+                    for j in jet_types:
+                        jet_algos.append(str(k.upper() + str(s) + j.upper().replace("CHS", "chs").replace("PUPPI", "PFPuppi")))
+
+            load_jec_from_db(self.process, JECDatabase, jet_algos)
+
         from cp3_llbb.Framework.Tools import setup_jets_mets_
-        setup_jets_mets_(process, isData, bTagDiscriminators, createNoHFMet=createNoHFMet);
+        jet_collection, met_collection = setup_jets_mets_(self.process, self.isData, self.btagDiscriminators)
 
-    # Producers
-    from cp3_llbb.Framework import EventProducer
-    from cp3_llbb.Framework import GenParticlesProducer
-    from cp3_llbb.Framework import HLTProducer
-    from cp3_llbb.Framework import JetsProducer
-    from cp3_llbb.Framework import FatJetsProducer
-    from cp3_llbb.Framework import METProducer
-    from cp3_llbb.Framework import MuonsProducer
-    from cp3_llbb.Framework import ElectronsProducer
-    from cp3_llbb.Framework import VerticesProducer
+        # Look for producers using the default jet and met collections
+        for producer in self.producers:
+            p = getattr(self.process.framework.producers, producer)
+            change_input_tags_and_strings(p, self.__miniaod_jet_collection, jet_collection, 'producers.' + producer, '    ')
+            change_input_tags_and_strings(p, self.__miniaod_met_collection, met_collection, 'producers.' + producer, '    ')
 
-    output = 'output_mc.root' if not isData else 'output_data.root'
+        # Change the default collections to the newly created
+        self.__miniaod_jet_collection = jet_collection
+        self.__miniaod_met_collection = met_collection
 
-    process.framework = cms.EDProducer("ExTreeMaker",
-            output = cms.string(output),
+        if self.verbose:
+            print("New jets and MET collections: %r and %r" % (jet_collection, met_collection))
 
-            filters = cms.PSet(
-                ),
-
-            producers = cms.PSet(
-
-                event = EventProducer.default_configuration,
-
-                hlt = HLTProducer.default_configuration,
-
-                jets = JetsProducer.default_configuration,
-
-                fat_jets = FatJetsProducer.default_configuration,
-
-                met = METProducer.default_configuration,
-
-                muons = MuonsProducer.default_configuration,
-
-                electrons = ElectronsProducer.default_configuration,
-
-                vertices = VerticesProducer.default_configuration,
-                ),
-
-            analyzers = analyzers
-            )
-
-    process.framework.producers.jets.parameters.cut = cms.untracked.string("pt > 10")
-    process.framework.producers.jets.parameters.btags = cms.untracked.vstring(bTagDiscriminators)
-
-    process.framework.producers.fat_jets.parameters.cut = cms.untracked.string("pt > 200")
-
-    if era == eras.Run2_25ns:
-        process.framework.producers.electrons.parameters.ea_R03 = cms.untracked.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt')
-    else:
-        process.framework.producers.electrons.parameters.ea_R03 = cms.untracked.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_50ns.txt')
-
-    if createNoHFMet:
-        process.framework.producers.nohf_met = cms.PSet(METProducer.default_configuration.clone())
-        process.framework.producers.nohf_met.prefix = 'nohf_met_'
-        process.framework.producers.nohf_met.parameters.met = cms.untracked.InputTag('slimmedMETsNoHF')
-
-    path = cms.Path()
-
-    if not isData:
-        process.framework.producers.gen_particles = GenParticlesProducer.default_configuration
-    else:
-        # MET Filters
-
-        from cp3_llbb.Framework import METFilter
-        process.framework.filters.met = METFilter.default_configuration
-
-        process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
-        process.filterOnHBHENoiseFilter = cms.EDFilter('BooleanFlagFilter',
-           inputLabel = cms.InputTag('HBHENoiseFilterResultProducer', 'HBHENoiseFilterResult'),
-           reverseDecision = cms.bool(False)
-        )
-
-        path += cms.Sequence(process.filterOnHBHENoiseFilter) 
-
-    if redoJEC:
-        process.framework.producers.jets.parameters.jets = cms.untracked.InputTag('selectedPatJetsAK4PFCHS')
-
-    path += cms.Sequence(
-            process.egmGsfElectronIDSequence *
-            process.framework
-            )
-
-    process.p = path
-
-    if miniaod_process_name:
         print("")
-        print("Changing process name from %r to %r..." % ('PAT', miniaod_process_name))
-        change_process_name_(process.framework, 'PAT', miniaod_process_name)
+
+        self.__jec_done = True
+
+    def smearJets(self):
+        """
+        Smear the jets
+        """
+
+        self.ensureNotCreated()
+
+        if self.isData:
+            return
+
+        if self.verbose:
+            print("")
+            print("Smearing jets...")
+
+        self.process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
+                    src = cms.InputTag(self.__miniaod_jet_collection),
+                    enabled = cms.bool(True),
+                    rho = cms.InputTag("fixedGridRhoAll"),
+                    resolutionFile = cms.FileInPath(self.__jer_resolution_file),
+                    scaleFactorFile = cms.FileInPath(self.__jer_scale_factor_file),
+
+                    genJets = cms.InputTag(self.__miniaod_gen_jet_collection),
+                    dRMax = cms.double(0.2),
+                    dPtMaxFactor = cms.double(3),
+
+                    variation = cms.untracked.int32(0)
+                )
+
+        self.process.shiftedMETCorrModuleForSmearedJets = cms.EDProducer('ShiftedParticleMETcorrInputProducer',
+                srcOriginal = cms.InputTag(self.__miniaod_jet_collection),
+                srcShifted = cms.InputTag('slimmedJetsSmeared')
+                )
+
+        self.process.slimmedMETsSmeared = cms.EDProducer('CorrectedPATMETProducer',
+                src = cms.InputTag(self.__miniaod_met_collection),
+                srcCorrections = cms.VInputTag(cms.InputTag('shiftedMETCorrModuleForSmearedJets'))
+                )
+
+        # Look for producers using the default jet and met collections
+        for producer in self.producers:
+            p = getattr(self.process.framework.producers, producer)
+            change_input_tags_and_strings(p, self.__miniaod_jet_collection, 'slimmedJetsSmeared', 'producers.' + producer, '    ')
+            change_input_tags_and_strings(p, self.__miniaod_met_collection, 'slimmedMETsSmeared', 'producers.' + producer, '    ')
+
+            if p.type == 'met':
+                p.parameters.slimmed = cms.untracked.bool(False)
+
+        self.__miniaod_jet_collection = 'slimmedJetsSmeared'
+        self.__miniaod_met_collection = 'slimmedMETsSmeared'
+
+        if self.verbose:
+            print("New jets and MET collections: %r and %r" % (self.__miniaod_jet_collection, self.__miniaod_met_collection))
+
+        self.__jer_done = True
+
+    def doSystematics(self, systematics):
+        """
+        Enable systematics
+        """
+
+        self.ensureNotCreated()
+
+        if self.isData:
+            return
+
+        self.__systematics = systematics
 
 
-    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    #! Output and Log
-    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    #
+    # Private methods
+    #
 
-    print("")
-    return process
+    def ensureNotCreated(self):
+        if self.__created:
+            raise RuntimeError("The framework configuration is frozen. Framework.create() must be the last function called.")
 
-def schedule(process, analyzers=None, producers=None):
-    """Inform the framework of the desired scheduling of the analyzers
+    def parseCommandLine_(self):
+        """
+        Parse the command line for options. Supported options are 'globalTag', 'era' and 'process'.
 
-    Args:
-        process (cms.Process): the current framework process, return by the ``create`` method
-        analyzers (string tuple): a string array representing the desired scheduling of the analyzers. Analyzers will be executed in the specified order.
-        producers (string tuple): a string array representing the desired scheduling of the producers. Producers will be executed in the specified order.
-    """
+        Used mainly by GridIn and crab to override user configuration of the framework with correct values
+        for a given dataset.
+        """
 
-    if analyzers and len(analyzers) > 0:
-        framework_analyzers = process.framework.analyzers.parameterNames_()
-        for a in framework_analyzers:
-            if not a in analyzers:
-                raise Exception('Analyzer %r not found in your scheduling array. Please add it somewhere suitable for you.' % a)
+        self.ensureNotCreated()
 
-        if len(analyzers) != len(framework_analyzers):
-            raise Exception('Your scheduling array contains a different number of analyzers than the framework (%d vs %d)' % (len(analyzers), len(framework_analyzers)))
+        import sys
 
-        process.framework.analyzers_scheduling = cms.untracked.vstring(analyzers)
+        parseCommandLine = False
+        for argv in sys.argv:
+            if 'globalTag' in argv or 'era' in argv or 'process' in argv:
+                parseCommandLine = True
+                break
 
-    if producers and len(producers) > 0:
-        framework_producers = process.framework.producers.parameterNames_()
-        for a in framework_producers:
-            if not a in producers:
-                raise Exception('Producer %r not found in your scheduling array. Please add it somewhere suitable for you.' % a)
+        if parseCommandLine:
+            from FWCore.ParameterSet.VarParsing import VarParsing
+            options = VarParsing()
+            options.register('globalTag',
+                    '',
+                    VarParsing.multiplicity.singleton,
+                    VarParsing.varType.string,
+                    'The globaltag to use')
 
-        if len(producers) != len(framework_producers):
-            raise Exception('Your scheduling array contains a different number of producers than the framework (%d vs %d)' % (len(producers), len(framework_producers)))
+            options.register('era',
+                    '',
+                    VarParsing.multiplicity.singleton,
+                    VarParsing.varType.string,
+                    'Era of the dataset')
 
-        process.framework.producers_scheduling = cms.untracked.vstring(producers)
+            options.register('process',
+                    '',
+                    VarParsing.multiplicity.singleton,
+                    VarParsing.varType.string,
+                    'Process name of the MiniAOD production.')
 
-    return process
+            options.parseArguments()
+
+            if options.globalTag:
+                self.globalTag = options.globalTag
+
+            if options.era:
+                assert options.era == '25ns' or options.era == '50ns'
+                if options.era == '25ns':
+                    self.era = eras.Run2_25ns
+                else:
+                    self.era = eras.Run2_50ns
+
+            if options.process:
+                self.processName = options.process
+
+    def configureElectronId_(self):
+
+        self.ensureNotCreated()
+
+        with StdStreamSilenter():
+            from PhysicsTools.SelectorUtils.tools.vid_id_tools import DataFormat, switchOnVIDElectronIdProducer, setupAllVIDIdsInModule, setupVIDElectronSelection
+            switchOnVIDElectronIdProducer(self.process, DataFormat.MiniAOD)
+
+            id_modules = [
+                    'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_50ns_V2_cff',
+                    'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
+                    'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff',
+                    'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff'
+                    ]
+
+            for mod in id_modules:
+                setupAllVIDIdsInModule(self.process, mod, setupVIDElectronSelection)
+
+            self.path += cms.Sequence(self.process.egmGsfElectronIDSequence)
+
+    def configureFramework_(self):
+
+        self.ensureNotCreated()
+
+        from cp3_llbb.Framework import EventProducer
+        from cp3_llbb.Framework import GenParticlesProducer
+        from cp3_llbb.Framework import HLTProducer
+        from cp3_llbb.Framework import JetsProducer
+        from cp3_llbb.Framework import FatJetsProducer
+        from cp3_llbb.Framework import METProducer
+        from cp3_llbb.Framework import MuonsProducer
+        from cp3_llbb.Framework import ElectronsProducer
+        from cp3_llbb.Framework import VerticesProducer
+
+        self.process.framework = cms.EDProducer("ExTreeMaker",
+                output = cms.string(self.output_filename),
+                filters = cms.PSet(),
+                producers = cms.PSet(),
+                analyzers = cms.PSet()
+                )
+
+        self.addProducer('event', copy.deepcopy(EventProducer.default_configuration))
+        self.addProducer('hlt', copy.deepcopy(HLTProducer.default_configuration))
+        self.addProducer('jets', copy.deepcopy(JetsProducer.default_configuration))
+        self.addProducer('fat_jets', copy.deepcopy(FatJetsProducer.default_configuration))
+        self.addProducer('met', copy.deepcopy(METProducer.default_configuration))
+        self.addProducer('muons', copy.deepcopy(MuonsProducer.default_configuration))
+        self.addProducer('electrons', copy.deepcopy(ElectronsProducer.default_configuration))
+        self.addProducer('vertices', copy.deepcopy(VerticesProducer.default_configuration))
+
+        if self.era == eras.Run2_25ns:
+            self.process.framework.producers.electrons.parameters.ea_R03 = cms.untracked.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt')
+        else:
+            self.process.framework.producers.electrons.parameters.ea_R03 = cms.untracked.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_50ns.txt')
+
+        if not self.isData:
+            self.addProducer('gen_particles', copy.deepcopy(GenParticlesProducer.default_configuration), 0)
+        else:
+            # MET Filters
+            from cp3_llbb.Framework import METFilter
+            self.process.framework.filters.met = copy.deepcopy(METFilter.default_configuration)
+
+            self.process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
+            self.process.filterOnHBHENoiseFilter = cms.EDFilter('BooleanFlagFilter',
+               inputLabel = cms.InputTag('HBHENoiseFilterResultProducer', 'HBHENoiseFilterResult'),
+               reverseDecision = cms.bool(False)
+            )
+
+            self.path += cms.Sequence(self.process.filterOnHBHENoiseFilter)
