@@ -35,7 +35,18 @@ void ScaleFactorParser::parse_file(const std::string& file) {
         else
             throw edm::Exception(edm::errors::LogicError, "Unsupported variable: " + variable);
     }
-    m_scale_factor.absolute_errors = ptree.get<bool>("absolute_errors", false);
+
+    std::string error_type = ptree.get<std::string>("error_type");
+    std::transform(error_type.begin(), error_type.end(), error_type.begin(), ::tolower);
+
+    if (error_type == "absolute")
+        m_scale_factor.error_type = ScaleFactor::ErrorType::ABSOLUTE;
+    else if (error_type == "relative")
+        m_scale_factor.error_type = ScaleFactor::ErrorType::RELATIVE;
+    else if (error_type == "variated")
+        m_scale_factor.error_type = ScaleFactor::ErrorType::VARIATED;
+    else
+        throw std::runtime_error("Invalid error_type. Only 'absolute', 'relative' and 'variated' are supported");
 
     switch (dimension) {
         case 1:

@@ -19,7 +19,7 @@
       1.0
     ]
   }, 
-  "absolute_errors": true, 
+  "error_type": "variated",
   "variable": "y", 
   "formula": true, 
   "data": [
