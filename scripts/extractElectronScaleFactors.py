@@ -38,7 +38,7 @@ for key in f.GetListOfKeys():
         else:
             pt_binning.append(h.GetYaxis().GetBinUpEdge(i))
 
-    json_content = {'dimension': 2, 'binning': {'x': eta_binning, 'y': pt_binning}, 'data': []}
+    json_content = {'dimension': 2, 'binning': {'x': eta_binning, 'y': pt_binning}, 'data': [], 'error_type': 'absolute'}
     json_content_data = json_content['data']
 
     for i in range(0, len(eta_binning) - 1):
