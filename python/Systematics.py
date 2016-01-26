@@ -62,9 +62,6 @@ class JetsSystematics(Systematics):
     
         cfg = copy.deepcopy(self.process.framework.producers.jets)
         
-        # Clean configuration
-        del cfg.parameters.cut
-
         cfg.prefix = self.formatModuleVariableName(cfg.prefix.value(), postfix) + '_'
         cfg.parameters.jets = cms.untracked.InputTag(inputCollection)
        
