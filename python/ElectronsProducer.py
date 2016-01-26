@@ -22,10 +22,10 @@ default_configuration = cms.PSet(
                 'egmGsfElectronIDs:heepElectronID-HEEPV60'
                 ),
             scale_factors = cms.untracked.PSet(
-                id_veto = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_sfVETO_id.json'),
-                id_loose = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_sfLOOSE_id.json'),
-                id_medium = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_sfMEDIUM_id.json'),
-                id_tight = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_sfTIGHT_id.json'),
+                id_veto = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_CutBasedID_VetoWP.json'),
+                id_loose = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_CutBasedID_LooseWP.json'),
+                id_medium = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_CutBasedID_MediumWP.json'),
+                id_tight = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_CutBasedID_TightWP.json'),
                 )
             ),
         )

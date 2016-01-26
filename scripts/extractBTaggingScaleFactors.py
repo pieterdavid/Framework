@@ -65,7 +65,7 @@ with open(args.file, 'r') as f:
         if token in all_json_content:
             json_content = all_json_content[token]
         else:
-            json_content = {'dimension': 3, 'binning': {'x': [], 'y': [], 'z': []}, 'data': [], 'absolute_errors': True, 'formula': True,
+            json_content = {'dimension': 3, 'binning': {'x': [], 'y': [], 'z': []}, 'data': [], 'error_type': 'variated', 'formula': True,
                     'variable': 'y' if operating_point != 3 else 'z'}
             all_json_content[token] = json_content
 
