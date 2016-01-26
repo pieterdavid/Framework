@@ -5,6 +5,7 @@
 #include <cp3_llbb/Framework/interface/BTaggingScaleFactors.h>
 
 #include <DataFormats/PatCandidates/interface/Jet.h>
+#include "TMVA/Reader.h"
 
 
 class JetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScaleFactors {
@@ -22,12 +23,42 @@ class JetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScaleFac
                     m_btag_discriminators.emplace(btag, &CandidatesProducer<pat::Jet>::tree[btag].write<std::vector<float>>());
                 }
             }
+            if (config.exists("computeRegression")) {
+                computeRegression = config.getUntrackedParameter<bool>("computeRegression");
+                if (computeRegression)
+                {
+                    regressionFile = config.getUntrackedParameter<edm::FileInPath>("regressionFile").fullPath();
+                    std::cout << "  -> storing bjet energy regression, with xml file " << regressionFile << std::endl;
+                    bjetRegressionReader.reset(new TMVA::Reader());
+                    bjetRegressionReader->AddVariable("Jet_pt", &Jet_pt);
+                    bjetRegressionReader->AddVariable("Jet_corr", &Jet_corr);
+                    bjetRegressionReader->AddVariable("rho", &rho);
+                    bjetRegressionReader->AddVariable("Jet_eta", &Jet_eta);
+                    bjetRegressionReader->AddVariable("Jet_mt", &Jet_mt);
+                    bjetRegressionReader->AddVariable("Jet_leadTrackPt", &Jet_leadTrackPt);
+                    bjetRegressionReader->AddVariable("Jet_leptonPtRel", &Jet_leptonPtRel);
+                    bjetRegressionReader->AddVariable("Jet_leptonPt", &Jet_leptonPt);
+                    bjetRegressionReader->AddVariable("Jet_leptonDeltaR", &Jet_leptonDeltaR);
+                    bjetRegressionReader->AddVariable("Jet_neHEF", &Jet_neHEF);
+                    bjetRegressionReader->AddVariable("Jet_neEmEF", &Jet_neEmEF);
+                    bjetRegressionReader->AddVariable("Jet_chMult", &Jet_chMult);
+                    bjetRegressionReader->AddVariable("Jet_vtxPt", &Jet_vtxPt);
+                    bjetRegressionReader->AddVariable("Jet_vtxMass", &Jet_vtxMass);
+                    bjetRegressionReader->AddVariable("Jet_vtx3dL", &Jet_vtx3dL);
+                    bjetRegressionReader->AddVariable("Jet_vtxNtrk", &Jet_vtxNtrk);
+                    bjetRegressionReader->AddVariable("Jet_vtx3deL", &Jet_vtx3deL);
+                    bjetRegressionReader->BookMVA("BDTG method", regressionFile.c_str());
+                }
+            } else {
+                computeRegression = false;
+            }
         }
 
         virtual ~JetsProducer() {}
 
         virtual void doConsumes(const edm::ParameterSet& config, edm::ConsumesCollector&& collector) override {
             m_jets_token = collector.consumes<std::vector<pat::Jet>>(config.getUntrackedParameter<edm::InputTag>("jets", edm::InputTag("slimmedJets")));
+            m_rho_token = collector.consumes<double>(config.getUntrackedParameter<edm::InputTag>("rho", edm::InputTag("fixedGridRhoFastjetAll")));
         }
 
         virtual void produce(edm::Event& event, const edm::EventSetup& eventSetup) override;
@@ -41,8 +72,30 @@ class JetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScaleFac
 
         // Tokens
         edm::EDGetTokenT<std::vector<pat::Jet>> m_jets_token;
+        edm::EDGetTokenT<double> m_rho_token;
 
         std::map<std::string, std::vector<float>*> m_btag_discriminators;
+        // regression stuff
+        bool computeRegression;
+        std::string regressionFile;
+        std::unique_ptr<TMVA::Reader> bjetRegressionReader;
+        float Jet_pt;
+        float Jet_corr;
+        float rho;
+        float Jet_eta;
+        float Jet_mt;
+        float Jet_leadTrackPt;
+        float Jet_leptonPtRel;
+        float Jet_leptonPt;
+        float Jet_leptonDeltaR;
+        float Jet_neHEF;
+        float Jet_neEmEF;
+        float Jet_chMult;
+        float Jet_vtxPt;
+        float Jet_vtxMass;
+        float Jet_vtx3dL;
+        float Jet_vtxNtrk;
+        float Jet_vtx3deL;
     public:
         // Tree members
         std::vector<float>& area = tree["area"].write<std::vector<float>>();
@@ -51,6 +104,19 @@ class JetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScaleFac
         std::vector<float>& jecFactor = tree["jecFactor"].write<std::vector<float>>();
         std::vector<float>& puJetID = tree["puJetID"].write<std::vector<float>>();
         std::vector<float>& vtxMass = tree["vtxMass"].write<std::vector<float>>();
+        // Variables needed for 74X b-jet energy regression as of January 26th 2016
+        BRANCH(neutralHadronEnergyFraction, std::vector<float>);
+        BRANCH(neutralEmEnergyFraction, std::vector<float>);
+        BRANCH(vtx3DVal, std::vector<float>);
+        BRANCH(vtx3DSig, std::vector<float>);
+        BRANCH(vtxPt, std::vector<float>);
+        BRANCH(vtxNtracks, std::vector<float>);
+        BRANCH(leptonPtRel, std::vector<float>);
+        BRANCH(leptonPt, std::vector<float>);
+        BRANCH(leptonDeltaR, std::vector<float>);
+        BRANCH(chargedMultiplicity, std::vector<float>);
+        BRANCH(leadTrackPt, std::vector<float>);
+        BRANCH(regPt, std::vector<float>);
 
         BRANCH(passLooseID, std::vector<bool>);
         BRANCH(passTightID, std::vector<bool>);
