@@ -168,6 +168,19 @@ class Framework(object):
         self.producers.insert(index, name)
         setattr(self.process.framework.producers, name, configuration)
 
+    def getProducer(self, name):
+        """
+        Return a producer
+        """
+
+        self.ensureNotCreated()
+
+        if not name in self.producers:
+            raise Exception('No producer named %r found in the configuration' % name)
+
+        producer = getattr(self.process.framework.producers, name)
+        return producer
+
     def removeAnalyzer(self, name):
         """
         Remove an analyzer from the framework configuration
