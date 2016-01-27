@@ -29,4 +29,6 @@ namespace Tools {
     inline bool caseInsensitiveEquals(const std::string& a, const std::string& b) {
         return std::equal(a.begin(), a.end(), b.begin(), [](char a, char b) { return std::tolower(a) == std::tolower(b); });
     }
+
+    double process_mem_usage();
 };
