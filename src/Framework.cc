@@ -19,10 +19,14 @@
 
 // user include files
 #include <cp3_llbb/Framework/interface/Framework.h>
+#include <cp3_llbb/Framework/interface/Tools.h>
 #include <cp3_llbb/TreeWrapper/interface/TreeWrapper.h>
 
 #include <TFile.h>
 #include <TTree.h>
+
+// Uncomment to enable printout about memory usage
+// #define DEBUG_MEMORY_USAGE
 
 // Tools for sorting
 template <typename T>
@@ -50,9 +54,16 @@ void apply_permutations(std::vector<T>& vec, std::vector<size_t> const& p) {
 ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
     m_output_filename(iConfig.getParameter<std::string>("output")) {
 
+#ifdef DEBUG_MEMORY_USAGE
+        std::cout << "[Framework - >>constructor] RSS: " << Tools::process_mem_usage() << std::endl;
+#endif
+
         m_output.reset(TFile::Open(m_output_filename.c_str(), "recreate"));
+        m_output->cd();
 
         TTree* tree = new TTree("t", "t");
+        tree->SetAutoFlush(140);
+        tree->SetMaxVirtualSize(500 * 1024 * 1024); // Allow max 500 MB for the tree
         m_wrapper.reset(new ROOT::TreeWrapper(tree));
 
         m_categories.reset(new CategoryManager(*m_wrapper));
@@ -163,6 +174,9 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
             m_analyzers_name.push_back(analyzerName);
         }
 
+#ifdef DEBUG_MEMORY_USAGE
+        std::cout << "[Framework - <<constructor] RSS: " << Tools::process_mem_usage() << std::endl;
+#endif
         std::cout << std::endl;
 }
 
@@ -175,6 +189,10 @@ ExTreeMaker::~ExTreeMaker() {
 void ExTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     bool should_continue = true;
 
+#ifdef DEBUG_MEMORY_USAGE
+    std::cout << "[Framework - >>produce] RSS: " << Tools::process_mem_usage() << std::endl;
+#endif
+
     for (auto& filter: m_filters)
         should_continue &= filter.second->filter(iEvent, iSetup);
 
@@ -185,6 +203,10 @@ void ExTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
         producer.second->produce(iEvent, iSetup);
         producer.second->setRun(true);
     }
+
+#ifdef DEBUG_MEMORY_USAGE
+    std::cout << "[Framework - >>produce after producers] RSS: " << Tools::process_mem_usage() << std::endl;
+#endif
 
     should_continue = m_categories->evaluate_pre_analyzers(*m_producers_manager);
     if (! should_continue) {
@@ -200,6 +222,10 @@ void ExTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     m_categories->set_prefix("");
 
+#ifdef DEBUG_MEMORY_USAGE
+    std::cout << "[Framework - >>produce after analyzers] RSS: " << Tools::process_mem_usage() << std::endl;
+#endif
+
     if (m_categories->evaluate_post_analyzers(*m_producers_manager, *m_analyzers_manager))
         m_wrapper->fill();
     else
@@ -212,12 +238,20 @@ void ExTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
     for (auto& producer: m_producers)
         producer.second->setRun(false);
+
+#ifdef DEBUG_MEMORY_USAGE
+    std::cout << "[Framework - <<produce] RSS: " << Tools::process_mem_usage() << std::endl;
+#endif
 }
 
 
 // ------------ method called once each job just before starting event loop  ------------
 void ExTreeMaker::beginJob() {
     m_start_time = clock::now();
+
+#ifdef DEBUG_MEMORY_USAGE
+    std::cout << "[Framework - >>beginJob] RSS: " << Tools::process_mem_usage() << std::endl;
+#endif
 
     for (auto& filter: m_filters)
         filter.second->beginJob(*m_metadata);
@@ -227,10 +261,19 @@ void ExTreeMaker::beginJob() {
 
     for (auto& analyzer: m_analyzers)
         analyzer.analyzer->beginJob(*m_metadata);
+
+#ifdef DEBUG_MEMORY_USAGE
+    std::cout << "[Framework - <<beginJob] RSS: " << Tools::process_mem_usage() << std::endl;
+#endif
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
 void ExTreeMaker::endJob() {
+
+#ifdef DEBUG_MEMORY_USAGE
+    std::cout << "[Framework - >>endJob] RSS: " << Tools::process_mem_usage() << std::endl;
+#endif
+
     std::cout << std::endl << "---" << std::endl;
     for (auto& filter: m_filters)
         filter.second->endJob(*m_metadata);
@@ -247,6 +290,10 @@ void ExTreeMaker::endJob() {
     m_output->Write();
 
     m_categories->print_summary();
+
+#ifdef DEBUG_MEMORY_USAGE
+    std::cout << "[Framework - <<endJob] RSS: " << Tools::process_mem_usage() << std::endl;
+#endif
 }
 
 void ExTreeMaker::beginRun(const edm::Run& run, const edm::EventSetup& eventSetup) {
