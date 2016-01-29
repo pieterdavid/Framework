@@ -12,216 +12,216 @@
             10.0, 
             11.0
           ], 
-          "error_low": 0.0231146, 
-          "value": 0.947824, 
-          "error_high": 0.0197651
+          "error_low": 0.0177084, 
+          "value": 0.965158, 
+          "error_high": 0.0132744
         }, 
         {
           "bin": [
             11.0, 
             12.0
           ], 
-          "error_low": 0.0194334, 
-          "value": 0.943083, 
-          "error_high": 0.015986
+          "error_low": 0.0142063, 
+          "value": 0.98574, 
+          "error_high": 0.00959721
         }, 
         {
           "bin": [
             12.0, 
             13.0
           ], 
-          "error_low": 8.40578e-05, 
-          "value": 0.941736, 
-          "error_high": 8.40578e-05
+          "error_low": 0.0158157, 
+          "value": 0.970632, 
+          "error_high": 0.0125981
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.0161611, 
-          "value": 0.954301, 
-          "error_high": 0.0141424
+          "error_low": 0.0148481, 
+          "value": 0.969148, 
+          "error_high": 0.0130553
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.015135, 
-          "value": 0.941498, 
-          "error_high": 0.013003
+          "error_low": 0.0108905, 
+          "value": 0.972392, 
+          "error_high": 0.008626
         }, 
         {
           "bin": [
             15.0, 
             16.0
           ], 
-          "error_low": 0.0123495, 
-          "value": 0.951625, 
-          "error_high": 0.0106113
+          "error_low": 0.00966673, 
+          "value": 0.974822, 
+          "error_high": 0.00802753
         }, 
         {
           "bin": [
             16.0, 
             17.0
           ], 
-          "error_low": 0.0117129, 
-          "value": 0.957123, 
-          "error_high": 0.0110785
+          "error_low": 0.00976981, 
+          "value": 0.975203, 
+          "error_high": 0.00861865
         }, 
         {
           "bin": [
             17.0, 
             18.0
           ], 
-          "error_low": 0.01115, 
-          "value": 0.957023, 
-          "error_high": 0.00991704
+          "error_low": 0.00870155, 
+          "value": 0.981927, 
+          "error_high": 0.00720913
         }, 
         {
           "bin": [
             18.0, 
             19.0
           ], 
-          "error_low": 0.00936153, 
-          "value": 0.957998, 
-          "error_high": 0.00865827
+          "error_low": 0.00647325, 
+          "value": 0.979381, 
+          "error_high": 0.00535507
         }, 
         {
           "bin": [
             19.0, 
             20.0
           ], 
-          "error_low": 0.00902749, 
-          "value": 0.949997, 
-          "error_high": 0.00808655
+          "error_low": 0.00568297, 
+          "value": 0.981937, 
+          "error_high": 0.0047135
         }, 
         {
           "bin": [
             20.0, 
             21.0
           ], 
-          "error_low": 0.00923184, 
-          "value": 0.964394, 
-          "error_high": 0.00856989
+          "error_low": 0.00514849, 
+          "value": 0.982989, 
+          "error_high": 0.00429106
         }, 
         {
           "bin": [
             21.0, 
             22.0
           ], 
-          "error_low": 0.00674094, 
-          "value": 0.964269, 
-          "error_high": 0.0058922
+          "error_low": 0.00489235, 
+          "value": 0.986325, 
+          "error_high": 0.00430484
         }, 
         {
           "bin": [
             22.0, 
             23.0
           ], 
-          "error_low": 0.00755226, 
-          "value": 0.964173, 
-          "error_high": 0.00691941
+          "error_low": 0.00483245, 
+          "value": 0.982034, 
+          "error_high": 0.00411326
         }, 
         {
           "bin": [
             23.0, 
             24.0
           ], 
-          "error_low": 0.00614888, 
-          "value": 0.963484, 
-          "error_high": 0.00553196
+          "error_low": 0.00495819, 
+          "value": 0.978994, 
+          "error_high": 0.00462678
         }, 
         {
           "bin": [
             24.0, 
             25.0
           ], 
-          "error_low": 0.000376049, 
-          "value": 0.951585, 
-          "error_high": 0.000376049
+          "error_low": 0.00594612, 
+          "value": 0.965572, 
+          "error_high": 0.00529958
         }, 
         {
           "bin": [
             25.0, 
             26.0
           ], 
-          "error_low": 0.00709081, 
-          "value": 0.967934, 
-          "error_high": 0.0065073
+          "error_low": 0.00544715, 
+          "value": 0.976605, 
+          "error_high": 0.00493675
         }, 
         {
           "bin": [
             26.0, 
             30.0
           ], 
-          "error_low": 0.0029789, 
-          "value": 0.952809, 
-          "error_high": 0.00286199
+          "error_low": 0.00235656, 
+          "value": 0.97065, 
+          "error_high": 0.00254325
         }, 
         {
           "bin": [
             30.0, 
             35.0
           ], 
-          "error_low": 0.00273952, 
-          "value": 0.94475, 
-          "error_high": 0.00274697
+          "error_low": 0.00241866, 
+          "value": 0.96224, 
+          "error_high": 0.00241294
         }, 
         {
           "bin": [
             35.0, 
             40.0
           ], 
-          "error_low": 0.00262014, 
-          "value": 0.940022, 
-          "error_high": 0.00258871
+          "error_low": 0.0022512, 
+          "value": 0.956982, 
+          "error_high": 0.00222498
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.00202826, 
-          "value": 0.929102, 
-          "error_high": 0.00194
+          "error_low": 0.00172095, 
+          "value": 0.944568, 
+          "error_high": 0.00171508
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.00363108, 
-          "value": 0.917141, 
-          "error_high": 0.00353308
+          "error_low": 0.00352876, 
+          "value": 0.937763, 
+          "error_high": 0.00346421
         }, 
         {
           "bin": [
             60.0, 
             80.0
           ], 
-          "error_low": 0.00608382, 
-          "value": 0.925753, 
-          "error_high": 0.00603433
+          "error_low": 0.00897838, 
+          "value": 0.939901, 
+          "error_high": 0.00813584
         }, 
         {
           "bin": [
             80.0, 
             120.0
           ], 
-          "error_low": 0.00893863, 
-          "value": 0.943868, 
-          "error_high": 0.00857147
+          "error_low": 0.00736709, 
+          "value": 0.961259, 
+          "error_high": 0.00697494
         }, 
         {
           "bin": [
             120.0, 
             200.0
           ], 
-          "error_low": 0.0621718, 
-          "value": 0.911337, 
-          "error_high": 0.0416716
+          "error_low": 0.0504122, 
+          "value": 0.931495, 
+          "error_high": 0.0552449
         }
       ]
     }, 
@@ -236,216 +236,216 @@
             10.0, 
             11.0
           ], 
-          "error_low": 0.0189293, 
-          "value": 0.90104, 
-          "error_high": 0.0169432
+          "error_low": 0.0151164, 
+          "value": 0.943107, 
+          "error_high": 0.0127896
         }, 
         {
           "bin": [
             11.0, 
             12.0
           ], 
-          "error_low": 0.0144674, 
-          "value": 0.933082, 
-          "error_high": 0.0127888
+          "error_low": 0.0121257, 
+          "value": 0.95642, 
+          "error_high": 0.0101624
         }, 
         {
           "bin": [
             12.0, 
             13.0
           ], 
-          "error_low": 0.0125021, 
-          "value": 0.943401, 
-          "error_high": 0.0109211
+          "error_low": 0.0103197, 
+          "value": 0.963236, 
+          "error_high": 0.00869582
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.00988158, 
-          "value": 0.95495, 
-          "error_high": 0.00848461
+          "error_low": 0.00723294, 
+          "value": 0.977111, 
+          "error_high": 0.00596493
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.00958556, 
-          "value": 0.949985, 
-          "error_high": 0.00971604
+          "error_low": 0.00799943, 
+          "value": 0.966444, 
+          "error_high": 0.00694171
         }, 
         {
           "bin": [
             15.0, 
             16.0
           ], 
-          "error_low": 0.0104078, 
-          "value": 0.945696, 
-          "error_high": 0.00974124
+          "error_low": 0.00800726, 
+          "value": 0.965003, 
+          "error_high": 0.00685886
         }, 
         {
           "bin": [
             16.0, 
             17.0
           ], 
-          "error_low": 0.0103911, 
-          "value": 0.954058, 
-          "error_high": 0.00911708
+          "error_low": 0.0087432, 
+          "value": 0.969415, 
+          "error_high": 0.00769216
         }, 
         {
           "bin": [
             17.0, 
             18.0
           ], 
-          "error_low": 0.00870899, 
-          "value": 0.933523, 
-          "error_high": 0.00802807
+          "error_low": 0.00733526, 
+          "value": 0.953718, 
+          "error_high": 0.0066518
         }, 
         {
           "bin": [
             18.0, 
             19.0
           ], 
-          "error_low": 0.00762166, 
-          "value": 0.936608, 
-          "error_high": 0.00711518
+          "error_low": 0.00779007, 
+          "value": 0.960204, 
+          "error_high": 0.00744018
         }, 
         {
           "bin": [
             19.0, 
             20.0
           ], 
-          "error_low": 0.00649039, 
-          "value": 0.960403, 
-          "error_high": 0.00608439
+          "error_low": 0.0047556, 
+          "value": 0.974291, 
+          "error_high": 0.00424964
         }, 
         {
           "bin": [
             20.0, 
             21.0
           ], 
-          "error_low": 0.00545535, 
-          "value": 0.957821, 
-          "error_high": 0.00503275
+          "error_low": 0.00440884, 
+          "value": 0.97304, 
+          "error_high": 0.00398245
         }, 
         {
           "bin": [
             21.0, 
             22.0
           ], 
-          "error_low": 0.00571307, 
-          "value": 0.949947, 
-          "error_high": 0.0053307
+          "error_low": 0.00488843, 
+          "value": 0.964725, 
+          "error_high": 0.00450343
         }, 
         {
           "bin": [
             22.0, 
             23.0
           ], 
-          "error_low": 0.00592618, 
-          "value": 0.941035, 
-          "error_high": 0.00554769
+          "error_low": 0.00471715, 
+          "value": 0.963622, 
+          "error_high": 0.00436293
         }, 
         {
           "bin": [
             23.0, 
             24.0
           ], 
-          "error_low": 0.00540735, 
-          "value": 0.943712, 
-          "error_high": 0.00509585
+          "error_low": 0.00501861, 
+          "value": 0.958958, 
+          "error_high": 0.00520294
         }, 
         {
           "bin": [
             24.0, 
             25.0
           ], 
-          "error_low": 0.00514429, 
-          "value": 0.948566, 
-          "error_high": 0.0048584
+          "error_low": 0.00427381, 
+          "value": 0.965486, 
+          "error_high": 0.00394197
         }, 
         {
           "bin": [
             25.0, 
             26.0
           ], 
-          "error_low": 0.00522215, 
-          "value": 0.939151, 
-          "error_high": 0.00497248
+          "error_low": 0.0042395, 
+          "value": 0.960573, 
+          "error_high": 0.00396629
         }, 
         {
           "bin": [
             26.0, 
             30.0
           ], 
-          "error_low": 0.00275989, 
-          "value": 0.939004, 
-          "error_high": 0.00270164
+          "error_low": 0.00228375, 
+          "value": 0.954835, 
+          "error_high": 0.0022822
         }, 
         {
           "bin": [
             30.0, 
             35.0
           ], 
-          "error_low": 0.00211471, 
-          "value": 0.931767, 
-          "error_high": 0.00210044
+          "error_low": 0.0018203, 
+          "value": 0.947561, 
+          "error_high": 0.00181802
         }, 
         {
           "bin": [
             35.0, 
             40.0
           ], 
-          "error_low": 0.00185914, 
-          "value": 0.921988, 
-          "error_high": 0.00186582
+          "error_low": 0.0016716, 
+          "value": 0.938141, 
+          "error_high": 0.00167447
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.00123071, 
-          "value": 0.911013, 
-          "error_high": 0.00121444
+          "error_low": 0.00113109, 
+          "value": 0.925595, 
+          "error_high": 0.0011203
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.00271849, 
-          "value": 0.915062, 
-          "error_high": 0.00271039
+          "error_low": 0.00244967, 
+          "value": 0.9322, 
+          "error_high": 0.00243378
         }, 
         {
           "bin": [
             60.0, 
             80.0
           ], 
-          "error_low": 0.00395933, 
-          "value": 0.92435, 
-          "error_high": 0.00388772
+          "error_low": 0.00349266, 
+          "value": 0.941172, 
+          "error_high": 0.00341539
         }, 
         {
           "bin": [
             80.0, 
             120.0
           ], 
-          "error_low": 0.00697828, 
-          "value": 0.927471, 
-          "error_high": 0.00668533
+          "error_low": 0.00617444, 
+          "value": 0.944551, 
+          "error_high": 0.00587872
         }, 
         {
           "bin": [
             120.0, 
             200.0
           ], 
-          "error_low": 0.016526, 
-          "value": 0.912788, 
-          "error_high": 0.0158592
+          "error_low": 0.0136961, 
+          "value": 0.936399, 
+          "error_high": 0.012188
         }
       ]
     }, 
@@ -460,216 +460,216 @@
             10.0, 
             11.0
           ], 
-          "error_low": 0.00918755, 
-          "value": 0.990016, 
-          "error_high": 0.00846844
+          "error_low": 0.00914133, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             11.0, 
             12.0
           ], 
-          "error_low": 0.0104948, 
-          "value": 0.992393, 
-          "error_high": 0.00743505
+          "error_low": 0.00662034, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             12.0, 
             13.0
           ], 
-          "error_low": 0.00796369, 
-          "value": 0.984421, 
-          "error_high": 0.00619511
+          "error_low": 0.00500793, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.00618755, 
-          "value": 0.99289, 
-          "error_high": 0.00436915
+          "error_low": 0.00444707, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.00604789, 
-          "value": 0.987227, 
-          "error_high": 0.00493052
+          "error_low": 0.00283034, 
+          "value": 0.997904, 
+          "error_high": 0.00146465
         }, 
         {
           "bin": [
             15.0, 
             16.0
           ], 
-          "error_low": 0.00592932, 
-          "value": 0.988951, 
-          "error_high": 0.00460345
+          "error_low": 0.00246887, 
+          "value": 0.998184, 
+          "error_high": 0.00126872
         }, 
         {
           "bin": [
             16.0, 
             17.0
           ], 
-          "error_low": 0.00389361, 
-          "value": 0.992779, 
-          "error_high": 0.0032689
+          "error_low": 0.000742485, 
+          "value": 1.0, 
+          "error_high": 1.51323e-13
         }, 
         {
           "bin": [
             17.0, 
             18.0
           ], 
-          "error_low": 0.00335503, 
-          "value": 0.992748, 
-          "error_high": 0.00256879
+          "error_low": 0.00163974, 
+          "value": 0.998794, 
+          "error_high": 0.000841284
         }, 
         {
           "bin": [
             18.0, 
             19.0
           ], 
-          "error_low": 0.00333475, 
-          "value": 0.990963, 
-          "error_high": 0.00267919
+          "error_low": 0.00185531, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             19.0, 
             20.0
           ], 
-          "error_low": 0.00343517, 
-          "value": 0.988621, 
-          "error_high": 0.00286557
+          "error_low": 0.00180047, 
+          "value": 0.997383, 
+          "error_high": 0.00150638
         }, 
         {
           "bin": [
             20.0, 
             21.0
           ], 
-          "error_low": 0.00405762, 
-          "value": 0.983681, 
-          "error_high": 0.0035084
+          "error_low": 0.00206166, 
+          "value": 0.996706, 
+          "error_high": 0.00157051
         }, 
         {
           "bin": [
             21.0, 
             22.0
           ], 
-          "error_low": 0.00253658, 
-          "value": 0.994829, 
-          "error_high": 0.0020899
+          "error_low": 0.00110266, 
+          "value": 0.999265, 
+          "error_high": 0.000601443
         }, 
         {
           "bin": [
             22.0, 
             23.0
           ], 
-          "error_low": 0.00295967, 
-          "value": 0.990678, 
-          "error_high": 0.00255024
+          "error_low": 0.00149005, 
+          "value": 0.997451, 
+          "error_high": 0.00107178
         }, 
         {
           "bin": [
             23.0, 
             24.0
           ], 
-          "error_low": 0.00282439, 
-          "value": 0.99168, 
-          "error_high": 0.00246553
+          "error_low": 0.000351954, 
+          "value": 1.0, 
+          "error_high": 9.53391e-11
         }, 
         {
           "bin": [
             24.0, 
             25.0
           ], 
-          "error_low": 0.00277689, 
-          "value": 0.988435, 
-          "error_high": 0.00239575
+          "error_low": 0.00101664, 
+          "value": 0.998845, 
+          "error_high": 0.000637649
         }, 
         {
           "bin": [
             25.0, 
             26.0
           ], 
-          "error_low": 0.00275353, 
-          "value": 0.986282, 
-          "error_high": 0.00242962
+          "error_low": 0.00154865, 
+          "value": 0.996077, 
+          "error_high": 0.00122986
         }, 
         {
           "bin": [
             26.0, 
             30.0
           ], 
-          "error_low": 0.00153381, 
-          "value": 0.982834, 
-          "error_high": 0.00147575
+          "error_low": 0.000944154, 
+          "value": 0.994025, 
+          "error_high": 0.000891057
         }, 
         {
           "bin": [
             30.0, 
             35.0
           ], 
-          "error_low": 0.00115504, 
-          "value": 0.979914, 
-          "error_high": 0.00112115
+          "error_low": 0.000952935, 
+          "value": 0.989504, 
+          "error_high": 0.000913175
         }, 
         {
           "bin": [
             35.0, 
             40.0
           ], 
-          "error_low": 0.00124119, 
-          "value": 0.973335, 
-          "error_high": 0.00123109
+          "error_low": 0.00101897, 
+          "value": 0.98389, 
+          "error_high": 0.000997347
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.000758943, 
-          "value": 0.967478, 
-          "error_high": 0.000746468
+          "error_low": 3.63628e-05, 
+          "value": 0.97798, 
+          "error_high": 3.63628e-05
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.0017724, 
-          "value": 0.968387, 
-          "error_high": 0.00172521
+          "error_low": 0.00151215, 
+          "value": 0.976777, 
+          "error_high": 0.00147205
         }, 
         {
           "bin": [
             60.0, 
             80.0
           ], 
-          "error_low": 0.0024585, 
-          "value": 0.965341, 
-          "error_high": 0.00234866
+          "error_low": 0.00207676, 
+          "value": 0.975664, 
+          "error_high": 0.00196376
         }, 
         {
           "bin": [
             80.0, 
             120.0
           ], 
-          "error_low": 0.00358662, 
-          "value": 0.970759, 
-          "error_high": 0.0033105
+          "error_low": 0.00296811, 
+          "value": 0.980329, 
+          "error_high": 0.0026933
         }, 
         {
           "bin": [
             120.0, 
             200.0
           ], 
-          "error_low": 0.00858087, 
-          "value": 0.968968, 
-          "error_high": 0.0148083
+          "error_low": 0.00926596, 
+          "value": 0.979618, 
+          "error_high": 0.00809922
         }
       ]
     }, 
@@ -684,216 +684,216 @@
             10.0, 
             11.0
           ], 
-          "error_low": 0.0188796, 
-          "value": 0.951951, 
-          "error_high": 0.0151904
+          "error_low": 0.0126276, 
+          "value": 0.981726, 
+          "error_high": 0.0086626
         }, 
         {
           "bin": [
             11.0, 
             12.0
           ], 
-          "error_low": 0.017578, 
-          "value": 0.947957, 
-          "error_high": 0.0146983
+          "error_low": 0.0142425, 
+          "value": 0.968918, 
+          "error_high": 0.0109648
         }, 
         {
           "bin": [
             12.0, 
             13.0
           ], 
-          "error_low": 0.0130594, 
-          "value": 0.966688, 
-          "error_high": 0.0115512
+          "error_low": 0.00782249, 
+          "value": 0.988631, 
+          "error_high": 0.00535618
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.0135802, 
-          "value": 0.94769, 
-          "error_high": 0.0115839
+          "error_low": 0.0107622, 
+          "value": 0.967501, 
+          "error_high": 0.0113437
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.0110026, 
-          "value": 0.960607, 
-          "error_high": 0.00930897
+          "error_low": 0.00829635, 
+          "value": 0.97906, 
+          "error_high": 0.00659865
         }, 
         {
           "bin": [
             15.0, 
             16.0
           ], 
-          "error_low": 0.00646903, 
-          "value": 0.982391, 
-          "error_high": 0.00520029
+          "error_low": 0.00402749, 
+          "value": 0.994106, 
+          "error_high": 0.00279025
         }, 
         {
           "bin": [
             16.0, 
             17.0
           ], 
-          "error_low": 0.00854124, 
-          "value": 0.961159, 
-          "error_high": 0.00749416
+          "error_low": 0.00706685, 
+          "value": 0.97467, 
+          "error_high": 0.00595425
         }, 
         {
           "bin": [
             17.0, 
             18.0
           ], 
-          "error_low": 0.00653383, 
-          "value": 0.970338, 
-          "error_high": 0.00570545
+          "error_low": 0.00448731, 
+          "value": 0.987119, 
+          "error_high": 0.00364096
         }, 
         {
           "bin": [
             18.0, 
             19.0
           ], 
-          "error_low": 0.00679901, 
-          "value": 0.960085, 
-          "error_high": 0.00614218
+          "error_low": 0.00494079, 
+          "value": 0.980501, 
+          "error_high": 0.0042181
         }, 
         {
           "bin": [
             19.0, 
             20.0
           ], 
-          "error_low": 0.00604664, 
-          "value": 0.963006, 
-          "error_high": 0.00544159
+          "error_low": 0.00495933, 
+          "value": 0.984471, 
+          "error_high": 0.00449439
         }, 
         {
           "bin": [
             20.0, 
             21.0
           ], 
-          "error_low": 0.00608435, 
-          "value": 0.96436, 
-          "error_high": 0.00577995
+          "error_low": 0.00401279, 
+          "value": 0.982837, 
+          "error_high": 0.00349751
         }, 
         {
           "bin": [
             21.0, 
             22.0
           ], 
-          "error_low": 0.00587872, 
-          "value": 0.965479, 
-          "error_high": 0.00548662
+          "error_low": 0.00457581, 
+          "value": 0.981593, 
+          "error_high": 0.00411908
         }, 
         {
           "bin": [
             22.0, 
             23.0
           ], 
-          "error_low": 0.00462654, 
-          "value": 0.967659, 
-          "error_high": 0.0042417
+          "error_low": 0.0033459, 
+          "value": 0.983495, 
+          "error_high": 0.00298227
         }, 
         {
           "bin": [
             23.0, 
             24.0
           ], 
-          "error_low": 0.00507238, 
-          "value": 0.958846, 
-          "error_high": 0.00471023
+          "error_low": 0.0038195, 
+          "value": 0.977531, 
+          "error_high": 0.00343355
         }, 
         {
           "bin": [
             24.0, 
             25.0
           ], 
-          "error_low": 0.00471223, 
-          "value": 0.966076, 
-          "error_high": 0.00445861
+          "error_low": 0.00369925, 
+          "value": 0.97959, 
+          "error_high": 0.003358
         }, 
         {
           "bin": [
             25.0, 
             26.0
           ], 
-          "error_low": 0.00421767, 
-          "value": 0.966116, 
-          "error_high": 0.00390096
+          "error_low": 0.00329858, 
+          "value": 0.979868, 
+          "error_high": 0.00297894
         }, 
         {
           "bin": [
             26.0, 
             30.0
           ], 
-          "error_low": 0.00231012, 
-          "value": 0.957163, 
-          "error_high": 0.00227882
+          "error_low": 0.00185928, 
+          "value": 0.971955, 
+          "error_high": 0.00181641
         }, 
         {
           "bin": [
             30.0, 
             35.0
           ], 
-          "error_low": 0.0019048, 
-          "value": 0.946281, 
-          "error_high": 0.00189277
+          "error_low": 0.00159796, 
+          "value": 0.963536, 
+          "error_high": 0.00157548
         }, 
         {
           "bin": [
             35.0, 
             40.0
           ], 
-          "error_low": 0.00154884, 
-          "value": 0.939446, 
-          "error_high": 0.00154824
+          "error_low": 0.00134443, 
+          "value": 0.956717, 
+          "error_high": 0.00134457
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.000956042, 
-          "value": 0.942237, 
-          "error_high": 0.000956042
+          "error_low": 0.00080921, 
+          "value": 0.959355, 
+          "error_high": 0.000797521
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.00285609, 
-          "value": 0.946051, 
-          "error_high": 0.0023244
+          "error_low": 0.0019974, 
+          "value": 0.96251, 
+          "error_high": 0.00188674
         }, 
         {
           "bin": [
             60.0, 
             80.0
           ], 
-          "error_low": 0.00300171, 
-          "value": 0.947798, 
-          "error_high": 0.00291844
+          "error_low": 0.00240737, 
+          "value": 0.964795, 
+          "error_high": 0.00232393
         }, 
         {
           "bin": [
             80.0, 
             120.0
           ], 
-          "error_low": 0.018451, 
-          "value": 0.940952, 
-          "error_high": 0.00448307
+          "error_low": 0.00369961, 
+          "value": 0.964796, 
+          "error_high": 0.00348323
         }, 
         {
           "bin": [
             120.0, 
             200.0
           ], 
-          "error_low": 0.0116798, 
-          "value": 0.943292, 
-          "error_high": 0.0106976
+          "error_low": 0.00925238, 
+          "value": 0.968214, 
+          "error_high": 0.0081736
         }
       ]
     }, 
@@ -926,198 +926,198 @@
             12.0, 
             13.0
           ], 
-          "error_low": 0.00997136, 
-          "value": 0.988582, 
-          "error_high": 0.00627745
+          "error_low": 0.0130515, 
+          "value": 0.999998, 
+          "error_high": 2.11877e-06
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.00739239, 
-          "value": 0.991578, 
-          "error_high": 0.00464373
+          "error_low": 0.00569278, 
+          "value": 0.995797, 
+          "error_high": 0.00293423
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.00653593, 
-          "value": 0.989185, 
-          "error_high": 0.00455189
+          "error_low": 0.00495219, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             15.0, 
             16.0
           ], 
-          "error_low": 0.0128131, 
-          "value": 0.983433, 
-          "error_high": 0.0103187
+          "error_low": 0.0056825, 
+          "value": 0.990245, 
+          "error_high": 0.00644971
         }, 
         {
           "bin": [
             16.0, 
             17.0
           ], 
-          "error_low": 0.00573333, 
-          "value": 0.985376, 
-          "error_high": 0.0045606
+          "error_low": 0.00468384, 
+          "value": 0.990864, 
+          "error_high": 0.00349164
         }, 
         {
           "bin": [
             17.0, 
             18.0
           ], 
-          "error_low": 0.00501707, 
-          "value": 0.983329, 
-          "error_high": 0.00417981
+          "error_low": 0.00356177, 
+          "value": 0.992303, 
+          "error_high": 0.0027256
         }, 
         {
           "bin": [
             18.0, 
             19.0
           ], 
-          "error_low": 0.00566818, 
-          "value": 0.980785, 
-          "error_high": 0.00494881
+          "error_low": 0.00343595, 
+          "value": 0.993011, 
+          "error_high": 0.002878
         }, 
         {
           "bin": [
             19.0, 
             20.0
           ], 
-          "error_low": 0.00527274, 
-          "value": 0.976481, 
-          "error_high": 0.00510842
+          "error_low": 0.00330367, 
+          "value": 0.990621, 
+          "error_high": 0.00276751
         }, 
         {
           "bin": [
             20.0, 
             21.0
           ], 
-          "error_low": 0.00357342, 
-          "value": 0.987673, 
-          "error_high": 0.00315247
+          "error_low": 0.00198289, 
+          "value": 0.995736, 
+          "error_high": 0.00151193
         }, 
         {
           "bin": [
             21.0, 
             22.0
           ], 
-          "error_low": 0.00385628, 
-          "value": 0.978097, 
-          "error_high": 0.00351523
+          "error_low": 0.00262614, 
+          "value": 0.991695, 
+          "error_high": 0.0022592
         }, 
         {
           "bin": [
             22.0, 
             23.0
           ], 
-          "error_low": 0.00344664, 
-          "value": 0.978869, 
-          "error_high": 0.00310436
+          "error_low": 0.00188714, 
+          "value": 0.994859, 
+          "error_high": 0.00160535
         }, 
         {
           "bin": [
             23.0, 
             24.0
           ], 
-          "error_low": 0.00410609, 
-          "value": 0.981545, 
-          "error_high": 0.00342655
+          "error_low": 0.00220908, 
+          "value": 0.992497, 
+          "error_high": 0.00196766
         }, 
         {
           "bin": [
             24.0, 
             25.0
           ], 
-          "error_low": 0.00308331, 
-          "value": 0.983279, 
-          "error_high": 0.00281688
+          "error_low": 0.00191159, 
+          "value": 0.992028, 
+          "error_high": 0.00165011
         }, 
         {
           "bin": [
             25.0, 
             26.0
           ], 
-          "error_low": 0.00263395, 
-          "value": 0.98134, 
-          "error_high": 0.00240059
+          "error_low": 0.00183516, 
+          "value": 0.991358, 
+          "error_high": 0.00161022
         }, 
         {
           "bin": [
             26.0, 
             30.0
           ], 
-          "error_low": 0.00166726, 
-          "value": 0.965843, 
-          "error_high": 0.00166415
+          "error_low": 0.0013408, 
+          "value": 0.975955, 
+          "error_high": 0.00137506
         }, 
         {
           "bin": [
             30.0, 
             35.0
           ], 
-          "error_low": 0.00128293, 
-          "value": 0.961516, 
-          "error_high": 0.00127818
+          "error_low": 0.00109757, 
+          "value": 0.972761, 
+          "error_high": 0.00107696
         }, 
         {
           "bin": [
             35.0, 
             40.0
           ], 
-          "error_low": 0.000932296, 
-          "value": 0.964951, 
-          "error_high": 0.000918331
+          "error_low": 0.000774895, 
+          "value": 0.976028, 
+          "error_high": 0.000762633
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.000611231, 
-          "value": 0.974073, 
-          "error_high": 0.000610044
+          "error_low": 0.000489884, 
+          "value": 0.983946, 
+          "error_high": 0.000483156
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.00131591, 
-          "value": 0.975285, 
-          "error_high": 0.00126952
+          "error_low": 0.00103003, 
+          "value": 0.984635, 
+          "error_high": 0.000995389
         }, 
         {
           "bin": [
             60.0, 
             80.0
           ], 
-          "error_low": 0.00171659, 
-          "value": 0.977426, 
-          "error_high": 0.00165554
+          "error_low": 0.00138865, 
+          "value": 0.98576, 
+          "error_high": 0.00133002
         }, 
         {
           "bin": [
             80.0, 
             120.0
           ], 
-          "error_low": 0.00308602, 
-          "value": 0.973068, 
-          "error_high": 0.0043318
+          "error_low": 0.00307969, 
+          "value": 0.982838, 
+          "error_high": 0.0021906
         }, 
         {
           "bin": [
             120.0, 
             200.0
           ], 
-          "error_low": 0.00786373, 
-          "value": 0.958761, 
-          "error_high": 0.00705279
+          "error_low": 0.00592498, 
+          "value": 0.97664, 
+          "error_high": 0.00507579
         }
       ]
     }, 
@@ -1141,207 +1141,207 @@
             11.0, 
             12.0
           ], 
-          "error_low": 0.111138, 
-          "value": 0.715021, 
-          "error_high": 0.0913954
+          "error_low": 0.0960831, 
+          "value": 0.811063, 
+          "error_high": 0.0749919
         }, 
         {
           "bin": [
             12.0, 
             13.0
           ], 
-          "error_low": 0.0781929, 
-          "value": 0.847965, 
-          "error_high": 0.0648927
+          "error_low": 0.0618455, 
+          "value": 0.91017, 
+          "error_high": 0.0436056
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.0905696, 
-          "value": 0.753543, 
-          "error_high": 0.0913928
+          "error_low": 0.0813549, 
+          "value": 0.795518, 
+          "error_high": 0.0652066
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.0661662, 
-          "value": 0.853802, 
-          "error_high": 0.0542681
+          "error_low": 0.0444889, 
+          "value": 0.956924, 
+          "error_high": 0.0288879
         }, 
         {
           "bin": [
             15.0, 
             16.0
           ], 
-          "error_low": 0.068831, 
-          "value": 0.892801, 
-          "error_high": 0.0604592
+          "error_low": 0.0487914, 
+          "value": 0.980244, 
+          "error_high": 0.0197556
         }, 
         {
           "bin": [
             16.0, 
             17.0
           ], 
-          "error_low": 0.0440313, 
-          "value": 0.856257, 
-          "error_high": 0.0372362
+          "error_low": 0.0389058, 
+          "value": 0.895966, 
+          "error_high": 0.0314346
         }, 
         {
           "bin": [
             17.0, 
             18.0
           ], 
-          "error_low": 0.043457, 
-          "value": 0.832166, 
-          "error_high": 0.0378847
+          "error_low": 0.035363, 
+          "value": 0.900085, 
+          "error_high": 0.029037
         }, 
         {
           "bin": [
             18.0, 
             19.0
           ], 
-          "error_low": 0.0284243, 
-          "value": 0.897096, 
-          "error_high": 0.0242861
+          "error_low": 0.0251021, 
+          "value": 0.925911, 
+          "error_high": 0.0206178
         }, 
         {
           "bin": [
             19.0, 
             20.0
           ], 
-          "error_low": 0.0295666, 
-          "value": 0.858796, 
-          "error_high": 0.0282337
+          "error_low": 0.0228261, 
+          "value": 0.928384, 
+          "error_high": 0.0175204
         }, 
         {
           "bin": [
             20.0, 
             21.0
           ], 
-          "error_low": 0.0241521, 
-          "value": 0.889479, 
-          "error_high": 0.0219722
+          "error_low": 0.0203429, 
+          "value": 0.931122, 
+          "error_high": 0.0180002
         }, 
         {
           "bin": [
             21.0, 
             22.0
           ], 
-          "error_low": 0.0184831, 
-          "value": 0.916438, 
-          "error_high": 0.0164903
+          "error_low": 0.0152518, 
+          "value": 0.946856, 
+          "error_high": 0.0130097
         }, 
         {
           "bin": [
             22.0, 
             23.0
           ], 
-          "error_low": 0.0193709, 
-          "value": 0.88168, 
-          "error_high": 0.0176974
+          "error_low": 0.0159065, 
+          "value": 0.92518, 
+          "error_high": 0.0141758
         }, 
         {
           "bin": [
             23.0, 
             24.0
           ], 
-          "error_low": 0.016534, 
-          "value": 0.924342, 
-          "error_high": 0.0152882
+          "error_low": 0.0134478, 
+          "value": 0.956387, 
+          "error_high": 0.0119319
         }, 
         {
           "bin": [
             24.0, 
             25.0
           ], 
-          "error_low": 0.0158177, 
-          "value": 0.897791, 
-          "error_high": 0.0150612
+          "error_low": 0.013297, 
+          "value": 0.941984, 
+          "error_high": 0.0119957
         }, 
         {
           "bin": [
             25.0, 
             26.0
           ], 
-          "error_low": 0.0127188, 
-          "value": 0.900657, 
-          "error_high": 0.0118356
+          "error_low": 0.0112424, 
+          "value": 0.925951, 
+          "error_high": 0.0102542
         }, 
         {
           "bin": [
             26.0, 
             30.0
           ], 
-          "error_low": 0.00622388, 
-          "value": 0.876902, 
-          "error_high": 0.00608881
+          "error_low": 0.00537625, 
+          "value": 0.912483, 
+          "error_high": 0.0052953
         }, 
         {
           "bin": [
             30.0, 
             35.0
           ], 
-          "error_low": 0.00463461, 
-          "value": 0.870374, 
-          "error_high": 0.00460899
+          "error_low": 0.00397415, 
+          "value": 0.904229, 
+          "error_high": 0.00389756
         }, 
         {
           "bin": [
             35.0, 
             40.0
           ], 
-          "error_low": 0.00398107, 
-          "value": 0.869391, 
-          "error_high": 0.00394398
+          "error_low": 0.00334297, 
+          "value": 0.909816, 
+          "error_high": 0.00325446
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 1.39354e-05, 
-          "value": 0.873641, 
-          "error_high": 1.39354e-05
+          "error_low": 0.00232821, 
+          "value": 0.910603, 
+          "error_high": 0.00228351
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.00642594, 
-          "value": 0.870615, 
-          "error_high": 0.0062725
+          "error_low": 0.00541596, 
+          "value": 0.910174, 
+          "error_high": 0.00528209
         }, 
         {
           "bin": [
             60.0, 
             80.0
           ], 
-          "error_low": 0.00813826, 
-          "value": 0.878469, 
-          "error_high": 0.00779572
+          "error_low": 0.00684558, 
+          "value": 0.914438, 
+          "error_high": 0.00652376
         }, 
         {
           "bin": [
             80.0, 
             120.0
           ], 
-          "error_low": 0.0151572, 
-          "value": 0.872294, 
-          "error_high": 0.0143814
+          "error_low": 0.0112551, 
+          "value": 0.922334, 
+          "error_high": 0.013434
         }, 
         {
           "bin": [
             120.0, 
             200.0
           ], 
-          "error_low": 0.0316782, 
-          "value": 0.868157, 
-          "error_high": 0.0285454
+          "error_low": 0.0287465, 
+          "value": 0.891348, 
+          "error_high": 0.0253012
         }
       ]
     }, 
@@ -1356,9 +1356,9 @@
             10.0, 
             11.0
           ], 
-          "error_low": 0.0375661, 
-          "value": 0.971502, 
-          "error_high": 0.0284983
+          "error_low": 0.0529584, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
@@ -1374,198 +1374,198 @@
             12.0, 
             13.0
           ], 
-          "error_low": 0.0287149, 
-          "value": 0.978625, 
-          "error_high": 0.0148954
+          "error_low": 0.0385169, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.0264233, 
-          "value": 0.960989, 
-          "error_high": 0.0182284
+          "error_low": 0.022476, 
+          "value": 0.974014, 
+          "error_high": 0.0142494
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.0255639, 
-          "value": 0.984459, 
-          "error_high": 0.0155415
+          "error_low": 0.0211112, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             15.0, 
             16.0
           ], 
-          "error_low": 0.0156666, 
-          "value": 0.982102, 
-          "error_high": 0.00984295
+          "error_low": 0.019779, 
+          "value": 1.0, 
+          "error_high": 9.59247e-08
         }, 
         {
           "bin": [
             16.0, 
             17.0
           ], 
-          "error_low": 0.00934289, 
-          "value": 0.993081, 
-          "error_high": 0.0048279
+          "error_low": 0.0158086, 
+          "value": 0.992694, 
+          "error_high": 0.0061834
         }, 
         {
           "bin": [
             17.0, 
             18.0
           ], 
-          "error_low": 0.0131046, 
-          "value": 0.974611, 
-          "error_high": 0.00969523
+          "error_low": 0.00931872, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             18.0, 
             19.0
           ], 
-          "error_low": 0.0142733, 
-          "value": 0.961222, 
-          "error_high": 0.0114519
+          "error_low": 0.0100073, 
+          "value": 0.982862, 
+          "error_high": 0.00719377
         }, 
         {
           "bin": [
             19.0, 
             20.0
           ], 
-          "error_low": 0.00684249, 
-          "value": 0.988241, 
-          "error_high": 0.00492973
+          "error_low": 0.00398238, 
+          "value": 0.997057, 
+          "error_high": 0.0020538
         }, 
         {
           "bin": [
             20.0, 
             21.0
           ], 
-          "error_low": 0.00915642, 
-          "value": 0.975273, 
-          "error_high": 0.00762206
+          "error_low": 0.00617596, 
+          "value": 0.988166, 
+          "error_high": 0.0045484
         }, 
         {
           "bin": [
             21.0, 
             22.0
           ], 
-          "error_low": 0.00843764, 
-          "value": 0.973287, 
-          "error_high": 0.00737456
+          "error_low": 0.0064213, 
+          "value": 0.986349, 
+          "error_high": 0.00537423
         }, 
         {
           "bin": [
             22.0, 
             23.0
           ], 
-          "error_low": 0.00638078, 
-          "value": 0.980857, 
-          "error_high": 0.00524602
+          "error_low": 0.00522401, 
+          "value": 0.987709, 
+          "error_high": 0.00407223
         }, 
         {
           "bin": [
             23.0, 
             24.0
           ], 
-          "error_low": 0.00502318, 
-          "value": 0.982634, 
-          "error_high": 0.00423057
+          "error_low": 0.00367881, 
+          "value": 0.991331, 
+          "error_high": 0.00287922
         }, 
         {
           "bin": [
             24.0, 
             25.0
           ], 
-          "error_low": 0.00466666, 
-          "value": 0.979419, 
-          "error_high": 0.00406182
+          "error_low": 0.00296556, 
+          "value": 0.992523, 
+          "error_high": 0.00233246
         }, 
         {
           "bin": [
             25.0, 
             26.0
           ], 
-          "error_low": 0.00525234, 
-          "value": 0.978015, 
-          "error_high": 0.0046621
+          "error_low": 0.00420106, 
+          "value": 0.984127, 
+          "error_high": 0.00366081
         }, 
         {
           "bin": [
             26.0, 
             30.0
           ], 
-          "error_low": 0.00255733, 
-          "value": 0.955171, 
-          "error_high": 0.00246848
+          "error_low": 0.00222924, 
+          "value": 0.966413, 
+          "error_high": 0.00213693
         }, 
         {
           "bin": [
             30.0, 
             35.0
           ], 
-          "error_low": 0.00197214, 
-          "value": 0.957488, 
-          "error_high": 0.0019582
+          "error_low": 0.0015556, 
+          "value": 0.969458, 
+          "error_high": 0.00150985
         }, 
         {
           "bin": [
             35.0, 
             40.0
           ], 
-          "error_low": 0.0014033, 
-          "value": 0.968834, 
-          "error_high": 0.00139991
+          "error_low": 0.00111516, 
+          "value": 0.979799, 
+          "error_high": 0.00108502
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": -0.0, 
-          "value": 0.973923, 
-          "error_high": -0.0
+          "error_low": 0.000737862, 
+          "value": 0.984096, 
+          "error_high": 0.000730826
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.00207273, 
-          "value": 0.975325, 
-          "error_high": 0.00194682
+          "error_low": 0.0015306, 
+          "value": 0.986363, 
+          "error_high": 0.00145037
         }, 
         {
           "bin": [
             60.0, 
             80.0
           ], 
-          "error_low": 0.00291567, 
-          "value": 0.974776, 
-          "error_high": 0.00552255
+          "error_low": 0.00225245, 
+          "value": 0.98636, 
+          "error_high": 0.00208888
         }, 
         {
           "bin": [
             80.0, 
             120.0
           ], 
-          "error_low": 0.00437215, 
-          "value": 0.977495, 
-          "error_high": 0.00388942
+          "error_low": 0.00292355, 
+          "value": 0.990451, 
+          "error_high": 0.00244729
         }, 
         {
           "bin": [
             120.0, 
             200.0
           ], 
-          "error_low": 0.00656704, 
-          "value": 0.990453, 
-          "error_high": 0.00449569
+          "error_low": 0.00430088, 
+          "value": 0.996814, 
+          "error_high": 0.00250807
         }
       ]
     }, 
@@ -1580,9 +1580,9 @@
             10.0, 
             11.0
           ], 
-          "error_low": 0.040559, 
+          "error_low": 0.0514738, 
           "value": 1.0, 
-          "error_high": 1.19777e-07
+          "error_high": 0.0
         }, 
         {
           "bin": [
@@ -1598,9 +1598,9 @@
             12.0, 
             13.0
           ], 
-          "error_low": 0.0334358, 
-          "value": 0.961017, 
-          "error_high": 0.0212899
+          "error_low": 0.0259318, 
+          "value": 0.980508, 
+          "error_high": 0.0194917
         }, 
         {
           "bin": [
@@ -1616,27 +1616,27 @@
             14.0, 
             15.0
           ], 
-          "error_low": 0.0239041, 
-          "value": 0.966593, 
-          "error_high": 0.0202128
+          "error_low": 0.0162567, 
+          "value": 0.981302, 
+          "error_high": 0.010266
         }, 
         {
           "bin": [
             15.0, 
             16.0
           ], 
-          "error_low": 0.025393, 
-          "value": 0.943113, 
-          "error_high": 0.0198067
+          "error_low": 0.0192895, 
+          "value": 0.971601, 
+          "error_high": 0.0132946
         }, 
         {
           "bin": [
             16.0, 
             17.0
           ], 
-          "error_low": 0.0155571, 
-          "value": 0.969139, 
-          "error_high": 0.0117162
+          "error_low": 0.0106029, 
+          "value": 0.987859, 
+          "error_high": 0.00667298
         }, 
         {
           "bin": [
@@ -1652,144 +1652,144 @@
             18.0, 
             19.0
           ], 
-          "error_low": 0.0114149, 
-          "value": 0.981911, 
-          "error_high": 0.0087195
+          "error_low": 0.00912353, 
+          "value": 0.991749, 
+          "error_high": 0.00605787
         }, 
         {
           "bin": [
             19.0, 
             20.0
           ], 
-          "error_low": 0.0166757, 
-          "value": 0.963693, 
-          "error_high": 0.0139252
+          "error_low": 0.012068, 
+          "value": 0.996161, 
+          "error_high": 0.00383918
         }, 
         {
           "bin": [
             20.0, 
             21.0
           ], 
-          "error_low": 0.00943461, 
-          "value": 0.975227, 
-          "error_high": 0.00750425
+          "error_low": 0.00777744, 
+          "value": 0.983782, 
+          "error_high": 0.00581253
         }, 
         {
           "bin": [
             21.0, 
             22.0
           ], 
-          "error_low": 0.00815585, 
-          "value": 0.980289, 
-          "error_high": 0.00692969
+          "error_low": 0.0053442, 
+          "value": 0.989566, 
+          "error_high": 0.00399383
         }, 
         {
           "bin": [
             22.0, 
             23.0
           ], 
-          "error_low": 0.00788676, 
-          "value": 0.962467, 
-          "error_high": 0.00694029
+          "error_low": 0.00544324, 
+          "value": 0.983446, 
+          "error_high": 0.00449455
         }, 
         {
           "bin": [
             23.0, 
             24.0
           ], 
-          "error_low": 0.00590783, 
-          "value": 0.972655, 
-          "error_high": 0.00516927
+          "error_low": 0.00359195, 
+          "value": 0.990906, 
+          "error_high": 0.00284428
         }, 
         {
           "bin": [
             24.0, 
             25.0
           ], 
-          "error_low": 0.00741003, 
-          "value": 0.964176, 
-          "error_high": 0.0068101
+          "error_low": 0.00558993, 
+          "value": 0.974913, 
+          "error_high": 0.00517742
         }, 
         {
           "bin": [
             25.0, 
             26.0
           ], 
-          "error_low": 0.00412785, 
-          "value": 0.983381, 
-          "error_high": 0.00365069
+          "error_low": 0.00306074, 
+          "value": 0.993192, 
+          "error_high": 0.00257816
         }, 
         {
           "bin": [
             26.0, 
             30.0
           ], 
-          "error_low": 0.0027851, 
-          "value": 0.951453, 
-          "error_high": 0.00274119
+          "error_low": 0.00256758, 
+          "value": 0.964108, 
+          "error_high": 0.00249781
         }, 
         {
           "bin": [
             30.0, 
             35.0
           ], 
-          "error_low": 0.00192211, 
-          "value": 0.952269, 
-          "error_high": 0.00187751
+          "error_low": 0.00170543, 
+          "value": 0.962897, 
+          "error_high": 0.00165423
         }, 
         {
           "bin": [
             35.0, 
             40.0
           ], 
-          "error_low": 0.00154008, 
-          "value": 0.967593, 
-          "error_high": 0.00150857
+          "error_low": 0.00120195, 
+          "value": 0.976124, 
+          "error_high": 0.00116706
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.000915166, 
-          "value": 0.973426, 
-          "error_high": 0.000896465
+          "error_low": 0.000727843, 
+          "value": 0.983229, 
+          "error_high": 0.000707513
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.00191976, 
-          "value": 0.972121, 
-          "error_high": 0.0018309
+          "error_low": 0.00155231, 
+          "value": 0.982006, 
+          "error_high": 0.00155231
         }, 
         {
           "bin": [
             60.0, 
             80.0
           ], 
-          "error_low": 0.00282017, 
-          "value": 0.976809, 
-          "error_high": 0.0026397
+          "error_low": 0.00210149, 
+          "value": 0.987278, 
+          "error_high": 0.00192256
         }, 
         {
           "bin": [
             80.0, 
             120.0
           ], 
-          "error_low": 0.00451504, 
-          "value": 0.976798, 
-          "error_high": 0.00406012
+          "error_low": 0.00368533, 
+          "value": 0.984251, 
+          "error_high": 0.00322027
         }, 
         {
           "bin": [
             120.0, 
             200.0
           ], 
-          "error_low": 0.00916904, 
-          "value": 0.986187, 
-          "error_high": 0.00695977
+          "error_low": 0.00707785, 
+          "value": 0.993974, 
+          "error_high": 0.00494818
         }
       ]
     }, 
@@ -1804,9 +1804,9 @@
             10.0, 
             11.0
           ], 
-          "error_low": 0.328691, 
-          "value": 0.730574, 
-          "error_high": 0.144941
+          "error_low": 0.223714, 
+          "value": 0.874169, 
+          "error_high": 0.0863454
         }, 
         {
           "bin": [
@@ -1822,27 +1822,27 @@
             12.0, 
             13.0
           ], 
-          "error_low": 0.043251, 
-          "value": 0.96679, 
-          "error_high": 0.0332103
+          "error_low": 0.0594872, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.0596041, 
-          "value": 0.890096, 
-          "error_high": 0.0454601
+          "error_low": 0.0542798, 
+          "value": 0.918146, 
+          "error_high": 0.0382583
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.0608366, 
-          "value": 0.853776, 
-          "error_high": 0.0715575
+          "error_low": 0.0605595, 
+          "value": 0.892749, 
+          "error_high": 0.0477086
         }, 
         {
           "bin": [
@@ -1858,162 +1858,162 @@
             16.0, 
             17.0
           ], 
-          "error_low": 0.0408391, 
-          "value": 0.859689, 
-          "error_high": 0.0358364
+          "error_low": 0.0328858, 
+          "value": 0.922171, 
+          "error_high": 0.025743
         }, 
         {
           "bin": [
             17.0, 
             18.0
           ], 
-          "error_low": 0.0425053, 
-          "value": 0.843331, 
-          "error_high": 0.037348
+          "error_low": 0.0365413, 
+          "value": 0.889459, 
+          "error_high": 0.0304942
         }, 
         {
           "bin": [
             18.0, 
             19.0
           ], 
-          "error_low": 0.0335563, 
-          "value": 0.877741, 
-          "error_high": 0.0295281
+          "error_low": 0.0308247, 
+          "value": 0.903004, 
+          "error_high": 0.0256678
         }, 
         {
           "bin": [
             19.0, 
             20.0
           ], 
-          "error_low": 0.02622, 
-          "value": 0.883962, 
-          "error_high": 0.0229847
+          "error_low": 0.0232005, 
+          "value": 0.913115, 
+          "error_high": 0.0230526
         }, 
         {
           "bin": [
             20.0, 
             21.0
           ], 
-          "error_low": 0.0264459, 
-          "value": 0.879011, 
-          "error_high": 0.0233991
+          "error_low": 0.022663, 
+          "value": 0.916748, 
+          "error_high": 0.0193644
         }, 
         {
           "bin": [
             21.0, 
             22.0
           ], 
-          "error_low": 0.0203516, 
-          "value": 0.888546, 
-          "error_high": 0.0183198
+          "error_low": 0.0175843, 
+          "value": 0.921333, 
+          "error_high": 0.0154134
         }, 
         {
           "bin": [
             22.0, 
             23.0
           ], 
-          "error_low": 0.0179984, 
-          "value": 0.899644, 
-          "error_high": 0.0165534
+          "error_low": 0.0144393, 
+          "value": 0.945429, 
+          "error_high": 0.0128242
         }, 
         {
           "bin": [
             23.0, 
             24.0
           ], 
-          "error_low": 0.0155257, 
-          "value": 0.897394, 
-          "error_high": 0.0141641
+          "error_low": 0.0119687, 
+          "value": 0.943989, 
+          "error_high": 0.0104978
         }, 
         {
           "bin": [
             24.0, 
             25.0
           ], 
-          "error_low": 0.0136699, 
-          "value": 0.924915, 
-          "error_high": 0.0140629
+          "error_low": 0.0146062, 
+          "value": 0.960203, 
+          "error_high": 0.01075
         }, 
         {
           "bin": [
             25.0, 
             26.0
           ], 
-          "error_low": 0.01403, 
-          "value": 0.897021, 
-          "error_high": 0.0129427
+          "error_low": 0.0114209, 
+          "value": 0.935084, 
+          "error_high": 0.0102537
         }, 
         {
           "bin": [
             26.0, 
             30.0
           ], 
-          "error_low": 0.00611762, 
-          "value": 0.870561, 
-          "error_high": 0.0059277
+          "error_low": 0.00532156, 
+          "value": 0.905735, 
+          "error_high": 0.00513229
         }, 
         {
           "bin": [
             30.0, 
             35.0
           ], 
-          "error_low": 0.00454614, 
-          "value": 0.869914, 
-          "error_high": 0.00451941
+          "error_low": 0.00392867, 
+          "value": 0.904685, 
+          "error_high": 0.00382955
         }, 
         {
           "bin": [
             35.0, 
             40.0
           ], 
-          "error_low": 0.0039558, 
-          "value": 0.8718, 
-          "error_high": 0.00394459
+          "error_low": 0.00340389, 
+          "value": 0.909773, 
+          "error_high": 0.00338818
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.00277124, 
-          "value": 0.867408, 
-          "error_high": 0.00275195
+          "error_low": 0.00233325, 
+          "value": 0.910568, 
+          "error_high": 0.00230057
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.00558198, 
-          "value": 0.868873, 
-          "error_high": 0.00539714
+          "error_low": 0.00471882, 
+          "value": 0.910385, 
+          "error_high": 0.00482367
         }, 
         {
           "bin": [
             60.0, 
             80.0
           ], 
-          "error_low": 0.00814873, 
-          "value": 0.884647, 
-          "error_high": 0.00817692
+          "error_low": 0.00721493, 
+          "value": 0.925616, 
+          "error_high": 0.00681619
         }, 
         {
           "bin": [
             80.0, 
             120.0
           ], 
-          "error_low": 0.0121777, 
-          "value": 0.904063, 
-          "error_high": 0.0112909
+          "error_low": 0.00940691, 
+          "value": 0.948315, 
+          "error_high": 0.00849963
         }, 
         {
           "bin": [
             120.0, 
             200.0
           ], 
-          "error_low": 0.0324426, 
-          "value": 0.895393, 
-          "error_high": 0.0283971
+          "error_low": 0.0235886, 
+          "value": 0.947872, 
+          "error_high": 0.01877
         }
       ]
     }, 
@@ -2037,207 +2037,207 @@
             11.0, 
             12.0
           ], 
-          "error_low": 0.0163853, 
-          "value": 0.971956, 
-          "error_high": 0.0119419
+          "error_low": 0.0144454, 
+          "value": 0.97897, 
+          "error_high": 0.0101088
         }, 
         {
           "bin": [
             12.0, 
             13.0
           ], 
-          "error_low": 0.0152359, 
-          "value": 0.966826, 
-          "error_high": 0.0117502
+          "error_low": 0.00951557, 
+          "value": 0.989095, 
+          "error_high": 0.00601051
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.0109469, 
-          "value": 0.987185, 
-          "error_high": 0.00783084
+          "error_low": 0.00642761, 
+          "value": 0.995968, 
+          "error_high": 0.00403236
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.00945329, 
-          "value": 0.975747, 
-          "error_high": 0.00753539
+          "error_low": 0.0070581, 
+          "value": 0.987893, 
+          "error_high": 0.00713283
         }, 
         {
           "bin": [
             15.0, 
             16.0
           ], 
-          "error_low": 0.00493171, 
-          "value": 0.99158, 
-          "error_high": 0.00354495
+          "error_low": 0.00370192, 
+          "value": 0.995798, 
+          "error_high": 0.00231872
         }, 
         {
           "bin": [
             16.0, 
             17.0
           ], 
-          "error_low": 0.00724132, 
-          "value": 0.97389, 
-          "error_high": 0.00611479
+          "error_low": 0.00552056, 
+          "value": 0.985999, 
+          "error_high": 0.00437082
         }, 
         {
           "bin": [
             17.0, 
             18.0
           ], 
-          "error_low": 0.00548471, 
-          "value": 0.989067, 
-          "error_high": 0.00476741
+          "error_low": 0.00261914, 
+          "value": 0.997557, 
+          "error_high": 0.00181726
         }, 
         {
           "bin": [
             18.0, 
             19.0
           ], 
-          "error_low": 0.00598402, 
-          "value": 0.969656, 
-          "error_high": 0.00540172
+          "error_low": 0.00364062, 
+          "value": 0.989023, 
+          "error_high": 0.00298089
         }, 
         {
           "bin": [
             19.0, 
             20.0
           ], 
-          "error_low": 0.00456807, 
-          "value": 0.980258, 
-          "error_high": 0.00407899
+          "error_low": 0.00236453, 
+          "value": 0.994901, 
+          "error_high": 0.00181156
         }, 
         {
           "bin": [
             20.0, 
             21.0
           ], 
-          "error_low": 0.00468286, 
-          "value": 0.97718, 
-          "error_high": 0.00441002
+          "error_low": 0.00261472, 
+          "value": 0.991771, 
+          "error_high": 0.00215203
         }, 
         {
           "bin": [
             21.0, 
             22.0
           ], 
-          "error_low": 0.0045094, 
-          "value": 0.978546, 
-          "error_high": 0.00412201
+          "error_low": 0.00299927, 
+          "value": 0.99014, 
+          "error_high": 0.00258998
         }, 
         {
           "bin": [
             22.0, 
             23.0
           ], 
-          "error_low": 0.00337583, 
-          "value": 0.979954, 
-          "error_high": 0.00302953
+          "error_low": 0.00244965, 
+          "value": 0.991091, 
+          "error_high": 0.00215346
         }, 
         {
           "bin": [
             23.0, 
             24.0
           ], 
-          "error_low": 0.00354164, 
-          "value": 0.981482, 
-          "error_high": 0.00323267
+          "error_low": 0.00254175, 
+          "value": 0.991637, 
+          "error_high": 0.00222303
         }, 
         {
           "bin": [
             24.0, 
             25.0
           ], 
-          "error_low": 0.00318866, 
-          "value": 0.979503, 
-          "error_high": 0.00295014
+          "error_low": 0.00201251, 
+          "value": 0.99308, 
+          "error_high": 0.00176398
         }, 
         {
           "bin": [
             25.0, 
             26.0
           ], 
-          "error_low": 0.00292622, 
-          "value": 0.980506, 
-          "error_high": 0.00274578
+          "error_low": 0.00178434, 
+          "value": 0.992429, 
+          "error_high": 0.00153612
         }, 
         {
           "bin": [
             26.0, 
             30.0
           ], 
-          "error_low": 0.00164608, 
-          "value": 0.961409, 
-          "error_high": 0.00164192
+          "error_low": 0.00138555, 
+          "value": 0.972626, 
+          "error_high": 0.00134334
         }, 
         {
           "bin": [
             30.0, 
             35.0
           ], 
-          "error_low": 0.00119407, 
-          "value": 0.961793, 
-          "error_high": 0.00124734
+          "error_low": 0.00104489, 
+          "value": 0.970802, 
+          "error_high": 0.00113918
         }, 
         {
           "bin": [
             35.0, 
             40.0
           ], 
-          "error_low": -0.0, 
-          "value": 0.968345, 
-          "error_high": -0.0
+          "error_low": 0.00073896, 
+          "value": 0.977534, 
+          "error_high": 0.000725016
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.000587928, 
-          "value": 0.976197, 
-          "error_high": 0.000578763
+          "error_low": 0.00047233, 
+          "value": 0.984972, 
+          "error_high": 0.000464036
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.00110673, 
-          "value": 0.975094, 
-          "error_high": 0.00107888
+          "error_low": 0.000964014, 
+          "value": 0.985394, 
+          "error_high": 0.000947778
         }, 
         {
           "bin": [
             60.0, 
             80.0
           ], 
-          "error_low": 0.00175765, 
-          "value": 0.977784, 
-          "error_high": 0.0016911
+          "error_low": 0.00136706, 
+          "value": 0.986989, 
+          "error_high": 0.00130654
         }, 
         {
           "bin": [
             80.0, 
             120.0
           ], 
-          "error_low": 0.00279789, 
-          "value": 0.974746, 
-          "error_high": 0.0026089
+          "error_low": 0.00501497, 
+          "value": 0.987188, 
+          "error_high": 0.00343157
         }, 
         {
           "bin": [
             120.0, 
             200.0
           ], 
-          "error_low": 0.00689273, 
-          "value": 0.969478, 
-          "error_high": 0.00806202
+          "error_low": 0.00596314, 
+          "value": 0.977803, 
+          "error_high": 0.00694083
         }
       ]
     }, 
@@ -2252,216 +2252,216 @@
             10.0, 
             11.0
           ], 
-          "error_low": 0.0226121, 
-          "value": 0.96777, 
-          "error_high": 0.018548
+          "error_low": 0.00891928, 
+          "value": 0.993376, 
+          "error_high": 0.00462174
         }, 
         {
           "bin": [
             11.0, 
             12.0
           ], 
-          "error_low": 0.0152049, 
-          "value": 0.958548, 
-          "error_high": 0.012227
+          "error_low": 0.010707, 
+          "value": 0.981714, 
+          "error_high": 0.00764811
         }, 
         {
           "bin": [
             12.0, 
             13.0
           ], 
-          "error_low": 0.0126637, 
-          "value": 0.963134, 
-          "error_high": 0.0103535
+          "error_low": 0.00850352, 
+          "value": 0.985403, 
+          "error_high": 0.00611382
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.0121435, 
-          "value": 0.962483, 
-          "error_high": 0.0104083
+          "error_low": 0.00832975, 
+          "value": 0.984369, 
+          "error_high": 0.00630236
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.0126382, 
-          "value": 0.9602, 
-          "error_high": 0.011121
+          "error_low": 0.00033825, 
+          "value": 0.981938, 
+          "error_high": 0.00033825
         }, 
         {
           "bin": [
             15.0, 
             16.0
           ], 
-          "error_low": 0.0114431, 
-          "value": 0.961997, 
-          "error_high": 0.0103421
+          "error_low": 0.00681345, 
+          "value": 0.981453, 
+          "error_high": 0.00547222
         }, 
         {
           "bin": [
             16.0, 
             17.0
           ], 
-          "error_low": 0.00963848, 
-          "value": 0.962921, 
-          "error_high": 0.00878745
+          "error_low": 0.00777773, 
+          "value": 0.98276, 
+          "error_high": 0.00646682
         }, 
         {
           "bin": [
             17.0, 
             18.0
           ], 
-          "error_low": 0.00812296, 
-          "value": 0.962374, 
-          "error_high": 0.00754178
+          "error_low": 0.0056072, 
+          "value": 0.978343, 
+          "error_high": 0.00479669
         }, 
         {
           "bin": [
             18.0, 
             19.0
           ], 
-          "error_low": 0.00746527, 
-          "value": 0.956768, 
-          "error_high": 0.00686057
+          "error_low": 0.00517608, 
+          "value": 0.978328, 
+          "error_high": 0.00496998
         }, 
         {
           "bin": [
             19.0, 
             20.0
           ], 
-          "error_low": 0.00667467, 
-          "value": 0.959759, 
-          "error_high": 0.00658282
+          "error_low": 0.00444284, 
+          "value": 0.98214, 
+          "error_high": 0.00380473
         }, 
         {
           "bin": [
             20.0, 
             21.0
           ], 
-          "error_low": 0.00575359, 
-          "value": 0.964038, 
-          "error_high": 0.00523625
+          "error_low": 0.00342235, 
+          "value": 0.988282, 
+          "error_high": 0.00289129
         }, 
         {
           "bin": [
             21.0, 
             22.0
           ], 
-          "error_low": 0.00568627, 
-          "value": 0.967142, 
-          "error_high": 0.00525165
+          "error_low": 0.00383809, 
+          "value": 0.986476, 
+          "error_high": 0.00336075
         }, 
         {
           "bin": [
             22.0, 
             23.0
           ], 
-          "error_low": 0.00562981, 
-          "value": 0.954696, 
-          "error_high": 0.00533145
+          "error_low": 0.0039638, 
+          "value": 0.980619, 
+          "error_high": 0.00364567
         }, 
         {
           "bin": [
             23.0, 
             24.0
           ], 
-          "error_low": 0.00500377, 
-          "value": 0.958348, 
-          "error_high": 0.00464927
+          "error_low": 0.00337202, 
+          "value": 0.982264, 
+          "error_high": 0.0029874
         }, 
         {
           "bin": [
             24.0, 
             25.0
           ], 
-          "error_low": 0.00453232, 
-          "value": 0.964461, 
-          "error_high": 0.00416888
+          "error_low": 0.0035647, 
+          "value": 0.978734, 
+          "error_high": 0.00321738
         }, 
         {
           "bin": [
             25.0, 
             26.0
           ], 
-          "error_low": 0.00489417, 
-          "value": 0.957745, 
-          "error_high": 0.00456915
+          "error_low": 0.00356755, 
+          "value": 0.978241, 
+          "error_high": 0.0032242
         }, 
         {
           "bin": [
             26.0, 
             30.0
           ], 
-          "error_low": 0.00238353, 
-          "value": 0.952876, 
-          "error_high": 0.00234096
+          "error_low": 0.00175952, 
+          "value": 0.973681, 
+          "error_high": 0.00175306
         }, 
         {
           "bin": [
             30.0, 
             35.0
           ], 
-          "error_low": 0.00194551, 
-          "value": 0.941665, 
-          "error_high": 0.00193206
+          "error_low": 0.00163741, 
+          "value": 0.963342, 
+          "error_high": 0.00161019
         }, 
         {
           "bin": [
             35.0, 
             40.0
           ], 
-          "error_low": 0.00145833, 
-          "value": 0.937273, 
-          "error_high": 0.00143025
+          "error_low": 1.51927e-05, 
+          "value": 0.958837, 
+          "error_high": 1.51927e-05
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.00101674, 
-          "value": 0.940572, 
-          "error_high": 0.00102203
+          "error_low": 0.000845228, 
+          "value": 0.961404, 
+          "error_high": 0.000846231
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.00194629, 
-          "value": 0.943087, 
-          "error_high": 0.00193334
+          "error_low": 0.00159721, 
+          "value": 0.962735, 
+          "error_high": 0.0015794
         }, 
         {
           "bin": [
             60.0, 
             80.0
           ], 
-          "error_low": 0.00306955, 
-          "value": 0.944728, 
-          "error_high": 0.00299328
+          "error_low": 0.00235597, 
+          "value": 0.968261, 
+          "error_high": 0.00227606
         }, 
         {
           "bin": [
             80.0, 
             120.0
           ], 
-          "error_low": 0.00492494, 
-          "value": 0.948462, 
-          "error_high": 0.00470905
+          "error_low": 0.00377055, 
+          "value": 0.970419, 
+          "error_high": 0.00350985
         }, 
         {
           "bin": [
             120.0, 
             200.0
           ], 
-          "error_low": 0.0106257, 
-          "value": 0.944722, 
-          "error_high": 0.00946027
+          "error_low": 0.00770421, 
+          "value": 0.973221, 
+          "error_high": 0.00648117
         }
       ]
     }, 
@@ -2485,207 +2485,207 @@
             11.0, 
             12.0
           ], 
-          "error_low": 0.0080176, 
-          "value": 0.988329, 
-          "error_high": 0.0054911
+          "error_low": 0.00717058, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             12.0, 
             13.0
           ], 
-          "error_low": 0.0109755, 
-          "value": 0.966439, 
-          "error_high": 0.00905765
+          "error_low": 0.00560545, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.00825433, 
-          "value": 0.975119, 
-          "error_high": 0.0067612
+          "error_low": 0.00304497, 
+          "value": 0.997765, 
+          "error_high": 0.00155991
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.00657444, 
-          "value": 0.994684, 
-          "error_high": 0.00442566
+          "error_low": 0.00160542, 
+          "value": 1.0, 
+          "error_high": 1.64115e-10
         }, 
         {
           "bin": [
             15.0, 
             16.0
           ], 
-          "error_low": 0.00438133, 
-          "value": 0.992513, 
-          "error_high": 0.003144
+          "error_low": 0.00340208, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             16.0, 
             17.0
           ], 
-          "error_low": 0.00614066, 
-          "value": 0.97796, 
-          "error_high": 0.00600985
+          "error_low": 0.00261239, 
+          "value": 0.997041, 
+          "error_high": 0.00276205
         }, 
         {
           "bin": [
             17.0, 
             18.0
           ], 
-          "error_low": 0.00517742, 
-          "value": 0.985694, 
-          "error_high": 0.00450414
+          "error_low": 0.00179779, 
+          "value": 0.998676, 
+          "error_high": 0.00092486
         }, 
         {
           "bin": [
             18.0, 
             19.0
           ], 
-          "error_low": 0.00526721, 
-          "value": 0.983987, 
-          "error_high": 0.0046676
+          "error_low": 0.00248104, 
+          "value": 0.995172, 
+          "error_high": 0.00184785
         }, 
         {
           "bin": [
             19.0, 
             20.0
           ], 
-          "error_low": 0.00463719, 
-          "value": 0.983304, 
-          "error_high": 0.00406976
+          "error_low": 0.00181365, 
+          "value": 0.997381, 
+          "error_high": 0.00123612
         }, 
         {
           "bin": [
             20.0, 
             21.0
           ], 
-          "error_low": 0.00425685, 
-          "value": 0.981725, 
-          "error_high": 0.00363116
+          "error_low": 0.00228819, 
+          "value": 0.99717, 
+          "error_high": 0.00181232
         }, 
         {
           "bin": [
             21.0, 
             22.0
           ], 
-          "error_low": 0.00337912, 
-          "value": 0.985133, 
-          "error_high": 0.00293639
+          "error_low": 0.0019763, 
+          "value": 0.998064, 
+          "error_high": 0.00132529
         }, 
         {
           "bin": [
             22.0, 
             23.0
           ], 
-          "error_low": 0.00337771, 
-          "value": 0.992104, 
-          "error_high": 0.00287058
+          "error_low": 0.00180805, 
+          "value": 0.998117, 
+          "error_high": 0.00128897
         }, 
         {
           "bin": [
             23.0, 
             24.0
           ], 
-          "error_low": 0.0029462, 
-          "value": 0.987699, 
-          "error_high": 0.00254198
+          "error_low": 0.00126276, 
+          "value": 0.998175, 
+          "error_high": 0.000861618
         }, 
         {
           "bin": [
             24.0, 
             25.0
           ], 
-          "error_low": 0.00355964, 
-          "value": 0.986843, 
-          "error_high": 0.00299608
+          "error_low": 0.00135054, 
+          "value": 0.997693, 
+          "error_high": 0.000970445
         }, 
         {
           "bin": [
             25.0, 
             26.0
           ], 
-          "error_low": 0.00352959, 
-          "value": 0.982921, 
-          "error_high": 0.00324912
+          "error_low": 0.00170645, 
+          "value": 0.997011, 
+          "error_high": 0.00133284
         }, 
         {
           "bin": [
             26.0, 
             30.0
           ], 
-          "error_low": 0.0015651, 
-          "value": 0.981427, 
-          "error_high": 0.00189023
+          "error_low": 0.00095138, 
+          "value": 0.993592, 
+          "error_high": 0.000913382
         }, 
         {
           "bin": [
             30.0, 
             35.0
           ], 
-          "error_low": 0.00137457, 
-          "value": 0.97831, 
-          "error_high": 0.00134328
+          "error_low": 0.00100475, 
+          "value": 0.990036, 
+          "error_high": 0.000964747
         }, 
         {
           "bin": [
             35.0, 
             40.0
           ], 
-          "error_low": 0.00121697, 
-          "value": 0.970794, 
-          "error_high": 0.00119945
+          "error_low": 0.00098703, 
+          "value": 0.982258, 
+          "error_high": 0.000970846
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.000766642, 
-          "value": 0.966913, 
-          "error_high": 0.000755647
+          "error_low": 0.000620233, 
+          "value": 0.978743, 
+          "error_high": 0.000607212
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.00172031, 
-          "value": 0.971085, 
-          "error_high": 0.0016825
+          "error_low": 0.00142621, 
+          "value": 0.981678, 
+          "error_high": 0.00138096
         }, 
         {
           "bin": [
             60.0, 
             80.0
           ], 
-          "error_low": 0.00244706, 
-          "value": 0.972968, 
-          "error_high": 0.00232835
+          "error_low": 0.00193612, 
+          "value": 0.983092, 
+          "error_high": 0.00183648
         }, 
         {
           "bin": [
             80.0, 
             120.0
           ], 
-          "error_low": 0.00380404, 
-          "value": 0.969349, 
-          "error_high": 0.00364965
+          "error_low": 0.00299321, 
+          "value": 0.981598, 
+          "error_high": 0.00326284
         }, 
         {
           "bin": [
             120.0, 
             200.0
           ], 
-          "error_low": 0.00865614, 
-          "value": 0.971372, 
-          "error_high": 0.00718345
+          "error_low": 0.00652458, 
+          "value": 0.984656, 
+          "error_high": 0.00508463
         }
       ]
     }, 
@@ -2700,216 +2700,216 @@
             10.0, 
             11.0
           ], 
-          "error_low": 0.0151635, 
-          "value": 0.959194, 
-          "error_high": 0.0130838
+          "error_low": 0.0117001, 
+          "value": 0.980918, 
+          "error_high": 0.00953133
         }, 
         {
           "bin": [
             11.0, 
             12.0
           ], 
-          "error_low": 0.0121667, 
-          "value": 0.955389, 
-          "error_high": 0.0108402
+          "error_low": 0.0101589, 
+          "value": 0.972336, 
+          "error_high": 0.00869824
         }, 
         {
           "bin": [
             12.0, 
             13.0
           ], 
-          "error_low": 0.0127373, 
-          "value": 0.943679, 
-          "error_high": 0.0114421
+          "error_low": 0.0106664, 
+          "value": 0.963535, 
+          "error_high": 0.00926673
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.0125069, 
-          "value": 0.928228, 
-          "error_high": 0.0113363
+          "error_low": 0.0111763, 
+          "value": 0.944954, 
+          "error_high": 0.0100943
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.00924672, 
-          "value": 0.954715, 
-          "error_high": 0.00820543
+          "error_low": 0.00727085, 
+          "value": 0.972747, 
+          "error_high": 0.00618778
         }, 
         {
           "bin": [
             15.0, 
             16.0
           ], 
-          "error_low": 0.00863972, 
-          "value": 0.953456, 
-          "error_high": 0.00769279
+          "error_low": 0.00818901, 
+          "value": 0.964425, 
+          "error_high": 0.00828181
         }, 
         {
           "bin": [
             16.0, 
             17.0
           ], 
-          "error_low": 0.00762225, 
-          "value": 0.954362, 
-          "error_high": 0.00688402
+          "error_low": 0.00616193, 
+          "value": 0.971356, 
+          "error_high": 0.00538849
         }, 
         {
           "bin": [
             17.0, 
             18.0
           ], 
-          "error_low": 0.00713069, 
-          "value": 0.95594, 
-          "error_high": 0.00715908
+          "error_low": 0.00629119, 
+          "value": 0.966583, 
+          "error_high": 0.00559221
         }, 
         {
           "bin": [
             18.0, 
             19.0
           ], 
-          "error_low": 0.00669871, 
-          "value": 0.961646, 
-          "error_high": 0.00624203
+          "error_low": 0.005549, 
+          "value": 0.973222, 
+          "error_high": 0.00522227
         }, 
         {
           "bin": [
             19.0, 
             20.0
           ], 
-          "error_low": 0.00609698, 
-          "value": 0.956342, 
-          "error_high": 0.00555081
+          "error_low": 0.00504753, 
+          "value": 0.971296, 
+          "error_high": 0.00448674
         }, 
         {
           "bin": [
             20.0, 
             21.0
           ], 
-          "error_low": 0.00567172, 
-          "value": 0.963356, 
-          "error_high": 0.00533361
+          "error_low": 0.00410598, 
+          "value": 0.978507, 
+          "error_high": 0.00364725
         }, 
         {
           "bin": [
             21.0, 
             22.0
           ], 
-          "error_low": 0.00540684, 
-          "value": 0.962613, 
-          "error_high": 0.00513813
+          "error_low": 0.00483234, 
+          "value": 0.979376, 
+          "error_high": 0.00363496
         }, 
         {
           "bin": [
             22.0, 
             23.0
           ], 
-          "error_low": 0.00540877, 
-          "value": 0.965881, 
-          "error_high": 0.00499755
+          "error_low": 0.00430714, 
+          "value": 0.979018, 
+          "error_high": 0.0039061
         }, 
         {
           "bin": [
             23.0, 
             24.0
           ], 
-          "error_low": 0.00484325, 
-          "value": 0.954818, 
-          "error_high": 0.00452741
+          "error_low": 0.00414767, 
+          "value": 0.974302, 
+          "error_high": 0.00381426
         }, 
         {
           "bin": [
             24.0, 
             25.0
           ], 
-          "error_low": 0.00496517, 
-          "value": 0.958709, 
-          "error_high": 0.00472954
+          "error_low": 0.00426018, 
+          "value": 0.970104, 
+          "error_high": 0.00399698
         }, 
         {
           "bin": [
             25.0, 
             26.0
           ], 
-          "error_low": 0.0043329, 
-          "value": 0.963957, 
-          "error_high": 0.00410557
+          "error_low": 0.00350847, 
+          "value": 0.975216, 
+          "error_high": 0.00342702
         }, 
         {
           "bin": [
             26.0, 
             30.0
           ], 
-          "error_low": 0.00246385, 
-          "value": 0.947772, 
-          "error_high": 0.00240075
+          "error_low": 0.00210172, 
+          "value": 0.963187, 
+          "error_high": 0.00205409
         }, 
         {
           "bin": [
             30.0, 
             35.0
           ], 
-          "error_low": 0.00200337, 
-          "value": 0.940695, 
-          "error_high": 0.00202693
+          "error_low": 0.0018441, 
+          "value": 0.955693, 
+          "error_high": 0.00182696
         }, 
         {
           "bin": [
             35.0, 
             40.0
           ], 
-          "error_low": 0.0018089, 
-          "value": 0.931131, 
-          "error_high": 0.00181017
+          "error_low": 0.00161259, 
+          "value": 0.946072, 
+          "error_high": 0.00160958
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.0011845, 
-          "value": 0.921729, 
-          "error_high": 0.00118313
+          "error_low": -0.0, 
+          "value": 0.936037, 
+          "error_high": -0.0
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.00252197, 
-          "value": 0.923498, 
-          "error_high": 0.0025055
+          "error_low": 0.00225046, 
+          "value": 0.939443, 
+          "error_high": 0.00221194
         }, 
         {
           "bin": [
             60.0, 
             80.0
           ], 
-          "error_low": 0.00380365, 
-          "value": 0.930795, 
-          "error_high": 0.00370681
+          "error_low": 0.00340394, 
+          "value": 0.944255, 
+          "error_high": 0.00331412
         }, 
         {
           "bin": [
             80.0, 
             120.0
           ], 
-          "error_low": 0.00561773, 
-          "value": 0.931254, 
-          "error_high": 0.00534785
+          "error_low": 0.00524097, 
+          "value": 0.951495, 
+          "error_high": 0.00496828
         }, 
         {
           "bin": [
             120.0, 
             200.0
           ], 
-          "error_low": 0.0137024, 
-          "value": 0.927927, 
-          "error_high": 0.0125495
+          "error_low": 0.0249478, 
+          "value": 0.944854, 
+          "error_high": 0.0105428
         }
       ]
     }, 
@@ -2924,216 +2924,216 @@
             10.0, 
             11.0
           ], 
-          "error_low": 0.0212274, 
-          "value": 0.944516, 
-          "error_high": 0.0170039
+          "error_low": 0.0175146, 
+          "value": 0.965362, 
+          "error_high": 0.0130899
         }, 
         {
           "bin": [
             11.0, 
             12.0
           ], 
-          "error_low": 0.0230659, 
-          "value": 0.910146, 
-          "error_high": 0.0199597
+          "error_low": 0.015636, 
+          "value": 0.966667, 
+          "error_high": 0.0116957
         }, 
         {
           "bin": [
             12.0, 
             13.0
           ], 
-          "error_low": 0.0155199, 
-          "value": 0.95694, 
-          "error_high": 0.0126069
+          "error_low": 0.0110531, 
+          "value": 0.980859, 
+          "error_high": 0.00800326
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.0133241, 
-          "value": 0.957673, 
-          "error_high": 0.0110625
+          "error_low": 0.0104723, 
+          "value": 0.975448, 
+          "error_high": 0.00814917
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.0122885, 
-          "value": 0.962264, 
-          "error_high": 0.010149
+          "error_low": 0.0100921, 
+          "value": 0.97617, 
+          "error_high": 0.00784595
         }, 
         {
           "bin": [
             15.0, 
             16.0
           ], 
-          "error_low": 0.0135825, 
-          "value": 0.950323, 
-          "error_high": 0.0125113
+          "error_low": 0.00929337, 
+          "value": 0.974551, 
+          "error_high": 0.00750111
         }, 
         {
           "bin": [
             16.0, 
             17.0
           ], 
-          "error_low": 0.0110414, 
-          "value": 0.954603, 
-          "error_high": 0.00959102
+          "error_low": 0.00868908, 
+          "value": 0.973843, 
+          "error_high": 0.00720438
         }, 
         {
           "bin": [
             17.0, 
             18.0
           ], 
-          "error_low": 0.0110114, 
-          "value": 0.948466, 
-          "error_high": 0.0155986
+          "error_low": 0.00735793, 
+          "value": 0.977664, 
+          "error_high": 0.00605616
         }, 
         {
           "bin": [
             18.0, 
             19.0
           ], 
-          "error_low": 0.0122929, 
-          "value": 0.9348, 
-          "error_high": 0.0129224
+          "error_low": 0.00854537, 
+          "value": 0.972248, 
+          "error_high": 0.00769249
         }, 
         {
           "bin": [
             19.0, 
             20.0
           ], 
-          "error_low": 0.00845445, 
-          "value": 0.97275, 
-          "error_high": 0.00618714
+          "error_low": 0.00563972, 
+          "value": 0.98299, 
+          "error_high": 0.00460003
         }, 
         {
           "bin": [
             20.0, 
             21.0
           ], 
-          "error_low": 0.00884869, 
-          "value": 0.963945, 
-          "error_high": 0.00660709
+          "error_low": 0.00538129, 
+          "value": 0.981465, 
+          "error_high": 0.00446638
         }, 
         {
           "bin": [
             21.0, 
             22.0
           ], 
-          "error_low": 0.00748666, 
-          "value": 0.957909, 
-          "error_high": 0.00667234
+          "error_low": 0.00536689, 
+          "value": 0.978069, 
+          "error_high": 0.00462973
         }, 
         {
           "bin": [
             22.0, 
             23.0
           ], 
-          "error_low": 0.0064829, 
-          "value": 0.965569, 
-          "error_high": 0.0057811
+          "error_low": 0.00481597, 
+          "value": 0.981525, 
+          "error_high": 0.0041305
         }, 
         {
           "bin": [
             23.0, 
             24.0
           ], 
-          "error_low": 0.00617485, 
-          "value": 0.975008, 
-          "error_high": 0.00563781
+          "error_low": 0.00367439, 
+          "value": 0.992333, 
+          "error_high": 0.00323178
         }, 
         {
           "bin": [
             24.0, 
             25.0
           ], 
-          "error_low": 0.0075165, 
-          "value": 0.954998, 
-          "error_high": 0.00697676
+          "error_low": -0.0, 
+          "value": 0.977253, 
+          "error_high": -0.0
         }, 
         {
           "bin": [
             25.0, 
             26.0
           ], 
-          "error_low": 0.00762288, 
-          "value": 0.960391, 
-          "error_high": 0.00640353
+          "error_low": 0.00682219, 
+          "value": 0.977475, 
+          "error_high": 0.00495366
         }, 
         {
           "bin": [
             26.0, 
             30.0
           ], 
-          "error_low": 0.00299115, 
-          "value": 0.954576, 
-          "error_high": 0.00287891
+          "error_low": 0.00246744, 
+          "value": 0.971403, 
+          "error_high": 0.00242523
         }, 
         {
           "bin": [
             30.0, 
             35.0
           ], 
-          "error_low": 0.00263163, 
-          "value": 0.955985, 
-          "error_high": 0.00256049
+          "error_low": 0.00203656, 
+          "value": 0.970594, 
+          "error_high": 0.00202186
         }, 
         {
           "bin": [
             35.0, 
             40.0
           ], 
-          "error_low": 0.0023496, 
-          "value": 0.943164, 
-          "error_high": 0.00233228
+          "error_low": 0.00212437, 
+          "value": 0.956168, 
+          "error_high": 0.00211238
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.00170526, 
-          "value": 0.932198, 
-          "error_high": 0.00167279
+          "error_low": 0.0015279, 
+          "value": 0.946657, 
+          "error_high": 0.00148907
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.00390297, 
-          "value": 0.92448, 
-          "error_high": 0.00386497
+          "error_low": 0.00359804, 
+          "value": 0.938316, 
+          "error_high": 0.00352681
         }, 
         {
           "bin": [
             60.0, 
             80.0
           ], 
-          "error_low": 0.00517105, 
-          "value": 0.934998, 
-          "error_high": 0.00514465
+          "error_low": 0.00476566, 
+          "value": 0.953131, 
+          "error_high": 0.00472626
         }, 
         {
           "bin": [
             80.0, 
             120.0
           ], 
-          "error_low": 0.00953145, 
-          "value": 0.94069, 
-          "error_high": 0.0090085
+          "error_low": 0.0084336, 
+          "value": 0.943342, 
+          "error_high": 0.00768774
         }, 
         {
           "bin": [
             120.0, 
             200.0
           ], 
-          "error_low": 0.0312506, 
-          "value": 0.96537, 
-          "error_high": 0.0281574
+          "error_low": 0.0302325, 
+          "value": 0.969702, 
+          "error_high": 0.0272815
         }
       ]
     }
