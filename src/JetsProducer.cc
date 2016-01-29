@@ -31,7 +31,6 @@ void JetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup)
         vtxNtracks.push_back(jet.userFloat("vtxNtracks"));
         // some loops needed to dig some information within the jet itself
         std::vector<std::pair<float, int>> softLeptInJet; // pt, index
-        softLeptInJet.clear();
         float leadTrackPt_ = 0.;
         for (unsigned int idaughter = 0; idaughter < jet.numberOfDaughters(); idaughter++)
         {
@@ -87,6 +86,7 @@ void JetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup)
         } else {
             regPt.push_back(jet.pt());
         }
+//        std::cout << "computeRegression= " << computeRegression << "\tjet.pt()= " << jet.pt() << "\tregPt= " << regPt.back() << std::endl;
 
         passLooseID.push_back(Tools::Jets::passLooseId(jet));
         passTightID.push_back(Tools::Jets::passTightId(jet));
