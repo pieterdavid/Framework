@@ -46,6 +46,11 @@ with open(args.file, 'r') as f:
                 'data_err_down': float(data[6]),
                 }
 
+        if (eff['data'] - eff['data_err_down']) < 0 :
+            eff['data_err_down'] = eff['data'] 
+        if (eff['data'] + eff['data_err_up']) > 1 :
+            eff['data_err_up'] = 1 - eff['data']
+
         if not eta_bin in efficiencies:
             efficiencies[eta_bin] = {}
 
