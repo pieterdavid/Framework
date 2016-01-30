@@ -39,11 +39,16 @@ with open(args.file, 'r') as f:
             pt_binning.extend(pt_bin)
         else:
             pt_binning.append(pt_bin[1])
-
         eff = {
                 'data': float(data[4]),
-                'data_err': float(data[5]),
-                }
+                'data_err_down': float(data[5]),
+                'data_err_up': float(data[5]),
+              }
+
+        if (eff['data'] - eff['data_err_down']) < 0 :
+            eff['data_err_down'] = eff['data'] 
+        if (eff['data'] + eff['data_err_up']) > 1 :
+            eff['data_err_up'] = 1 - eff['data']
 
         if not eta_bin in efficiencies:
             efficiencies[eta_bin] = {}
@@ -64,7 +69,7 @@ for i in range(0, len(eta_binning) - 1):
         pt_bin = (pt_binning[j], pt_binning[j + 1])
         eff = efficiencies[eta_bin][pt_bin]
 
-        pt_data = {'bin': [pt_binning[j], pt_binning[j + 1]], 'value': eff['data'], 'error_low': eff['data_err'], 'error_high': eff['data_err']}
+        pt_data = {'bin': [pt_binning[j], pt_binning[j + 1]], 'value': eff['data'], 'error_low': eff['data_err_down'], 'error_high': eff['data_err_up']}
 
         eta_data['values'].append(pt_data)
 
