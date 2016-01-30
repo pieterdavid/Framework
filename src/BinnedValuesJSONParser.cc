@@ -1,10 +1,10 @@
-#include <cp3_llbb/Framework/interface/ScaleFactorParser.h>
+#include <cp3_llbb/Framework/interface/BinnedValuesJSONParser.h>
 
 #include <iostream>
 
 #include <boost/property_tree/json_parser.hpp>
 
-void ScaleFactorParser::parse_file(const std::string& file) {
+void BinnedValuesJSONParser::parse_file(const std::string& file) {
 
     boost::property_tree::ptree ptree;
     boost::property_tree::read_json(file, ptree);
@@ -22,52 +22,55 @@ void ScaleFactorParser::parse_file(const std::string& file) {
 
     bool formula = ptree.get<bool>("formula", false);
     
-    m_scale_factor.use_formula = formula;
+    m_values.use_formula = formula;
     if (formula) {
         std::string variable = ptree.get<std::string>("variable");
 
         if (variable == "x")
-            m_scale_factor.formula_variable_index = 0;
+            m_values.formula_variable_index = 0;
         else if (variable == "y")
-            m_scale_factor.formula_variable_index = 1;
+            m_values.formula_variable_index = 1;
         else if (variable == "z")
-            m_scale_factor.formula_variable_index = 2;
+            m_values.formula_variable_index = 2;
         else
             throw edm::Exception(edm::errors::LogicError, "Unsupported variable: " + variable);
     }
+
+    m_values.maximum = ptree.get("maximum", std::numeric_limits<float>::max());
+    m_values.minimum = ptree.get("minimum", 0);
 
     std::string error_type = ptree.get<std::string>("error_type");
     std::transform(error_type.begin(), error_type.end(), error_type.begin(), ::tolower);
 
     if (error_type == "absolute")
-        m_scale_factor.error_type = ScaleFactor::ErrorType::ABSOLUTE;
+        m_values.error_type = BinnedValues::ErrorType::ABSOLUTE;
     else if (error_type == "relative")
-        m_scale_factor.error_type = ScaleFactor::ErrorType::RELATIVE;
+        m_values.error_type = BinnedValues::ErrorType::RELATIVE;
     else if (error_type == "variated")
-        m_scale_factor.error_type = ScaleFactor::ErrorType::VARIATED;
+        m_values.error_type = BinnedValues::ErrorType::VARIATED;
     else
         throw std::runtime_error("Invalid error_type. Only 'absolute', 'relative' and 'variated' are supported");
 
     switch (dimension) {
         case 1:
             if (!formula)
-                m_scale_factor.binned.reset(new OneDimensionHistogram<float>(binning_x));
+                m_values.binned.reset(new OneDimensionHistogram<float>(binning_x));
             else
-                m_scale_factor.formula.reset(new OneDimensionHistogram<std::shared_ptr<TFormula>, float>(binning_x));
+                m_values.formula.reset(new OneDimensionHistogram<std::shared_ptr<TFormula>, float>(binning_x));
             break;
 
         case 2:
             if (!formula)
-                m_scale_factor.binned.reset(new TwoDimensionsHistogram<float>(binning_x, binning_y));
+                m_values.binned.reset(new TwoDimensionsHistogram<float>(binning_x, binning_y));
             else
-                m_scale_factor.formula.reset(new TwoDimensionsHistogram<std::shared_ptr<TFormula>, float>(binning_x, binning_y));
+                m_values.formula.reset(new TwoDimensionsHistogram<std::shared_ptr<TFormula>, float>(binning_x, binning_y));
             break;
 
         case 3:
             if (!formula)
-                m_scale_factor.binned.reset(new ThreeDimensionsHistogram<float>(binning_x, binning_y, binning_z));
+                m_values.binned.reset(new ThreeDimensionsHistogram<float>(binning_x, binning_y, binning_z));
             else
-                m_scale_factor.formula.reset(new ThreeDimensionsHistogram<std::shared_ptr<TFormula>, float>(binning_x, binning_y, binning_z));
+                m_values.formula.reset(new ThreeDimensionsHistogram<std::shared_ptr<TFormula>, float>(binning_x, binning_y, binning_z));
             break;
     }
 

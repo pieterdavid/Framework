@@ -8,7 +8,7 @@
 #include <DataFormats/Common/interface/ValueMap.h>
 
 #include <cp3_llbb/Framework/interface/Histogram.h>
-#include <cp3_llbb/Framework/interface/ScaleFactor.h>
+#include <cp3_llbb/Framework/interface/BinnedValues.h>
 
 #include <boost/property_tree/ptree.hpp>
 
@@ -16,15 +16,15 @@
 
 #include <TFormula.h>
 
-class ScaleFactorParser {
+class BinnedValuesJSONParser {
 
     public:
-        ScaleFactorParser(const std::string& file) {
+        BinnedValuesJSONParser(const std::string& file) {
             parse_file(file);
         }
 
-        virtual ScaleFactor&& get_scale_factor() final {
-            return std::move(m_scale_factor);
+        virtual BinnedValues&& get_values() final {
+            return std::move(m_values);
         }
 
     private:
@@ -48,15 +48,15 @@ class ScaleFactorParser {
             h.setBinErrorHigh(bin, error_high);
         }
 
-        void fillHistogram(ScaleFactor& sf, const std::vector<float>& bins, const float& value, const float& error_low, const float& error_high) {
-            fillHistogram(*sf.binned.get(), bins, value, error_low, error_high);
+        void fillHistogram(BinnedValues& val, const std::vector<float>& bins, const float& value, const float& error_low, const float& error_high) {
+            fillHistogram(*val.binned.get(), bins, value, error_low, error_high);
         }
 
-        void fillHistogram(ScaleFactor& sf, const std::vector<float>& bins, const std::string& value, const std::string& error_low, const std::string& error_high) {
+        void fillHistogram(BinnedValues& val, const std::vector<float>& bins, const std::string& value, const std::string& error_low, const std::string& error_high) {
             std::shared_ptr<TFormula> value_formula(new TFormula("", value.c_str()));
             std::shared_ptr<TFormula> error_low_formula(new TFormula("", error_low.c_str()));
             std::shared_ptr<TFormula> error_high_formula(new TFormula("", error_high.c_str()));
-            fillHistogram(*sf.formula.get(), bins, value_formula, error_low_formula, error_high_formula);
+            fillHistogram(*val.formula.get(), bins, value_formula, error_low_formula, error_high_formula);
         }
 
         template <typename _Content>
@@ -80,7 +80,7 @@ class ScaleFactorParser {
                                 _Content error_low = data_z.second.get<_Content>("error_low");
                                 _Content error_high = data_z.second.get<_Content>("error_high");
 
-                                fillHistogram(m_scale_factor, {mean_x, mean_y, mean_z}, value, error_low, error_high);
+                                fillHistogram(m_values, {mean_x, mean_y, mean_z}, value, error_low, error_high);
                             }
 
                         } else {
@@ -89,7 +89,7 @@ class ScaleFactorParser {
                             _Content error_low = data_y.second.get<_Content>("error_low");
                             _Content error_high = data_y.second.get<_Content>("error_high");
 
-                            fillHistogram(m_scale_factor, {mean_x, mean_y}, value, error_low, error_high);
+                            fillHistogram(m_values, {mean_x, mean_y}, value, error_low, error_high);
                         }
 
                     }
@@ -100,10 +100,10 @@ class ScaleFactorParser {
                     _Content error_low = data_x.second.get<_Content>("error_low");
                     _Content error_high = data_x.second.get<_Content>("error_high");
 
-                    fillHistogram(m_scale_factor, {mean_x}, value, error_low, error_high);
+                    fillHistogram(m_values, {mean_x}, value, error_low, error_high);
                 }
             }
         }
 
-        ScaleFactor m_scale_factor;
+        BinnedValues m_values;
 };
