@@ -1,5 +1,5 @@
 #include <cp3_llbb/Framework/interface/ScaleFactors.h>
-#include <cp3_llbb/Framework/interface/ScaleFactorParser.h>
+#include <cp3_llbb/Framework/interface/BinnedValuesJSONParser.h>
 
 #include <iostream>
 
@@ -12,9 +12,9 @@ void ScaleFactors::create_branches(const edm::ParameterSet& config) {
         for (const std::string& scale_factor: scale_factors_name) {
             create_branch(scale_factor, "sf_" + scale_factor);
 
-            ScaleFactorParser parser(scale_factors.getUntrackedParameter<edm::FileInPath>(scale_factor).fullPath());
+            BinnedValuesJSONParser parser(scale_factors.getUntrackedParameter<edm::FileInPath>(scale_factor).fullPath());
 
-            m_scale_factors.emplace(scale_factor, std::move(parser.get_scale_factor()));
+            m_scale_factors.emplace(scale_factor, std::move(parser.get_values()));
         }
     }
 
