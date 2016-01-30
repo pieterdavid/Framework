@@ -1162,6 +1162,8 @@
       ]
     }
   ], 
+  "maximum": 1,
+  "minimum": 0,
   "dimension": 2, 
   "binning": {
     "y": [

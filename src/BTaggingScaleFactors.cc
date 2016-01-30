@@ -1,5 +1,5 @@
 #include <cp3_llbb/Framework/interface/BTaggingScaleFactors.h>
-#include <cp3_llbb/Framework/interface/ScaleFactorParser.h>
+#include <cp3_llbb/Framework/interface/BinnedValuesJSONParser.h>
 
 #include <iostream>
 
@@ -47,8 +47,8 @@ void BTaggingScaleFactors::create_branches(const edm::ParameterSet& config) {
 
                 sf_key_type sf_key = std::make_tuple(algo, string_to_flavor(flavor), wp);
 
-                ScaleFactorParser parser(file);
-                m_scale_factors.emplace(sf_key, std::move(parser.get_scale_factor()));
+                BinnedValuesJSONParser parser(file);
+                m_scale_factors.emplace(sf_key, std::move(parser.get_values()));
             }
         }
 #ifdef SF_DEBUG
