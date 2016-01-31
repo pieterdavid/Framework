@@ -22,11 +22,25 @@
 #include <cp3_llbb/Framework/interface/Tools.h>
 #include <cp3_llbb/TreeWrapper/interface/TreeWrapper.h>
 
+#include <Compression.h>
 #include <TFile.h>
 #include <TTree.h>
 
 // Uncomment to enable printout about memory usage
 // #define DEBUG_MEMORY_USAGE
+
+// Uncomment to debug TTree::Fill
+// #define DEBUG_TREE_FILL
+
+// Uncomment to override CMSSW root error handling. Usefull to see all infos from ROOT
+// #define OVERRIDE_ROOT_ERROR_HANDLER
+
+#ifdef OVERRIDE_ROOT_ERROR_HANDLER
+#include <TError.h>
+void RootErrorHandler(int level, bool, char const* location, char const* message) {
+    std::cout << "[" << location << "] [ " << level << "] " << message << std::endl;
+}
+#endif
 
 // Tools for sorting
 template <typename T>
@@ -58,13 +72,20 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
         std::cout << "[Framework - >>constructor] RSS: " << Tools::process_mem_usage() << std::endl;
 #endif
 
+        // Use default values from CMSSW to optimize TTree output
         m_output.reset(TFile::Open(m_output_filename.c_str(), "recreate"));
         m_output->cd();
 
-        TTree* tree = new TTree("t", "t");
-        tree->SetAutoFlush(140);
-        tree->SetMaxVirtualSize(500 * 1024 * 1024); // Allow max 500 MB for the tree
-        m_wrapper.reset(new ROOT::TreeWrapper(tree));
+        m_raw_tree = new TTree("t", "t");
+        m_flush_size = 15728640;
+        m_raw_tree->SetAutoFlush(0);
+
+        // From CMSSW:
+        // "Turn off autosaving because it is such a memory hog and we are not using
+        // this check-pointing feature anyway."
+        m_raw_tree->SetAutoSave(std::numeric_limits<Long64_t>::max());
+        m_raw_tree->SetMaxVirtualSize(150 * 1024 * 1024);
+        m_wrapper.reset(new ROOT::TreeWrapper(m_raw_tree));
 
         m_categories.reset(new CategoryManager(*m_wrapper));
         m_producers_manager.reset(new ProducersManager(*this));
@@ -190,6 +211,11 @@ void ExTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     bool should_continue = true;
 
 #ifdef DEBUG_MEMORY_USAGE
+        ErrorHandlerFunc_t defaultRootErrorHandler = GetErrorHandler();
+        SetErrorHandler(RootErrorHandler);
+#endif
+
+#ifdef DEBUG_MEMORY_USAGE
     std::cout << "[Framework - >>produce] RSS: " << Tools::process_mem_usage() << std::endl;
 #endif
 
@@ -226,9 +252,30 @@ void ExTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     std::cout << "[Framework - >>produce after analyzers] RSS: " << Tools::process_mem_usage() << std::endl;
 #endif
 
-    if (m_categories->evaluate_post_analyzers(*m_producers_manager, *m_analyzers_manager))
-        m_wrapper->fill();
-    else
+    if (m_categories->evaluate_post_analyzers(*m_producers_manager, *m_analyzers_manager)) {
+#ifdef DEBUG_TREE_FILL
+        gDebug = 1;
+#endif
+
+        size_t zipSize = m_raw_tree->GetZipBytes();
+        m_wrapper->fillBranches();
+        m_filled_size += (m_raw_tree->GetZipBytes() - zipSize);
+
+        if (m_filled_size > m_flush_size) {
+#ifdef DEBUG_MEMORY_USAGE
+    std::cout << "[Framework - >>produce before flushing] RSS: " << Tools::process_mem_usage() << std::endl;
+#endif
+            m_raw_tree->FlushBaskets();
+            m_filled_size = 0;
+#ifdef DEBUG_MEMORY_USAGE
+    std::cout << "[Framework - >>produce after flushing] RSS: " << Tools::process_mem_usage() << std::endl;
+#endif
+        }
+
+#ifdef DEBUG_TREE_FILL
+        gDebug = 0;
+#endif
+    } else
         m_wrapper->reset();
 
     m_categories->reset();
@@ -241,6 +288,9 @@ void ExTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
 #ifdef DEBUG_MEMORY_USAGE
     std::cout << "[Framework - <<produce] RSS: " << Tools::process_mem_usage() << std::endl;
+#endif
+#ifdef OVERRIDE_ROOT_ERROR_HANDLER
+        SetErrorHandler(defaultRootErrorHandler);
 #endif
 }
 
@@ -274,6 +324,9 @@ void ExTreeMaker::endJob() {
     std::cout << "[Framework - >>endJob] RSS: " << Tools::process_mem_usage() << std::endl;
 #endif
 
+    // This is needed since we don't fill the tree directory, but each branch separately
+    m_raw_tree->SetEntries(-1);
+
     std::cout << std::endl << "---" << std::endl;
     for (auto& filter: m_filters)
         filter.second->endJob(*m_metadata);
@@ -287,7 +340,9 @@ void ExTreeMaker::endJob() {
     auto end_time = clock::now();
 
     std::cout << std::endl << "Job done in " << std::chrono::duration_cast<ms>(end_time - m_start_time).count() / 1000. << "s" << std::endl;
-    m_output->Write();
+
+    m_raw_tree->AutoSave("FlushBaskets Overwrite");
+    m_output->Write("", TObject::kOverwrite);
 
     m_categories->print_summary();
 
