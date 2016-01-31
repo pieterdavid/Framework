@@ -55,7 +55,10 @@ class ExTreeMaker: public edm::EDProducer, ProducerGetter, AnalyzerGetter {
 
         std::string m_output_filename;
         std::unique_ptr<TFile> m_output;
+        TTree* m_raw_tree;
         std::unique_ptr<ROOT::TreeWrapper> m_wrapper;
+        size_t m_flush_size;
+        size_t m_filled_size = 0;
 
         std::unordered_map<std::string, std::shared_ptr<Framework::Filter>> m_filters;
 
