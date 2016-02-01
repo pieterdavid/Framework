@@ -33,6 +33,8 @@ struct BinnedValues {
         use_formula = rhs.use_formula;
         error_type = rhs.error_type;
         formula_variable_index = rhs.formula_variable_index;
+        maximum = rhs.maximum;
+        minimum = rhs.minimum;
     }
 
     BinnedValues() = default;
@@ -77,8 +79,8 @@ struct BinnedValues {
     std::vector<float> relative_errors_to_absolute(const std::vector<float>& array) const {
         std::vector<float> result(3);
         result[Nominal] = array[Nominal];
-        result[Up] = array[Nominal] * (1 + array[Up]);
-        result[Down] = array[Nominal] * (1 - array[Down]);
+        result[Up] = array[Nominal] * array[Up];
+        result[Down] = array[Nominal] * array[Down];
 
         return result;
     };
