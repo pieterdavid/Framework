@@ -1,0 +1,4 @@
+<bin name="cp3llbbTestFrameworkOutput" file="testFrameworkOutput.cc">
+    <use name="root" />
+    <use name="openssl" />
+</bin>
