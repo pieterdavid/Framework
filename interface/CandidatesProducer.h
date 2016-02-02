@@ -48,13 +48,13 @@ class CandidatesProducer: public Framework::Producer {
     public:
         // Tree members
         std::vector<LorentzVector>& p4 = tree["p4"].write<std::vector<LorentzVector>>();
-        std::vector<float>& y = tree["y"].write<std::vector<float>>();
-        std::vector<int8_t>& charge = tree["charge"].write<std::vector<int8_t>>();
+        std::vector<float>& y = tree["y"].transient_write<std::vector<float>>();
+        std::vector<int8_t>& charge = tree["charge"].transient_write<std::vector<int8_t>>();
 
         std::vector<bool>& matched = tree["has_matched_gen_particle"].write<std::vector<bool>>();
         std::vector<LorentzVector>& gen_p4 = tree["gen_p4"].write<std::vector<LorentzVector>>();
-        std::vector<float>& gen_y = tree["gen_y"].write<std::vector<float>>();
-        std::vector<int8_t>& gen_charge = tree["gen_charge"].write<std::vector<int8_t>>();
+        std::vector<float>& gen_y = tree["gen_y"].transient_write<std::vector<float>>();
+        std::vector<int8_t>& gen_charge = tree["gen_charge"].transient_write<std::vector<int8_t>>();
 
 };
 
