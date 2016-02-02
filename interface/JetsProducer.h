@@ -103,19 +103,19 @@ class JetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScaleFac
         std::vector<int8_t>& hadronFlavor = tree["hadronFlavor"].write<std::vector<int8_t>>();
         std::vector<float>& jecFactor = tree["jecFactor"].write<std::vector<float>>();
         std::vector<float>& puJetID = tree["puJetID"].write<std::vector<float>>();
-        std::vector<float>& vtxMass = tree["vtxMass"].write<std::vector<float>>();
         // Variables needed for 74X b-jet energy regression as of January 26th 2016
-        BRANCH(neutralHadronEnergyFraction, std::vector<float>);
-        BRANCH(neutralEmEnergyFraction, std::vector<float>);
-        BRANCH(vtx3DVal, std::vector<float>);
-        BRANCH(vtx3DSig, std::vector<float>);
-        BRANCH(vtxPt, std::vector<float>);
-        BRANCH(vtxNtracks, std::vector<float>);
-        BRANCH(leptonPtRel, std::vector<float>);
-        BRANCH(leptonPt, std::vector<float>);
-        BRANCH(leptonDeltaR, std::vector<float>);
-        BRANCH(chargedMultiplicity, std::vector<float>);
-        BRANCH(leadTrackPt, std::vector<float>);
+        TRANSIENT_BRANCH(neutralHadronEnergyFraction, std::vector<float>);
+        TRANSIENT_BRANCH(neutralEmEnergyFraction, std::vector<float>);
+        TRANSIENT_BRANCH(vtxMass, std::vector<float>);
+        TRANSIENT_BRANCH(vtx3DVal, std::vector<float>);
+        TRANSIENT_BRANCH(vtx3DSig, std::vector<float>);
+        TRANSIENT_BRANCH(vtxPt, std::vector<float>);
+        TRANSIENT_BRANCH(vtxNtracks, std::vector<float>);
+        TRANSIENT_BRANCH(leptonPtRel, std::vector<float>);
+        TRANSIENT_BRANCH(leptonPt, std::vector<float>);
+        TRANSIENT_BRANCH(leptonDeltaR, std::vector<float>);
+        TRANSIENT_BRANCH(chargedMultiplicity, std::vector<float>);
+        TRANSIENT_BRANCH(leadTrackPt, std::vector<float>);
         BRANCH(regPt, std::vector<float>);
 
         BRANCH(passLooseID, std::vector<bool>);
