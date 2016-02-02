@@ -29,12 +29,12 @@ class VerticesProducer: public Framework::Producer {
     public:
         // Tree members
 
-        std::vector<float>& normalizedChi2 = tree["normalizedChi2"].write<std::vector<float>>();
-        std::vector<float>& ndof = tree["ndof"].write<std::vector<float>>();
-        std::vector<bool>& isFake = tree["isFake"].write<std::vector<bool>>();
-        std::vector<bool>& isValid = tree["isValid"].write<std::vector<bool>>();
-        std::vector<reco::Vertex::Point>& position = tree["position"].write<std::vector<reco::Vertex::Point>>();
-        std::vector<reco::Vertex::CovarianceMatrix>& covariance = tree["covariance"].write<std::vector<reco::Vertex::CovarianceMatrix>>();
+        std::vector<float>& normalizedChi2 = tree["normalizedChi2"].transient_write<std::vector<float>>();
+        std::vector<float>& ndof = tree["ndof"].transient_write<std::vector<float>>();
+        std::vector<bool>& isFake = tree["isFake"].transient_write<std::vector<bool>>();
+        std::vector<bool>& isValid = tree["isValid"].transient_write<std::vector<bool>>();
+        std::vector<reco::Vertex::Point>& position = tree["position"].transient_write<std::vector<reco::Vertex::Point>>();
+        std::vector<reco::Vertex::CovarianceMatrix>& covariance = tree["covariance"].transient_write<std::vector<reco::Vertex::CovarianceMatrix>>();
 };
 
 #endif
