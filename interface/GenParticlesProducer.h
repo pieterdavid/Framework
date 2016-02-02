@@ -43,12 +43,12 @@ class GenParticlesProducer: public Framework::Producer {
         std::vector<int16_t>& packed_status_flags = tree_packed["status_flags"].transient_write<std::vector<int16_t>>();
         std::vector<std::vector<uint16_t>>& packed_mothers_index = tree_packed["mothers_index"].transient_write<std::vector<std::vector<uint16_t>>>();
 
-        std::vector<LorentzVector>& pruned_p4 = tree_pruned["p4"].write<std::vector<LorentzVector>>();
-        std::vector<float>& pruned_y = tree_pruned["y"].write<std::vector<float>>();
-        std::vector<int16_t>& pruned_pdg_id = tree_pruned["pdg_id"].write<std::vector<int16_t>>();
-        std::vector<int8_t>& pruned_status = tree_pruned["status"].write<std::vector<int8_t>>();
-        std::vector<int16_t>& pruned_status_flags = tree_pruned["status_flags"].write<std::vector<int16_t>>();
-        std::vector<std::vector<uint16_t>>& pruned_mothers_index = tree_pruned["mothers_index"].write<std::vector<std::vector<uint16_t>>>();
+        std::vector<LorentzVector>& pruned_p4 = tree_pruned["p4"].transient_write<std::vector<LorentzVector>>();
+        std::vector<float>& pruned_y = tree_pruned["y"].transient_write<std::vector<float>>();
+        std::vector<int16_t>& pruned_pdg_id = tree_pruned["pdg_id"].transient_write<std::vector<int16_t>>();
+        std::vector<int8_t>& pruned_status = tree_pruned["status"].transient_write<std::vector<int8_t>>();
+        std::vector<int16_t>& pruned_status_flags = tree_pruned["status_flags"].transient_write<std::vector<int16_t>>();
+        std::vector<std::vector<uint16_t>>& pruned_mothers_index = tree_pruned["mothers_index"].transient_write<std::vector<std::vector<uint16_t>>>();
 };
 
 #endif
