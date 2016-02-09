@@ -10,6 +10,7 @@
 <use name="cp3_llbb/TreeWrapper"/>
 <lib name="MathMore"/>
 <use name="rootrflx"/>
+<use name="lhapdf"/>
 <export>
     <lib name="1"/>
 </export>
