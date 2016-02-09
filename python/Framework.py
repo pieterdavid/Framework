@@ -74,7 +74,8 @@ class Framework(object):
 
         process.GlobalTag.globaltag = self.globalTag
 
-        process.MessageLogger.cerr.FwkReport.reportEvery = 100
+        process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+        process.MessageLogger.suppressWarning = cms.untracked.vstring('framework')
 
         process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
         process.source = cms.Source("PoolSource")
