@@ -5,6 +5,8 @@ void VerticesProducer::produce(edm::Event& event, const edm::EventSetup& eventSe
     edm::Handle<std::vector<reco::Vertex>> vertices;
     event.getByToken(m_vertices_token, vertices);
 
+    n = vertices->size();
+
     for (const reco::Vertex& vertex: *vertices) {
         ndof.push_back(vertex.ndof());
         normalizedChi2.push_back(vertex.normalizedChi2());
