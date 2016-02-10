@@ -29,6 +29,8 @@ class VerticesProducer: public Framework::Producer {
     public:
         // Tree members
 
+        BRANCH(n, uint8_t);
+
         std::vector<float>& normalizedChi2 = tree["normalizedChi2"].transient_write<std::vector<float>>();
         std::vector<float>& ndof = tree["ndof"].transient_write<std::vector<float>>();
         std::vector<bool>& isFake = tree["isFake"].transient_write<std::vector<bool>>();
