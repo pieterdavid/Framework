@@ -180,7 +180,7 @@ class JERSystematics(JetsSystematics):
                     dRMax = cms.double(0.2),
                     dPtMaxFactor = cms.double(3),
 
-                    variation = cms.untracked.int32(shift)
+                    variation = cms.int32(shift)
                 )
 
         return module

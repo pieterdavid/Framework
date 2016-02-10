@@ -305,7 +305,7 @@ class Framework(object):
                     dRMax = cms.double(0.2),
                     dPtMaxFactor = cms.double(3),
 
-                    variation = cms.untracked.int32(0)
+                    variation = cms.int32(0)
                 )
 
         self.process.shiftedMETCorrModuleForSmearedJets = cms.EDProducer('ShiftedParticleMETcorrInputProducer',
