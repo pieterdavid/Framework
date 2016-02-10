@@ -4,6 +4,7 @@
 <use name="root"/>
 <use name="DataFormats/PatCandidates"/>
 <use name="DataFormats/HepMCCandidate"/>
+<use name="DataFormats/Math"/>
 <use name="RecoEgamma/EgammaTools"/>
 <use name="CommonTools/Utils" />
 <use name="cp3_llbb/TreeWrapper"/>

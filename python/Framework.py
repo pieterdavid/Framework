@@ -168,6 +168,19 @@ class Framework(object):
         self.producers.insert(index, name)
         setattr(self.process.framework.producers, name, configuration)
 
+    def getProducer(self, name):
+        """
+        Return a producer
+        """
+
+        self.ensureNotCreated()
+
+        if not name in self.producers:
+            raise Exception('No producer named %r found in the configuration' % name)
+
+        producer = getattr(self.process.framework.producers, name)
+        return producer
+
     def removeAnalyzer(self, name):
         """
         Remove an analyzer from the framework configuration
@@ -292,7 +305,7 @@ class Framework(object):
                     dRMax = cms.double(0.2),
                     dPtMaxFactor = cms.double(3),
 
-                    variation = cms.untracked.int32(0)
+                    variation = cms.int32(0)
                 )
 
         self.process.shiftedMETCorrModuleForSmearedJets = cms.EDProducer('ShiftedParticleMETcorrInputProducer',
@@ -406,10 +419,7 @@ class Framework(object):
             switchOnVIDElectronIdProducer(self.process, DataFormat.MiniAOD)
 
             id_modules = [
-                    'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_50ns_V2_cff',
                     'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
-                    'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff',
-                    'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff'
                     ]
 
             for mod in id_modules:

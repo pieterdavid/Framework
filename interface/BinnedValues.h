@@ -5,13 +5,13 @@
 #include <memory>
 #include <TFormula.h>
 
-enum class Variation {
+enum Variation {
     Nominal = 0,
     Down = 1,
     Up = 2
 };
 
-struct ScaleFactor {
+struct BinnedValues {
 
     /**
      * Type of possible errors: Suppose we have E +- ΔE
@@ -25,17 +25,19 @@ struct ScaleFactor {
         VARIATED
     };
 
-    friend class ScaleFactorParser;
+    friend class BinnedValuesJSONParser;
 
-    ScaleFactor(ScaleFactor&& rhs) {
+    BinnedValues(BinnedValues&& rhs) {
         binned = std::move(rhs.binned);
         formula = std::move(rhs.formula);
         use_formula = rhs.use_formula;
         error_type = rhs.error_type;
         formula_variable_index = rhs.formula_variable_index;
+        maximum = rhs.maximum;
+        minimum = rhs.minimum;
     }
 
-    ScaleFactor() = default;
+    BinnedValues() = default;
 
     private:
     template <typename _Value>
@@ -68,14 +70,17 @@ struct ScaleFactor {
     ErrorType error_type;
     size_t formula_variable_index = -1; // Only used in formula mode
 
+    float maximum;
+    float minimum;
+
     /**
      * Convert relative errors to absolute errors
      **/
     std::vector<float> relative_errors_to_absolute(const std::vector<float>& array) const {
         std::vector<float> result(3);
-        result[0] = array[0];
-        result[1] = array[0] * (1 + array[1]);
-        result[2] = array[0] * (1 - array[2]);
+        result[Nominal] = array[Nominal];
+        result[Up] = array[Nominal] * array[Up];
+        result[Down] = array[Nominal] * array[Down];
 
         return result;
     };
@@ -85,9 +90,9 @@ struct ScaleFactor {
      **/
     std::vector<float> variated_errors_to_absolute(const std::vector<float>& array) const {
         std::vector<float> result(3);
-        result[0] = array[0];
-        result[1] = std::abs(array[1] - array[0]);
-        result[2] = std::abs(array[0] - array[2]);
+        result[Nominal] = array[Nominal];
+        result[Up] = std::abs(array[Up] - array[Nominal]);
+        result[Down] = std::abs(array[Nominal] - array[Down]);
 
         return result;
     };
@@ -107,11 +112,25 @@ struct ScaleFactor {
         throw std::runtime_error("Invalid error type");
     }
 
+    /**
+     * Check that the up and down variation are
+     * still between the allowed range
+     **/
+    void clamp(std::vector<float>& array) const {
+        if ((array[Nominal] + array[Up]) > maximum) {
+            array[Up] = maximum - array[Nominal];
+        }
+
+        if ((array[Nominal] - array[Down]) < minimum) {
+            array[Down] = -(minimum - array[Nominal]);
+        }
+    }
+
     public:
     std::vector<float> get(const std::vector<float>& variables) const {
         static auto double_errors = [](std::vector<float>& values) {
-            values[1] *= 2;
-            values[2] *= 2;
+            values[Up] *= 2;
+            values[Down] *= 2;
         };
 
         bool outOfRange = false;
@@ -124,6 +143,8 @@ struct ScaleFactor {
 
             if (outOfRange)
                 double_errors(values);
+
+            clamp(values);
 
             return values;
         } else {
@@ -140,6 +161,8 @@ struct ScaleFactor {
 
             if (outOfRange)
                 double_errors(values);
+
+            clamp(values);
 
             return values;
         }

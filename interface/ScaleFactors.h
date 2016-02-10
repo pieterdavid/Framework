@@ -8,7 +8,7 @@
 #include <DataFormats/Common/interface/ValueMap.h>
 
 #include <cp3_llbb/Framework/interface/Histogram.h>
-#include <cp3_llbb/Framework/interface/ScaleFactor.h>
+#include <cp3_llbb/Framework/interface/BinnedValues.h>
 #include <cp3_llbb/TreeWrapper/interface/TreeWrapper.h>
 
 #include <boost/property_tree/ptree.hpp>
@@ -34,5 +34,5 @@ class ScaleFactors {
         ROOT::TreeGroup& m_tree;
 
         std::map<std::string, std::vector<std::vector<float>>*> m_branches;
-        std::map<std::string, ScaleFactor> m_scale_factors;
+        std::map<std::string, BinnedValues> m_scale_factors;
 };

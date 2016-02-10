@@ -62,9 +62,6 @@ class JetsSystematics(Systematics):
     
         cfg = copy.deepcopy(self.process.framework.producers.jets)
         
-        # Clean configuration
-        del cfg.parameters.cut
-
         cfg.prefix = self.formatModuleVariableName(cfg.prefix.value(), postfix) + '_'
         cfg.parameters.jets = cms.untracked.InputTag(inputCollection)
        
@@ -183,7 +180,7 @@ class JERSystematics(JetsSystematics):
                     dRMax = cms.double(0.2),
                     dPtMaxFactor = cms.double(3),
 
-                    variation = cms.untracked.int32(shift)
+                    variation = cms.int32(shift)
                 )
 
         return module
