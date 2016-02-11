@@ -100,6 +100,7 @@ class EventProducer: public Framework::Producer {
         BRANCH(pu_weight_down, float);
 
         BRANCH(pt_hat, float);
+        BRANCH(ht, float);
         BRANCH(weight, float);
 
         BRANCH(alpha_QCD, float);
