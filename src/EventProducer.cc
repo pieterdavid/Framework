@@ -62,6 +62,17 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         for (auto& weight: lhe_info->weights()) {
             lhe_weights.push_back(std::make_pair(weight.id, weight.wgt));
         }
+        // Compute HT of the event
+        const lhef::HEPEUP& lhe_hepeup = lhe_info->hepeup();
+        std::vector<lhef::HEPEUP::FiveVector> lhe_particles = lhe_hepeup.PUP;
+        double ht_ = 0.;
+        for ( size_t iparticle = 0; iparticle < lhe_particles.size(); iparticle++ ) {
+            int pdgid_ = lhe_hepeup.IDUP[iparticle];
+            int status_ = lhe_hepeup.ISTUP[iparticle];
+            if ( status_ == 1 && ((std::abs(pdgid_) >= 1 && std::abs(pdgid_) <= 6 ) || (std::abs(pdgid_) == 21)) )
+                ht_ += std::sqrt(lhe_particles[iparticle][0]*lhe_particles[iparticle][0] + lhe_particles[iparticle][1]*lhe_particles[iparticle][1]);
+        }
+        ht = ht_;
     }
 }
 
