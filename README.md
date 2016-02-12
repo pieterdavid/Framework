@@ -34,7 +34,7 @@ git clone -b CMSSW_7_6_3p -o upstream git@github.com:cp3-llbb/Framework.git cp3_
 scram b -j 4
 
 cd ${CMSSW_BASE}/src/cp3_llbb/Framework
-source setup.sh
+source first_setup.sh
 cd ${CMSSW_BASE}/src
 ```
 
@@ -55,7 +55,7 @@ cmsRun TestConfigurationMC.py
 
 # When willing to commit things
   * Remember to *branch before committing anything*: ```git checkout -b my-new-branch```
-  * The ```setup.sh``` script took care of adding ```origin``` as your own repo, so to push just do the usual ```git push origin my-new-branch```
+  * The ```first_setup.sh``` script took care of adding ```origin``` as your own repo, so to push just do the usual ```git push origin my-new-branch```
 
 # Jenkins
 
