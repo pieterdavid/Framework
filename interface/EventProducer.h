@@ -8,6 +8,21 @@
 #include <SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h>
 #include <SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h>
 
+#include <map>
+
+// Uncomment to debug PDF uncertainties
+// #define DEBUG_PDF
+
+// If uncommented, LHE weights for LO samples will be read from the LHE file, otherwise, they will be computed directly using LHAPDF.
+#define USE_LHE_WEIGHTS_FOR_LO
+
+// If uncommented, the SCALUP value is used instead of originalXWGTUP to compute LHE weights on LO samples. It's a workaround to deal with a bug during the CMS generation of LO samples in 2015.
+#define USE_SCALUP_FOR_LO_LHE_WEIGHTS
+
+#ifndef USE_LHE_WEIGHTS_FOR_LO
+#include <LHAPDF/LHAPDF.h>
+#endif
+
 class EventProducer: public Framework::Producer {
     public:
         EventProducer(const std::string& name, const ROOT::TreeGroup& tree, const edm::ParameterSet& config):
@@ -30,6 +45,7 @@ class EventProducer: public Framework::Producer {
             m_lhe_info_token = collector.consumes<LHEEventProduct>(config.getUntrackedParameter<edm::InputTag>("lhe_info", edm::InputTag("externalLHEProducer")));
         }
 
+        virtual void beginRun(const edm::Run& run, const edm::EventSetup& eventSetup) override;
         virtual void produce(edm::Event& event, const edm::EventSetup& eventSetup) override;
 
         virtual void endJob(MetadataManager&) override;
@@ -43,10 +59,29 @@ class EventProducer: public Framework::Producer {
         edm::EDGetTokenT<LHEEventProduct> m_lhe_info_token;
 
         float m_event_weight_sum = 0;
+        float m_event_weight_sum_pdf_nominal = 0;
+        float m_event_weight_sum_pdf_up = 0;
+        float m_event_weight_sum_pdf_down = 0;
+        std::vector<float> m_event_weight_sum_scales;
 
         std::shared_ptr<Framework::PUReweighter> m_pu_reweighter;
         std::shared_ptr<Framework::PUReweighter> m_pu_reweighter_up;
         std::shared_ptr<Framework::PUReweighter> m_pu_reweighter_down;
+
+        std::vector<std::pair<uint32_t, size_t>> m_scale_variations_matching;
+        std::vector<std::pair<uint32_t, size_t>> m_pdf_weights_matching;
+
+        std::map<uint32_t, std::string> m_lo_pdf_set_strs {
+            {263000, "NNPDF30_lo_as_0130"},
+            {263400, "NNPDF30_lo_as_0130_nf_4"}
+        };
+
+        bool isLO = false;
+        bool has_alphas_uncertainty = false;
+
+#ifndef USE_LHE_WEIGHTS_FOR_LO
+        std::vector<LHAPDF::PDF*> lhapdf_pdfs;
+#endif
 
     public:
         // Tree members
@@ -71,15 +106,21 @@ class EventProducer: public Framework::Producer {
         BRANCH(alpha_QCD, float);
         BRANCH(alpha_QED, float);
         BRANCH(q_scale, float);
+        uint32_t& pdf_set = tree["pdf_set"].write<uint32_t>(false);
         BRANCH(pdf_id, std::pair<int, int>);
         BRANCH(pdf_x, std::pair<float, float>);
+        BRANCH(pdf_weight, float);
+        BRANCH(pdf_weight_up, float);
+        BRANCH(pdf_weight_down, float);
 
         BRANCH(n_ME_partons, int);
         BRANCH(n_ME_partons_filtered, int);
 
         BRANCH(lhe_originalXWGTUP, float);
         BRANCH(lhe_SCALUP, float);
-        BRANCH(lhe_weights, std::vector<std::pair<std::string, float>>);
+        TRANSIENT_BRANCH(lhe_weights, std::vector<std::pair<std::string, float>>);
+
+        BRANCH(scale_weights, std::vector<float>);
 };
 
 #endif
