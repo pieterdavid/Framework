@@ -286,6 +286,17 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         lhe_originalXWGTUP = lhe_info->originalXWGTUP();
         lhe_SCALUP = lhe_info->hepeup().SCALUP;
 
+        // Compute HT of the event
+        const lhef::HEPEUP& lhe_hepeup = lhe_info->hepeup();
+        std::vector<lhef::HEPEUP::FiveVector> lhe_particles = lhe_hepeup.PUP;
+        ht = 0;
+        for ( size_t iparticle = 0; iparticle < lhe_particles.size(); iparticle++ ) {
+            int pdgid_ = lhe_hepeup.IDUP[iparticle];
+            int status_ = lhe_hepeup.ISTUP[iparticle];
+            if ( status_ == 1 && ((std::abs(pdgid_) >= 1 && std::abs(pdgid_) <= 6 ) || (std::abs(pdgid_) == 21)) )
+                ht += std::sqrt(lhe_particles[iparticle][0]*lhe_particles[iparticle][0] + lhe_particles[iparticle][1]*lhe_particles[iparticle][1]);
+        }
+
 #ifdef USE_SCALUP_FOR_LO_LHE_WEIGHTS
         const float lhe_weight_nominal_weight = (isLO) ? lhe_SCALUP : lhe_originalXWGTUP;
 #else
@@ -400,17 +411,6 @@ end:
         for (size_t i = 0; i < scale_weights.size(); i++) {
             m_event_weight_sum_scales[i] += weight * scale_weights[i];
         }
-        // Compute HT of the event
-        const lhef::HEPEUP& lhe_hepeup = lhe_info->hepeup();
-        std::vector<lhef::HEPEUP::FiveVector> lhe_particles = lhe_hepeup.PUP;
-        double ht_ = 0.;
-        for ( size_t iparticle = 0; iparticle < lhe_particles.size(); iparticle++ ) {
-            int pdgid_ = lhe_hepeup.IDUP[iparticle];
-            int status_ = lhe_hepeup.ISTUP[iparticle];
-            if ( status_ == 1 && ((std::abs(pdgid_) >= 1 && std::abs(pdgid_) <= 6 ) || (std::abs(pdgid_) == 21)) )
-                ht_ += std::sqrt(lhe_particles[iparticle][0]*lhe_particles[iparticle][0] + lhe_particles[iparticle][1]*lhe_particles[iparticle][1]);
-        }
-        ht = ht_;
     }
 }
 
