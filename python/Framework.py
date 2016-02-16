@@ -74,7 +74,8 @@ class Framework(object):
 
         process.GlobalTag.globaltag = self.globalTag
 
-        process.MessageLogger.cerr.FwkReport.reportEvery = 100
+        process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+        process.MessageLogger.suppressWarning = cms.untracked.vstring('framework')
 
         process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
         process.source = cms.Source("PoolSource")
@@ -468,11 +469,3 @@ class Framework(object):
             # MET Filters
             from cp3_llbb.Framework import METFilter
             self.process.framework.filters.met = copy.deepcopy(METFilter.default_configuration)
-
-            self.process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
-            self.process.filterOnHBHENoiseFilter = cms.EDFilter('BooleanFlagFilter',
-               inputLabel = cms.InputTag('HBHENoiseFilterResultProducer', 'HBHENoiseFilterResult'),
-               reverseDecision = cms.bool(False)
-            )
-
-            self.path += cms.Sequence(self.process.filterOnHBHENoiseFilter)

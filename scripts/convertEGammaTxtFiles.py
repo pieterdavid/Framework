@@ -4,15 +4,24 @@ import math
 import argparse
 import ROOT
 
+# define indexes in the 'systs' array
+# Taken from https://twiki.cern.ch/twiki/pub/CMS/ElectronScaleFactorsRun2/efficiencyUtils.py.txt
+
+iAltBkgModel = 0
+iAltSigModel = 1
+iAltMCSignal = 2
+iAltTagSelec = 3
+
 def format_eta_bin(eta_bin):
     return 'ptabseta<%.1f' % (eta_bin[1]) if (eta_bin[0] == 0) else 'ptabseta%.1f-%.1f' % (eta_bin[0], eta_bin[1])
 
 parser = argparse.ArgumentParser()
 parser.add_argument('file', help='Txt file containing electron scale factors')
-parser.add_argument('-a', '--asymm-errors', action='store_true', dest='asymm', help='If True, expect to find in the text fields to fields for the errors instead of one, first high error and them down error')
+parser.add_argument('-a', '--asymm-errors', action='store_true', dest='asymm', help='If True, expect to find in the text fields two fields for the errors instead of one, first high error and them down error')
 parser.add_argument('-p', '--prefix', help='Prefix to prepend to the output filename', required=True)
 parser.add_argument('-s', '--suffix', help='Suffix to append at the end of the output filename', required=True)
 parser.add_argument('--no-systs', action='store_true', dest='no_systs', help='If True, do not consider the systematics errors from the input file')
+parser.add_argument('--variated-systematics', action='store_true', dest='variated_systs', help='Use this flag if the systematics uncertainties are stored like "eff_mc + syst" instead of just "syst')
 parser.add_argument('--indent', help='Identation of the JSON file', dest="indent", type=int, default=None)
 
 args = parser.parse_args()
@@ -73,6 +82,12 @@ with open(args.file, 'r') as f:
         for i in range(first_syst_index, len(data)):
             eff['systs'].append(float(data[i]))
 
+        if len(eff['systs']) > 4:
+            eff['systs'] = eff['systs'][:4]
+
+        for n in range(len(eff['systs']), 4):
+            eff['systs'].append(-1)
+
         if not eta_bin in efficiencies:
             efficiencies[eta_bin] = {}
 
@@ -97,15 +112,29 @@ for i in range(0, len(eta_binning) - 1):
         mc_error_up_squared = eff['mc_err'][0]**2
         mc_error_down_squared = eff['mc_err'][1]**2
 
+        data_error_up_squared = eff['data_err'][0]**2
+        data_error_down_squared = eff['data_err'][1]**2
+
         if not args.no_systs:
-            for syst in eff['systs']:
+            if args.variated_systs:
+                eff['systs'][iAltBkgModel] -= eff['data']
+                eff['systs'][iAltSigModel] -= eff['data']
+                eff['systs'][iAltMCSignal] -= eff['mc']
+                eff['systs'][iAltTagSelec] -= eff['data']
+
+            for (i, syst) in enumerate(eff['systs']):
                 if syst < 0:
                     continue
-                mc_error_up_squared += syst**2
-                mc_error_down_squared += syst**2
 
-        scale_factor_error_up = math.sqrt(eff['data_err'][0]**2 / eff['data']**2 + mc_error_up_squared / eff['mc']**2)
-        scale_factor_error_down = math.sqrt(eff['data_err'][1]**2 / eff['data']**2 + mc_error_down_squared / eff['mc']**2)
+                if i == iAltMCSignal:
+                    mc_error_up_squared += syst**2
+                    mc_error_down_squared += syst**2
+                else:
+                    data_error_up_squared += syst**2
+                    data_error_down_squared += syst**2
+
+        scale_factor_error_up = math.sqrt(data_error_up_squared / eff['data']**2 + mc_error_up_squared / eff['mc']**2)
+        scale_factor_error_down = math.sqrt(data_error_down_squared / eff['data']**2 + mc_error_down_squared / eff['mc']**2)
 
         pt_data = {'bin': [pt_binning[j], pt_binning[j + 1]], 'value': scale_factor, 'error_low': scale_factor_error_down, 'error_high': scale_factor_error_up}
 
