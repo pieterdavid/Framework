@@ -383,9 +383,9 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         if (has_alphas_uncertainty) {
             float weight_alphas_up = lhe_info->weights()[m_pdf_weights_matching[n].second].wgt / lhe_weight_nominal_weight;
             float weight_alphas_down = lhe_info->weights()[m_pdf_weights_matching[n + 1].second].wgt / lhe_weight_nominal_weight;
-            // 0.75 factor is needed because NNPDF30 alphaS uncertainties are
-            // +- 0.002 whereas recommendations for Run2 are +- 0.0015
-            float alphas_uncertainty = 0.75 * (weight_alphas_up - weight_alphas_down) / 2.;
+            // 1.5 factor is needed because NNPDF30 alphaS uncertainties are
+            // +- 0.001 whereas recommendations for Run2 are +- 0.0015
+            float alphas_uncertainty = 1.5 * (weight_alphas_up - weight_alphas_down) / 2.;
 #ifdef DEBUG_PDF
             std::cout << "alphaS uncertainty: " << alphas_uncertainty << std::endl;
 #endif
