@@ -6,6 +6,7 @@
 
 #include <SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h>
 #include <SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h>
+#include <SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h>
 #include <SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h>
 
 #include <map>
@@ -43,6 +44,9 @@ class EventProducer: public Framework::Producer {
             m_pu_info_token = collector.consumes<std::vector<PileupSummaryInfo>>(config.getUntrackedParameter<edm::InputTag>("pu_summary", edm::InputTag("addPileupInfo")));
             m_gen_info_token = collector.consumes<GenEventInfoProduct>(config.getUntrackedParameter<edm::InputTag>("gen_info", edm::InputTag("generator")));
             m_lhe_info_token = collector.consumes<LHEEventProduct>(config.getUntrackedParameter<edm::InputTag>("lhe_info", edm::InputTag("externalLHEProducer")));
+
+            // Purposely ignore return value
+            collector.consumes<LHERunInfoProduct, edm::InRun>(edm::InputTag("externalLHEProducer"));
         }
 
         virtual void beginRun(const edm::Run& run, const edm::EventSetup& eventSetup) override;

@@ -1,12 +1,12 @@
 #include <cp3_llbb/Framework/interface/EventProducer.h>
 
-#include <SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h>
-
 #include <regex>
 
 void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventSetup) {
 
     edm::Handle<LHERunInfoProduct> lheRunProduct;
+    // Do *not* use `getByToken` here as it won't work
+    // See https://hypernews.cern.ch/HyperNews/CMS/get/physTools/3437.html
     if (!iRun.getByLabel("externalLHEProducer", lheRunProduct))
         return;
 
