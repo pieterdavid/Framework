@@ -151,7 +151,7 @@ def add_ak4_chs_jets_(process, isData, bTagDiscriminators):
     if (hasattr(process, 'softPFMuonsTagInfosAK4PFCHS')):
         process.softPFMuonsTagInfosAK4PFCHS.muons = cms.InputTag('slimmedMuons')
 
-def setup_jets_mets_(process, isData, bTagDiscriminators):
+def setup_jets_mets_(process, isData):
     """
     Create a new jets collection and a new MET collection with new JECs applied
 
@@ -160,89 +160,31 @@ def setup_jets_mets_(process, isData, bTagDiscriminators):
 
     # Jets
 
-    add_ak4_chs_jets_(process, isData, bTagDiscriminators)
+    from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
+    process.patJetCorrFactorsReapplyJEC = patJetCorrFactorsUpdated.clone(
+      src = cms.InputTag("slimmedJets"),
+      levels = ['L1FastJet', 'L2Relative', 'L3Absolute'],
+      payload = 'AK4PFchs')
 
-    # b-tagging information. From
-    # https://github.com/cms-sw/cmssw/blob/CMSSW_7_4_X/PhysicsTools/PatAlgos/python/slimming/miniAOD_tools.py#L130
-    process.patJetsAK4PFCHS.userData.userFunctions = cms.vstring(
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).p4.M):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).numberOfSourceCandidatePtrs):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").flightDistance(0).value):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").flightDistance(0).significance):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).p4.x):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).p4.y):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).p4.z):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).vertex.x):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).vertex.y):(0)',
-            '?(tagInfoCandSecondaryVertex("pfSecondaryVertex").nVertices()>0)?(tagInfoCandSecondaryVertex("pfSecondaryVertex").secondaryVertex(0).vertex.z):(0)',
+    if isData:
+        process.patJetCorrFactorsReapplyJEC.levels.append('L2L3Residual')
+
+
+    from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
+    process.slimmedJetsNewJEC = patJetsUpdated.clone(
+            jetSource = cms.InputTag("slimmedJets"),
+            jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
             )
-    process.patJetsAK4PFCHS.userData.userFunctionLabels = cms.vstring('vtxMass','vtxNtracks','vtx3DVal','vtx3DSig','vtxPx','vtxPy','vtxPz','vtxPosX','vtxPosY','vtxPosZ')
-    process.patJetsAK4PFCHS.tagInfoSources = cms.VInputTag(cms.InputTag("pfSecondaryVertexTagInfosAK4PFCHS"))
-    process.patJetsAK4PFCHS.addTagInfos = cms.bool(True)
 
-    # Pile-up jet id
-    process.load('RecoJets.JetProducers.PileupJetID_cfi')
-    process.pileupJetId.applyJec = False
-    process.pileupJetId.vertexes = cms.InputTag('offlineSlimmedPrimaryVertices')
-    process.patJetsAK4PFCHS.userData.userFloats.src = [ cms.InputTag("pileupJetId:fullDiscriminant"), ]
+    process.shiftedMETCorrModuleForNewJEC = cms.EDProducer('ShiftedParticleMETcorrInputProducer',
+       srcOriginal = cms.InputTag('slimmedJets'),
+       srcShifted = cms.InputTag('slimmedJetsNewJEC')
+       )
 
-    # MET
-    from PhysicsTools.PatAlgos.tools.metTools import addMETCollection
-
-    ## Gen MET
-    if not isData:
-        process.genMetExtractor = cms.EDProducer("GenMETExtractor",
-                metSource = cms.InputTag("slimmedMETs", "" , cms.InputTag.skipCurrentProcess())
-                )
-
-    # MET is done from all PF candidates, and Type-I corrections are computed from CHS ak4 PF jets
-    # https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETRun2Corrections#type_1_PF_MET_recommended
-
-    ## Raw PF METs
-    process.load('RecoMET.METProducers.PFMET_cfi')
-
-    process.pfMet.src = cms.InputTag('packedPFCandidates')
-    addMETCollection(process, labelName='patPFMet', metSource='pfMet') # RAW MET
-    process.patPFMet.addGenMET = False
-
-    ## Type 1 corrections
-    process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
-    from JetMETCorrections.Type1MET.correctionTermsPfMetType1Type2_cff import corrPfMetType1
-    from JetMETCorrections.Type1MET.correctedMet_cff import pfMetT1
-
-    process.corrPfMetType1 = corrPfMetType1.clone(
-        src = 'ak4PFJetsCHS',
-        jetCorrLabel = 'ak4PFCHSL1FastL2L3Corrector' if not isData else 'ak4PFCHSL1FastL2L3ResidualCorrector',
-        offsetCorrLabel = 'ak4PFCHSL1FastjetCorrector',
-        type1JetPtThreshold = cms.double(15.0)
-    )
-    process.pfMetT1 = pfMetT1.clone(
-        src = 'pfMet',
-        srcCorrections = [cms.InputTag("corrPfMetType1", "type1")]
-    )
-
-    addMETCollection(process, labelName='patMET', metSource='pfMetT1') # T1 MET
-    process.patMET.addGenMET = False
-
-    ## Slimmed METs
-
-    from PhysicsTools.PatAlgos.slimming.slimmedMETs_cfi import slimmedMETs
-    #### CaloMET is not available in MiniAOD
-    del slimmedMETs.caloMET
-
-    process.slimmedMETs = slimmedMETs.clone()
-
-    process.patMET.addGenMET = not isData
-    if not isData:
-        process.patMET.genMETSource = cms.InputTag("genMetExtractor")
-    process.slimmedMETs.src = cms.InputTag("patMET")
-    process.slimmedMETs.rawVariation = cms.InputTag("patPFMet") # only central value
-
-    # Only central values are available
-    configure_slimmedmet_(process.slimmedMETs)
-
-    process.slimmedJetsNewJEC = process.selectedPatJetsAK4PFCHS.clone()
-    process.slimmedMETsNewJEC = process.slimmedMETs.clone()
+    process.slimmedMETsNewJEC = cms.EDProducer('CorrectedPATMETProducer',
+            src = cms.InputTag('slimmedMETs'),
+            srcCorrections = cms.VInputTag(cms.InputTag('shiftedMETCorrModuleForNewJEC'))
+            )
 
     return ('slimmedJetsNewJEC', 'slimmedMETsNewJEC')
 
