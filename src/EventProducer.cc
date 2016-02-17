@@ -47,7 +47,6 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
 #endif
     }
 
-
     static std::regex weightgroup_regex("<weightgroup combine=\".*\" (?:type|name)=\"(.*)\">");
     // Find mapping between PDF set variations and weight ids
     // Lines looks like '<weight id="2001"> PDF set = 260001 </weight>'
@@ -205,8 +204,6 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
         std::cout << "\033[0;31m" << "Warning: this sample was not generated using NNPDF30 PDF. The uncertainty on the PDF computed by this module are probably not correct for this PDF. Use this caution." << "\033[0m" << std::endl;
     }
 
-    m_event_weight_sum_scales.resize(m_scale_variations_matching.size());
-
     if (isLO) {
 #if defined(USE_SCALUP_FOR_LO_LHE_WEIGHTS) && defined(USE_LHE_WEIGHTS_FOR_LO)
         std::cout << "\033[0;31m" << "Warning: the code was compiled to use the SCALUP value instead of originalXWGTUP to compute the LHE weights in order to deal with the CMS generation bug for LO samples in 2015." << "\033[0m" << std::endl;
@@ -275,7 +272,7 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
     pdf_weight_up = 1;
     pdf_weight_down = 1;
 
-    if (event_.isRealData()) {
+    if (event_.isRealData() || m_scale_variations_matching.empty()) {
         // Push six 1 to the scale variation array
         // for compatibility between MC and data
         scale_weights.resize(6, 1);
@@ -408,6 +405,11 @@ end:
     m_event_weight_sum_pdf_down += weight * pdf_weight_down;
 
     if (! event_.isRealData()) {
+
+        if (m_event_weight_sum_scales.size() != scale_weights.size()) {
+            m_event_weight_sum_scales.resize(scale_weights.size());
+        }
+
         for (size_t i = 0; i < scale_weights.size(); i++) {
             m_event_weight_sum_scales[i] += weight * scale_weights[i];
         }
