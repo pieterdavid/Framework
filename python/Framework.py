@@ -27,7 +27,6 @@ class Framework(object):
         self.processName = kwargs['processName'] if 'processName' in kwargs else 'PAT'
         self.globalTag = kwargs['globalTag'] if 'globalTag' in kwargs else None
         self.verbose = kwargs['verbose'] if 'verbose' in kwargs else True
-        self.btagDiscriminators = kwargs['btagDiscriminators'] if 'btagDiscriminators' in kwargs else ['pfCombinedInclusiveSecondaryVertexV2BJetTags', 'pfJetProbabilityBJetTags', 'pfCombinedMVABJetTags', 'pfSimpleSecondaryVertexHighEffBJetTags', 'pfSimpleSecondaryVertexHighPurBJetTags']
         self.output_filename = 'output_data.root' if isData else 'output_mc.root'
         self.producers = []
         self.analyzers = []
@@ -262,13 +261,16 @@ class Framework(object):
             load_jec_from_db(self.process, JECDatabase, jet_algos)
 
         from cp3_llbb.Framework.Tools import setup_jets_mets_
-        jet_collection, met_collection = setup_jets_mets_(self.process, self.isData, self.btagDiscriminators)
+        jet_collection, met_collection = setup_jets_mets_(self.process, self.isData)
 
         # Look for producers using the default jet and met collections
         for producer in self.producers:
             p = getattr(self.process.framework.producers, producer)
             change_input_tags_and_strings(p, self.__miniaod_jet_collection, jet_collection, 'producers.' + producer, '    ')
             change_input_tags_and_strings(p, self.__miniaod_met_collection, met_collection, 'producers.' + producer, '    ')
+
+            if p.type == 'met':
+                p.parameters.slimmed = cms.untracked.bool(False)
 
         # Change the default collections to the newly created
         self.__miniaod_jet_collection = jet_collection
@@ -425,8 +427,6 @@ class Framework(object):
 
             for mod in id_modules:
                 setupAllVIDIdsInModule(self.process, mod, setupVIDElectronSelection)
-
-            self.path += cms.Sequence(self.process.egmGsfElectronIDSequence)
 
     def configureFramework_(self):
 
