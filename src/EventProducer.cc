@@ -203,14 +203,6 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
     if ((pdf_set != 263000) && (pdf_set != 263400) && (pdf_set != 260000) && (pdf_set != 260400) && (pdf_set != 292200) && (pdf_set != 292000)) {
         std::cout << "\033[0;31m" << "Warning: this sample was not generated using NNPDF30 PDF. The uncertainty on the PDF computed by this module are probably not correct for this PDF. Use this caution." << "\033[0m" << std::endl;
     }
-
-    if (isLO) {
-#if defined(USE_SCALUP_FOR_LO_LHE_WEIGHTS) && defined(USE_LHE_WEIGHTS_FOR_LO)
-        std::cout << "\033[0;31m" << "Warning: the code was compiled to use the SCALUP value instead of originalXWGTUP to compute the LHE weights in order to deal with the CMS generation bug for LO samples in 2015." << "\033[0m" << std::endl;
-#elif defined(USE_LHE_WEIGHTS_FOR_LO)
-        std::cout << "\033[0;31m" << "Warning: you are running over a LO sample, but the code was compiled to use the originalXWGTUP value to compute the LHE weights. There's a known bug in the CMS generation for LO samples in 2015, causing wrong weights to be stored inside the LHE file. If you observe really strange PDF and/or scale uncertainties, concider rebuilding the code and define USE_SCALUP_FOR_LO_LHE_WEIGHTS for a workaround." << "\033[0m" << std::endl;
-#endif
-    }
 }
 
 void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetup) {
@@ -294,11 +286,26 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
                 ht += std::sqrt(lhe_particles[iparticle][0]*lhe_particles[iparticle][0] + lhe_particles[iparticle][1]*lhe_particles[iparticle][1]);
         }
 
-#ifdef USE_SCALUP_FOR_LO_LHE_WEIGHTS
-        const float lhe_weight_nominal_weight = (isLO) ? lhe_SCALUP : lhe_originalXWGTUP;
-#else
-        const float lhe_weight_nominal_weight = lhe_originalXWGTUP;
+        if (isLO && !scalup_decision_taken) {
+            scalup_decision_taken = true;
+
+            // Compute first PDF weight. If it's crazy, then switch to workaround mode
+            if (!m_pdf_weights_matching.empty()) {
+                float weight = lhe_info->weights()[m_pdf_weights_matching[0].second].wgt / lhe_originalXWGTUP;
+                use_scalup_for_lo_weights = weight > 100;
+            }
+
+#ifdef DEBUG_PDF
+            std::cout << "Workaround for LO LHE weights:";
+            if (use_scalup_for_lo_weights)
+                std::cout << " use SCALUP";
+            else
+                std::cout << " use originalXWGTUP";
+            std::cout << std::endl;
 #endif
+        }
+
+        const float lhe_weight_nominal_weight = (isLO && use_scalup_for_lo_weights) ? lhe_SCALUP : lhe_originalXWGTUP;
 
         // Scale variations
         for (auto& m: m_scale_variations_matching) {
