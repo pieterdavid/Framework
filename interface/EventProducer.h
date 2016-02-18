@@ -17,9 +17,6 @@
 // If uncommented, LHE weights for LO samples will be read from the LHE file, otherwise, they will be computed directly using LHAPDF.
 #define USE_LHE_WEIGHTS_FOR_LO
 
-// If uncommented, the SCALUP value is used instead of originalXWGTUP to compute LHE weights on LO samples. It's a workaround to deal with a bug during the CMS generation of LO samples in 2015.
-#define USE_SCALUP_FOR_LO_LHE_WEIGHTS
-
 #ifndef USE_LHE_WEIGHTS_FOR_LO
 #include <LHAPDF/LHAPDF.h>
 #endif
@@ -85,6 +82,9 @@ class EventProducer: public Framework::Producer {
 
 #ifndef USE_LHE_WEIGHTS_FOR_LO
         std::vector<LHAPDF::PDF*> lhapdf_pdfs;
+#else
+        bool scalup_decision_taken = false;
+        bool use_scalup_for_lo_weights = false;
 #endif
 
     public:
