@@ -314,7 +314,6 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         }
 
         // PDF variations
-
         for (auto& weight: lhe_info->weights()) {
             lhe_weights.push_back(std::make_pair(weight.id, weight.wgt));
         }
@@ -323,6 +322,7 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         pdf_weights.reserve(110);
         float mean = 0.;
         size_t n = 0;
+        bool corrupted_event = false;
 
         if (m_pdf_weights_matching.empty()) {
 #ifndef USE_LHE_WEIGHTS_FOR_LO
@@ -362,12 +362,22 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
 
             for (size_t i = from; i < to; i++) {
                 float weight = lhe_info->weights()[m_pdf_weights_matching[i].second].wgt / lhe_weight_nominal_weight;
+                // On some samples, some PDF weights are corrupted (value close to 0, very high or even NaN). If we detect such a weight, consider the event as corrupted, and force pdf_weight to be one without uncertainty.
+                if (std::isnan(weight) || weight < 0.4 || weight > 2.5) {
+                    corrupted_event = true;
+                    break;
+                }
                 mean += weight;
                 pdf_weights.push_back(weight);
 #ifdef DEBUG_PDF
                 std::cout << "Computed weight #" << i + 1 << " = " << pdf_weights.back() << " (raw LHE weight: " <<lhe_info->weights()[m_pdf_weights_matching[i].second].wgt << ")" << std::endl;
 #endif
             }
+        }
+
+        if (corrupted_event) {
+            std::cout << "PDF weights for this event are corrupted. Forcing value to 1" << std::endl;
+            goto end;
         }
 
         mean /= n;
