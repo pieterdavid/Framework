@@ -2,6 +2,7 @@
 
 import argparse
 import pickle
+import re
 
 def extract_binning(data):
     """ Assume format of bin of 'B:[x,y]'"""
@@ -23,8 +24,11 @@ def format_pt_bin(bin):
 def clean_wp(wp):
     """ Assume format NUM_<WP>_DEN_A_PAR_B """
 
-    data = wp.split('_')
-    return "%s_%s" % (data[1], data[3])
+    r = re.search(r'NUM_(.*)_DEN_(.*)_PAR', wp)
+    if not r:
+        raise RuntimeError('Failed to extract WP info from %r' % wp)
+
+    return "%s_%s" % (r.group(1), r.group(2))
 
 parser = argparse.ArgumentParser()
 parser.add_argument('pkl', help='Pickle file containing muon scale factors')
