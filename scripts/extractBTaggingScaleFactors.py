@@ -62,6 +62,9 @@ with open(args.file, 'r') as f:
 
         token = get_token(operating_point, measurement_type, jet_flavor)
 
+        if measurement_type == 'iterativefit':
+            continue
+
         if token in all_json_content:
             json_content = all_json_content[token]
         else:
