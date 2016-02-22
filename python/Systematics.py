@@ -150,13 +150,19 @@ class JECSystematics(JetsSystematics):
 
         module = cms.EDProducer('ShiftedPATJetProducer',
                     src = cms.InputTag(self.jetCollection),
-                    jetCorrInputFileName = cms.FileInPath(self.uncertaintiesFile),
-                    jetCorrUncertaintyTag = cms.string('Total'),
                     addResidualJES = cms.bool(True),
                     jetCorrLabelUpToL3 = cms.InputTag('ak4PFCHSL1FastL2L3Corrector'),
                     jetCorrLabelUpToL3Res = cms.InputTag('ak4PFCHSL1FastL2L3ResidualCorrector'),
                     shiftBy = cms.double(shift)
                 )
+
+        tag = 'Total' if self.uncertaintiesFile else 'Uncertainty'
+        module.jetCorrUncertaintyTag = cms.string(tag)
+
+        if self.uncertaintiesFile:
+            module.jetCorrInputFileName = cms.FileInPath(self.uncertaintiesFile)
+        else:
+            module.jetCorrPayloadName = cms.string('AK4PFchs')
 
         return module
 

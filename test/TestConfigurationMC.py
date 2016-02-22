@@ -4,7 +4,7 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 from cp3_llbb.Framework import Framework
 
-framework = Framework.Framework(False, eras.Run2_25ns, globalTag='74X_mcRun2_asymptotic_v2')
+framework = Framework.Framework(False, eras.Run2_25ns, globalTag='74X_mcRun2_asymptotic_v5')
 
 framework.addAnalyzer('dilepton', cms.PSet(
     type = cms.string('dilepton_analyzer'),
@@ -33,23 +33,22 @@ framework.addAnalyzer('test', cms.PSet(
 
 framework.removeProducer('fat_jets')
 
+# Load JEC from the specified database instead of the GT. Will also affect the JEC systematics
+#framework.useJECDatabase('Fall15_25nsV2_MC.db')
+
 #framework.redoJEC()
 framework.smearJets()
 
-framework.doSystematics(['jec', 'jer'])
+#framework.doSystematics(['jec', 'jer'])
 
 # Change the pt cut for testing if it propagates correctly
-framework.getProducer('jets').parameters.cut = 'pt > 50'
+#framework.getProducer('jets').parameters.cut = 'pt > 50'
 
 process = framework.create()
 
 process.source.fileNames = cms.untracked.vstring(
         '/store/mc/RunIISpring15MiniAODv2/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/00000/0014DC94-DC5C-E511-82FB-7845C4FC39F5.root'
         )
-
-print process.framework.producers.jets.parameters.cut
-print process.framework.producers.jets_jecup.parameters.cut
-print process.framework.producers.jets_jecdown.parameters.cut
 
 # Only run on a specific event. Useful for debugging
 
