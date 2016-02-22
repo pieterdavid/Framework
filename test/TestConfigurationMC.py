@@ -4,7 +4,7 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 from cp3_llbb.Framework import Framework
 
-framework = Framework.Framework(False, eras.Run2_25ns, globalTag='74X_mcRun2_asymptotic_v2')
+framework = Framework.Framework(False, eras.Run2_25ns, globalTag='74X_mcRun2_asymptotic_v5')
 
 framework.addAnalyzer('dilepton', cms.PSet(
     type = cms.string('dilepton_analyzer'),

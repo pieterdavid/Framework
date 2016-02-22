@@ -12,6 +12,7 @@ class Framework(object):
     def __init__(self, isData, era, **kwargs):
         self.__created = False
         self.__systematics = []
+        self.__systematicsOptions = {}
         self.__jec_done = False
         self.__jer_done = False
 
@@ -101,20 +102,22 @@ class Framework(object):
             if self.verbose:
                 print("")
 
-            systematics_options = {
+            default_systematics_options = {
                     'jec': {'jetCollection': self.__miniaod_jet_collection,
-                             'metCollection': self.__miniaod_met_collection,
-                             'uncertaintiesFile': 'cp3_llbb/Framework/data/Systematics/Summer15_25nsV6_MC_UncertaintySources_AK4PFchs.txt'},
+                        'metCollection': self.__miniaod_met_collection,
+                        'uncertaintiesFile': None},
                     'jer': {'jetCollection': self.__miniaod_jet_collection,
-                            'metCollection': self.__miniaod_met_collection,
-                            'genJetCollection': self.__miniaod_gen_jet_collection,
-                            'resolutionFile': self.__jer_resolution_file,
-                            'scaleFactorFile': self.__jer_scale_factor_file}
+                        'metCollection': self.__miniaod_met_collection,
+                        'genJetCollection': self.__miniaod_gen_jet_collection,
+                        'resolutionFile': self.__jer_resolution_file,
+                        'scaleFactorFile': self.__jer_scale_factor_file}
                     }
 
             systematics = {}
             for syst in self.__systematics:
-                systematics[syst] = systematics_options[syst]
+                user_systematics_options = self.__systematicsOptions[syst] if syst in self.__systematicsOptions else {}
+                systematics[syst] = copy.deepcopy(default_systematics_options[syst])
+                systematics[syst].update(user_systematics_options)
 
             print("")
             Systematics.doSystematics(self, systematics)
@@ -338,7 +341,7 @@ class Framework(object):
 
         self.__jer_done = True
 
-    def doSystematics(self, systematics):
+    def doSystematics(self, systematics, **kwargs):
         """
         Enable systematics
         """
@@ -349,6 +352,7 @@ class Framework(object):
             return
 
         self.__systematics = systematics
+        self.__systematicsOptions = kwargs
 
 
     #
