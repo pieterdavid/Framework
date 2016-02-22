@@ -33,23 +33,22 @@ framework.addAnalyzer('test', cms.PSet(
 
 framework.removeProducer('fat_jets')
 
+# Load JEC from the specified database instead of the GT. Will also affect the JEC systematics
+#framework.useJECDatabase('Fall15_25nsV2_MC.db')
+
 #framework.redoJEC()
 framework.smearJets()
 
-framework.doSystematics(['jec', 'jer'])
+#framework.doSystematics(['jec', 'jer'])
 
 # Change the pt cut for testing if it propagates correctly
-framework.getProducer('jets').parameters.cut = 'pt > 50'
+#framework.getProducer('jets').parameters.cut = 'pt > 50'
 
 process = framework.create()
 
 process.source.fileNames = cms.untracked.vstring(
         '/store/mc/RunIIFall15MiniAODv1/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/30000/2EE074B2-0EA2-E511-9505-44A842CFD619.root'
         )
-
-print process.framework.producers.jets.parameters.cut
-print process.framework.producers.jets_jecup.parameters.cut
-print process.framework.producers.jets_jecdown.parameters.cut
 
 # Only run on a specific event. Useful for debugging
 

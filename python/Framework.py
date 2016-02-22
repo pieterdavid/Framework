@@ -234,6 +234,25 @@ class Framework(object):
 
         return self.producers.index(name)
 
+    def useJECDatabase(self, database):
+        """
+        JEC factors will be retrieved from the database instead of the Global Tag
+        """
+
+        self.ensureNotCreated()
+
+        # Read the JEC from a database
+        from cp3_llbb.Framework.Tools import load_jec_from_db
+        algo_sizes = {'ak': [4, 8]}
+        jet_types = ['pf', 'pfchs', 'puppi']
+        jet_algos = []
+        for k, v in algo_sizes.iteritems():
+            for s in v:
+                for j in jet_types:
+                    jet_algos.append(str(k.upper() + str(s) + j.upper().replace("CHS", "chs").replace("PUPPI", "PFPuppi")))
+
+        load_jec_from_db(self.process, database, jet_algos)
+
 
     def redoJEC(self, JECDatabase=None):
         """
@@ -252,16 +271,7 @@ class Framework(object):
 
         if JECDatabase:
             # Read the JEC from a database
-            from cp3_llbb.Framework.Tools import load_jec_from_db
-            algo_sizes = {'ak': [4, 8]}
-            jet_types = ['pf', 'pfchs', 'puppi']
-            jet_algos = []
-            for k, v in algo_sizes.iteritems():
-                for s in v:
-                    for j in jet_types:
-                        jet_algos.append(str(k.upper() + str(s) + j.upper().replace("CHS", "chs").replace("PUPPI", "PFPuppi")))
-
-            load_jec_from_db(self.process, JECDatabase, jet_algos)
+            self.useJECDatabase(JECDatabase)
 
         from cp3_llbb.Framework.Tools import setup_jets_mets_
         jet_collection, met_collection = setup_jets_mets_(self.process, self.isData)
