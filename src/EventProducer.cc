@@ -289,10 +289,15 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         if (isLO && !scalup_decision_taken) {
             scalup_decision_taken = true;
 
-            // Compute first PDF weight. If it's crazy, then switch to workaround mode
+            // Compute all PDF weights. If one is crazy, then switch to workaround mode
             if (!m_pdf_weights_matching.empty()) {
-                float weight = lhe_info->weights()[m_pdf_weights_matching[0].second].wgt / lhe_originalXWGTUP;
-                use_scalup_for_lo_weights = weight > 100;
+                for (auto& w: m_pdf_weights_matching) {
+                    float weight = lhe_info->weights()[w.second].wgt / lhe_originalXWGTUP;
+                    if (weight > 100) {
+                        use_scalup_for_lo_weights = true;
+                        break;
+                    }
+                }
             }
 
 #ifdef DEBUG_PDF
@@ -362,6 +367,9 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
 
             for (size_t i = from; i < to; i++) {
                 float weight = lhe_info->weights()[m_pdf_weights_matching[i].second].wgt / lhe_weight_nominal_weight;
+#ifdef DEBUG_PDF
+                std::cout << "Computed weight #" << i + 1 << " = " << weight << " (raw LHE weight: " << lhe_info->weights()[m_pdf_weights_matching[i].second].wgt << ")" << std::endl;
+#endif
                 // On some samples, some PDF weights are corrupted (value close to 0, very high or even NaN). If we detect such a weight, consider the event as corrupted, and force pdf_weight to be one without uncertainty.
                 if (std::isnan(weight) || weight < 0.4 || weight > 2.5) {
                     corrupted_event = true;
@@ -369,9 +377,6 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
                 }
                 mean += weight;
                 pdf_weights.push_back(weight);
-#ifdef DEBUG_PDF
-                std::cout << "Computed weight #" << i + 1 << " = " << pdf_weights.back() << " (raw LHE weight: " <<lhe_info->weights()[m_pdf_weights_matching[i].second].wgt << ")" << std::endl;
-#endif
             }
         }
 
