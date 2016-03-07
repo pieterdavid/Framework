@@ -12,16 +12,28 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
 
     int32_t pdf_set_ = lheRunProduct->heprup().PDFSUP.first;
     if (pdf_set_ < 0) {
+#ifdef DEBUG_PDF
+        std::cout << "PDF set not stored inside LHERunInfoProduct. Parsing LHE headers." << std::endl;
+#endif
         // Powheg sample. Find the PDF set in the headers
         // Line looks like 'lhans1 260000       ! pdf set for hadron 1 (LHA numbering)'
+        bool got_it = false;
+        static std::regex pdfset_regex(R"(lhans1\s+(\d+))");
         for (auto it = lheRunProduct->headers_begin(); it != lheRunProduct->headers_end(); ++it) {
             for (auto& line: it->lines()) {
-                std::string::size_type position = line.find("lhans1");
-                if (position != std::string::npos) {
-                    std::string::size_type space_position = line.find(" ", position + 7);
-                    pdf_set_ = std::stoi(line.substr(position + 7, space_position));
+#ifdef DEBUG_PDF
+                std::cout << line;
+#endif
+                std::smatch results;
+                if (std::regex_search(line, results, pdfset_regex)) {
+                    pdf_set_ = std::stoi(results[1].str());
+                    got_it = true;
                     break;
                 }
+            }
+
+            if (got_it) {
+                break;
             }
         }
     }
