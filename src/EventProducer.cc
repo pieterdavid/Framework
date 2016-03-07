@@ -327,6 +327,10 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         // Scale variations
         for (auto& m: m_scale_variations_matching) {
             float weight = lhe_info->weights()[m.second].wgt / lhe_weight_nominal_weight;
+            if ((weight < 0.1) || (weight > 10.)) {
+                std::cout << "Corrupted scale weight #" << scale_weights.size() << std::endl;
+                weight = 1.;
+            }
             scale_weights.push_back(weight);
         }
 
