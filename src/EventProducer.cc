@@ -12,16 +12,28 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
 
     int32_t pdf_set_ = lheRunProduct->heprup().PDFSUP.first;
     if (pdf_set_ < 0) {
+#ifdef DEBUG_PDF
+        std::cout << "PDF set not stored inside LHERunInfoProduct. Parsing LHE headers." << std::endl;
+#endif
         // Powheg sample. Find the PDF set in the headers
         // Line looks like 'lhans1 260000       ! pdf set for hadron 1 (LHA numbering)'
+        bool got_it = false;
+        static std::regex pdfset_regex(R"(lhans1\s+(\d+))");
         for (auto it = lheRunProduct->headers_begin(); it != lheRunProduct->headers_end(); ++it) {
             for (auto& line: it->lines()) {
-                std::string::size_type position = line.find("lhans1");
-                if (position != std::string::npos) {
-                    std::string::size_type space_position = line.find(" ", position + 7);
-                    pdf_set_ = std::stoi(line.substr(position + 7, space_position));
+#ifdef DEBUG_PDF
+                std::cout << line;
+#endif
+                std::smatch results;
+                if (std::regex_search(line, results, pdfset_regex)) {
+                    pdf_set_ = std::stoi(results[1].str());
+                    got_it = true;
                     break;
                 }
+            }
+
+            if (got_it) {
+                break;
             }
         }
     }
@@ -289,10 +301,15 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         if (isLO && !scalup_decision_taken) {
             scalup_decision_taken = true;
 
-            // Compute first PDF weight. If it's crazy, then switch to workaround mode
+            // Compute all PDF weights. If one is crazy, then switch to workaround mode
             if (!m_pdf_weights_matching.empty()) {
-                float weight = lhe_info->weights()[m_pdf_weights_matching[0].second].wgt / lhe_originalXWGTUP;
-                use_scalup_for_lo_weights = weight > 100;
+                for (auto& w: m_pdf_weights_matching) {
+                    float weight = lhe_info->weights()[w.second].wgt / lhe_originalXWGTUP;
+                    if (weight > 100) {
+                        use_scalup_for_lo_weights = true;
+                        break;
+                    }
+                }
             }
 
 #ifdef DEBUG_PDF
@@ -310,6 +327,10 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         // Scale variations
         for (auto& m: m_scale_variations_matching) {
             float weight = lhe_info->weights()[m.second].wgt / lhe_weight_nominal_weight;
+            if ((weight < 0.1) || (weight > 10.)) {
+                std::cout << "Corrupted scale weight #" << scale_weights.size() << std::endl;
+                weight = 1.;
+            }
             scale_weights.push_back(weight);
         }
 
@@ -362,6 +383,9 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
 
             for (size_t i = from; i < to; i++) {
                 float weight = lhe_info->weights()[m_pdf_weights_matching[i].second].wgt / lhe_weight_nominal_weight;
+#ifdef DEBUG_PDF
+                std::cout << "Computed weight #" << i + 1 << " = " << weight << " (raw LHE weight: " << lhe_info->weights()[m_pdf_weights_matching[i].second].wgt << ")" << std::endl;
+#endif
                 // On some samples, some PDF weights are corrupted (value close to 0, very high or even NaN). If we detect such a weight, consider the event as corrupted, and force pdf_weight to be one without uncertainty.
                 if (std::isnan(weight) || weight < 0.4 || weight > 2.5) {
                     corrupted_event = true;
@@ -369,9 +393,6 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
                 }
                 mean += weight;
                 pdf_weights.push_back(weight);
-#ifdef DEBUG_PDF
-                std::cout << "Computed weight #" << i + 1 << " = " << pdf_weights.back() << " (raw LHE weight: " <<lhe_info->weights()[m_pdf_weights_matching[i].second].wgt << ")" << std::endl;
-#endif
             }
         }
 
