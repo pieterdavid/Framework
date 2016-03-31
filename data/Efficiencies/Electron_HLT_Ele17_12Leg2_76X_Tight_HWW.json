@@ -21,99 +21,99 @@
             12.0, 
             13.0
           ], 
-          "error_low": 0.0, 
-          "value": 0.0, 
-          "error_high": 0.0
+          "error_low": 0.174, 
+          "value": 0.222, 
+          "error_high": 0.174
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.573, 
-          "value": 0.75, 
-          "error_high": 0.25
+          "error_low": 0.43, 
+          "value": 0.667, 
+          "error_high": 0.33299999999999996
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.816, 
-          "value": 1.0, 
-          "error_high": 0.0
+          "error_low": 0.313, 
+          "value": 0.882, 
+          "error_high": 0.118
         }, 
         {
           "bin": [
             15.0, 
             17.0
           ], 
-          "error_low": 0.37, 
-          "value": 0.923, 
-          "error_high": 0.07699999999999996
+          "error_low": 0.206, 
+          "value": 0.733, 
+          "error_high": 0.206
         }, 
         {
           "bin": [
             17.0, 
             20.0
           ], 
-          "error_low": 0.263, 
-          "value": 1.0, 
-          "error_high": 0.0
+          "error_low": 0.164, 
+          "value": 0.986, 
+          "error_high": 0.014000000000000012
         }, 
         {
           "bin": [
             20.0, 
             25.0
           ], 
-          "error_low": 0.175, 
-          "value": 1.0, 
-          "error_high": 0.0
+          "error_low": 0.104, 
+          "value": 0.954, 
+          "error_high": 0.04600000000000004
         }, 
         {
           "bin": [
             25.0, 
             30.0
           ], 
-          "error_low": 0.135, 
-          "value": 0.971, 
-          "error_high": 0.029000000000000026
+          "error_low": 0.079, 
+          "value": 0.991, 
+          "error_high": 0.009000000000000008
         }, 
         {
           "bin": [
             30.0, 
             40.0
           ], 
-          "error_low": 0.07, 
-          "value": 0.993, 
-          "error_high": 0.007000000000000006
+          "error_low": 0.041, 
+          "value": 0.992, 
+          "error_high": 0.008000000000000007
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.087, 
-          "value": 1.0, 
-          "error_high": 0.0
+          "error_low": 0.043, 
+          "value": 0.991, 
+          "error_high": 0.009000000000000008
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.192, 
-          "value": 0.981, 
-          "error_high": 0.019000000000000017
+          "error_low": 0.1, 
+          "value": 1.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             60.0, 
             100.0
           ], 
-          "error_low": 0.392, 
-          "value": 1.0, 
-          "error_high": 0.0
+          "error_low": 0.174, 
+          "value": 0.968, 
+          "error_high": 0.03200000000000003
         }
       ]
     }, 
@@ -146,90 +146,90 @@
             13.0, 
             14.0
           ], 
-          "error_low": 0.198, 
-          "value": 0.25, 
-          "error_high": 0.198
+          "error_low": 0.254, 
+          "value": 0.375, 
+          "error_high": 0.254
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.379, 
-          "value": 0.8, 
-          "error_high": 0.19999999999999996
+          "error_low": 0.234, 
+          "value": 0.588, 
+          "error_high": 0.234
         }, 
         {
           "bin": [
             15.0, 
             17.0
           ], 
-          "error_low": 0.271, 
-          "value": 0.917, 
-          "error_high": 0.08299999999999996
+          "error_low": 0.182, 
+          "value": 0.88, 
+          "error_high": 0.12
         }, 
         {
           "bin": [
             17.0, 
             20.0
           ], 
-          "error_low": 0.188, 
-          "value": 0.87, 
-          "error_high": 0.13
+          "error_low": 0.153, 
+          "value": 0.921, 
+          "error_high": 0.07899999999999996
         }, 
         {
           "bin": [
             20.0, 
             25.0
           ], 
-          "error_low": 0.116, 
-          "value": 0.993, 
-          "error_high": 0.007000000000000006
+          "error_low": 0.093, 
+          "value": 0.978, 
+          "error_high": 0.02200000000000002
         }, 
         {
           "bin": [
             25.0, 
             30.0
           ], 
-          "error_low": 0.078, 
-          "value": 0.985, 
-          "error_high": 0.015000000000000013
+          "error_low": 0.064, 
+          "value": 0.988, 
+          "error_high": 0.01200000000000001
         }, 
         {
           "bin": [
             30.0, 
             40.0
           ], 
-          "error_low": 0.04, 
-          "value": 0.992, 
-          "error_high": 0.008000000000000007
+          "error_low": 0.031, 
+          "value": 0.987, 
+          "error_high": 0.013000000000000012
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.041, 
-          "value": 0.991, 
-          "error_high": 0.009000000000000008
+          "error_low": 0.029, 
+          "value": 0.993, 
+          "error_high": 0.007000000000000006
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.091, 
-          "value": 0.996, 
-          "error_high": 0.0040000000000000036
+          "error_low": 0.066, 
+          "value": 0.993, 
+          "error_high": 0.007000000000000006
         }, 
         {
           "bin": [
             60.0, 
             100.0
           ], 
-          "error_low": 0.16, 
-          "value": 0.987, 
-          "error_high": 0.013000000000000012
+          "error_low": 0.107, 
+          "value": 0.988, 
+          "error_high": 0.01200000000000001
         }
       ]
     }, 
@@ -262,8 +262,8 @@
             13.0, 
             14.0
           ], 
-          "error_low": 0.0, 
-          "value": 0.0, 
+          "error_low": 1.0, 
+          "value": 1.0, 
           "error_high": 0.0
         }, 
         {
@@ -271,34 +271,34 @@
             14.0, 
             15.0
           ], 
-          "error_low": 0.0, 
-          "value": 0.0, 
-          "error_high": 0.0
+          "error_low": 0.5, 
+          "value": 0.5, 
+          "error_high": 0.5
         }, 
         {
           "bin": [
             15.0, 
             17.0
           ], 
-          "error_low": 0.438, 
-          "value": 0.6, 
-          "error_high": 0.4
+          "error_low": 0.433, 
+          "value": 0.5, 
+          "error_high": 0.433
         }, 
         {
           "bin": [
             17.0, 
             20.0
           ], 
-          "error_low": 0.347, 
-          "value": 0.933, 
-          "error_high": 0.06699999999999995
+          "error_low": 0.276, 
+          "value": 0.913, 
+          "error_high": 0.08699999999999997
         }, 
         {
           "bin": [
             20.0, 
             25.0
           ], 
-          "error_low": 0.258, 
+          "error_low": 0.218, 
           "value": 1.0, 
           "error_high": 0.0
         }, 
@@ -307,45 +307,45 @@
             25.0, 
             30.0
           ], 
-          "error_low": 0.169, 
-          "value": 0.954, 
-          "error_high": 0.04600000000000004
+          "error_low": 0.15, 
+          "value": 0.952, 
+          "error_high": 0.04800000000000004
         }, 
         {
           "bin": [
             30.0, 
             40.0
           ], 
-          "error_low": 0.084, 
-          "value": 0.989, 
-          "error_high": 0.01100000000000001
+          "error_low": 0.073, 
+          "value": 0.978, 
+          "error_high": 0.02200000000000002
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.086, 
-          "value": 0.985, 
-          "error_high": 0.015000000000000013
+          "error_low": 0.07, 
+          "value": 0.987, 
+          "error_high": 0.013000000000000012
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.18, 
-          "value": 1.0, 
-          "error_high": 0.0
+          "error_low": 0.151, 
+          "value": 0.988, 
+          "error_high": 0.01200000000000001
         }, 
         {
           "bin": [
             60.0, 
             100.0
           ], 
-          "error_low": 0.289, 
-          "value": 1.0, 
-          "error_high": 0.0
+          "error_low": 0.244, 
+          "value": 0.969, 
+          "error_high": 0.031000000000000028
         }
       ]
     }, 
@@ -369,99 +369,99 @@
             12.0, 
             13.0
           ], 
-          "error_low": 0.108, 
-          "value": 0.143, 
-          "error_high": 0.108
+          "error_low": 0.123, 
+          "value": 0.222, 
+          "error_high": 0.123
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.154, 
-          "value": 0.444, 
-          "error_high": 0.154
+          "error_low": 0.14, 
+          "value": 0.3, 
+          "error_high": 0.14
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.277, 
-          "value": 0.615, 
-          "error_high": 0.277
+          "error_low": 0.185, 
+          "value": 0.5, 
+          "error_high": 0.185
         }, 
         {
           "bin": [
             15.0, 
             17.0
           ], 
-          "error_low": 0.18, 
-          "value": 0.83, 
-          "error_high": 0.17000000000000004
+          "error_low": 0.142, 
+          "value": 0.786, 
+          "error_high": 0.142
         }, 
         {
           "bin": [
             17.0, 
             20.0
           ], 
-          "error_low": 0.116, 
-          "value": 0.932, 
-          "error_high": 0.06799999999999995
+          "error_low": 0.107, 
+          "value": 0.944, 
+          "error_high": 0.05600000000000005
         }, 
         {
           "bin": [
             20.0, 
             25.0
           ], 
-          "error_low": 0.068, 
-          "value": 0.964, 
-          "error_high": 0.03600000000000003
+          "error_low": 0.061, 
+          "value": 0.987, 
+          "error_high": 0.013000000000000012
         }, 
         {
           "bin": [
             25.0, 
             30.0
           ], 
-          "error_low": 0.046, 
-          "value": 0.98, 
-          "error_high": 0.020000000000000018
+          "error_low": 0.043, 
+          "value": 0.974, 
+          "error_high": 0.026000000000000023
         }, 
         {
           "bin": [
             30.0, 
             40.0
           ], 
-          "error_low": 0.022, 
-          "value": 0.981, 
-          "error_high": 0.019000000000000017
+          "error_low": 0.019, 
+          "value": 0.979, 
+          "error_high": 0.019
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.019, 
-          "value": 0.98, 
-          "error_high": 0.019
+          "error_low": 0.017, 
+          "value": 0.981, 
+          "error_high": 0.017
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.039, 
-          "value": 0.98, 
-          "error_high": 0.020000000000000018
+          "error_low": 0.036, 
+          "value": 0.979, 
+          "error_high": 0.02100000000000002
         }, 
         {
           "bin": [
             60.0, 
             100.0
           ], 
-          "error_low": 0.067, 
-          "value": 0.96, 
-          "error_high": 0.040000000000000036
+          "error_low": 0.061, 
+          "value": 0.977, 
+          "error_high": 0.02300000000000002
         }
       ]
     }, 
@@ -485,99 +485,99 @@
             12.0, 
             13.0
           ], 
-          "error_low": 0.176, 
-          "value": 0.308, 
-          "error_high": 0.176
+          "error_low": 0.234, 
+          "value": 0.562, 
+          "error_high": 0.234
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.277, 
+          "error_low": 0.196, 
           "value": 0.583, 
-          "error_high": 0.277
+          "error_high": 0.196
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.25, 
-          "value": 0.647, 
-          "error_high": 0.25
+          "error_low": 0.202, 
+          "value": 0.842, 
+          "error_high": 0.15800000000000003
         }, 
         {
           "bin": [
             15.0, 
             17.0
           ], 
-          "error_low": 0.163, 
-          "value": 0.942, 
-          "error_high": 0.05800000000000005
+          "error_low": 0.125, 
+          "value": 0.85, 
+          "error_high": 0.125
         }, 
         {
           "bin": [
             17.0, 
             20.0
           ], 
-          "error_low": 0.113, 
-          "value": 0.959, 
-          "error_high": 0.041000000000000036
+          "error_low": 0.092, 
+          "value": 0.95, 
+          "error_high": 0.050000000000000044
         }, 
         {
           "bin": [
             20.0, 
             25.0
           ], 
-          "error_low": 0.059, 
-          "value": 0.966, 
-          "error_high": 0.03400000000000003
+          "error_low": 0.049, 
+          "value": 0.953, 
+          "error_high": 0.04700000000000004
         }, 
         {
           "bin": [
             25.0, 
             30.0
           ], 
-          "error_low": 0.039, 
-          "value": 0.974, 
-          "error_high": 0.026000000000000023
+          "error_low": 0.034, 
+          "value": 0.976, 
+          "error_high": 0.02400000000000002
         }, 
         {
           "bin": [
             30.0, 
             40.0
           ], 
-          "error_low": 0.016, 
-          "value": 0.977, 
-          "error_high": 0.016
+          "error_low": 0.015, 
+          "value": 0.979, 
+          "error_high": 0.015
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.014, 
-          "value": 0.983, 
-          "error_high": 0.014
+          "error_low": 0.013, 
+          "value": 0.981, 
+          "error_high": 0.013
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.03, 
-          "value": 0.985, 
-          "error_high": 0.015000000000000013
+          "error_low": 0.027, 
+          "value": 0.986, 
+          "error_high": 0.014000000000000012
         }, 
         {
           "bin": [
             60.0, 
             100.0
           ], 
-          "error_low": 0.048, 
-          "value": 0.977, 
-          "error_high": 0.02300000000000002
+          "error_low": 0.043, 
+          "value": 0.974, 
+          "error_high": 0.026000000000000023
         }
       ]
     }, 
@@ -592,108 +592,108 @@
             10.0, 
             12.0
           ], 
-          "error_low": 0.0, 
-          "value": 0.0, 
-          "error_high": 0.0
+          "error_low": 0.067, 
+          "value": 0.091, 
+          "error_high": 0.067
         }, 
         {
           "bin": [
             12.0, 
             13.0
           ], 
-          "error_low": 0.0, 
-          "value": 0.0, 
-          "error_high": 0.0
+          "error_low": 0.131, 
+          "value": 0.235, 
+          "error_high": 0.131
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.297, 
-          "value": 0.824, 
-          "error_high": 0.17600000000000005
+          "error_low": 0.225, 
+          "value": 0.708, 
+          "error_high": 0.225
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.221, 
-          "value": 0.731, 
-          "error_high": 0.221
+          "error_low": 0.188, 
+          "value": 0.763, 
+          "error_high": 0.188
         }, 
         {
           "bin": [
             15.0, 
             17.0
           ], 
-          "error_low": 0.184, 
-          "value": 0.944, 
-          "error_high": 0.05600000000000005
+          "error_low": 0.142, 
+          "value": 0.827, 
+          "error_high": 0.142
         }, 
         {
           "bin": [
             17.0, 
             20.0
           ], 
-          "error_low": 0.107, 
-          "value": 0.95, 
-          "error_high": 0.050000000000000044
+          "error_low": 0.088, 
+          "value": 0.94, 
+          "error_high": 0.06000000000000005
         }, 
         {
           "bin": [
             20.0, 
             25.0
           ], 
-          "error_low": 0.058, 
-          "value": 0.961, 
-          "error_high": 0.039000000000000035
+          "error_low": 0.048, 
+          "value": 0.971, 
+          "error_high": 0.029000000000000026
         }, 
         {
           "bin": [
             25.0, 
             30.0
           ], 
-          "error_low": 0.039, 
-          "value": 0.975, 
-          "error_high": 0.025000000000000022
+          "error_low": 0.033, 
+          "value": 0.971, 
+          "error_high": 0.029000000000000026
         }, 
         {
           "bin": [
             30.0, 
             40.0
           ], 
-          "error_low": 0.016, 
-          "value": 0.981, 
-          "error_high": 0.016
+          "error_low": 0.015, 
+          "value": 0.984, 
+          "error_high": 0.015
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.014, 
-          "value": 0.985, 
-          "error_high": 0.014
+          "error_low": 0.012, 
+          "value": 0.984, 
+          "error_high": 0.012
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.029, 
-          "value": 0.988, 
-          "error_high": 0.01200000000000001
+          "error_low": 0.027, 
+          "value": 0.984, 
+          "error_high": 0.016000000000000014
         }, 
         {
           "bin": [
             60.0, 
             100.0
           ], 
-          "error_low": 0.05, 
-          "value": 0.99, 
-          "error_high": 0.010000000000000009
+          "error_low": 0.043, 
+          "value": 0.986, 
+          "error_high": 0.014000000000000012
         }
       ]
     }, 
@@ -717,61 +717,61 @@
             12.0, 
             13.0
           ], 
-          "error_low": 0.062, 
-          "value": 0.062, 
-          "error_high": 0.064
+          "error_low": 0.077, 
+          "value": 0.125, 
+          "error_high": 0.077
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.31, 
-          "value": 0.6, 
-          "error_high": 0.31
+          "error_low": 0.136, 
+          "value": 0.214, 
+          "error_high": 0.136
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.196, 
-          "value": 0.583, 
-          "error_high": 0.196
+          "error_low": 0.211, 
+          "value": 0.704, 
+          "error_high": 0.211
         }, 
         {
           "bin": [
             15.0, 
             17.0
           ], 
-          "error_low": 0.171, 
-          "value": 0.796, 
-          "error_high": 0.171
+          "error_low": 0.144, 
+          "value": 0.773, 
+          "error_high": 0.144
         }, 
         {
           "bin": [
             17.0, 
             20.0
           ], 
-          "error_low": 0.109, 
-          "value": 0.903, 
-          "error_high": 0.09699999999999998
+          "error_low": 0.101, 
+          "value": 0.918, 
+          "error_high": 0.08199999999999996
         }, 
         {
           "bin": [
             20.0, 
             25.0
           ], 
-          "error_low": 0.065, 
-          "value": 0.966, 
-          "error_high": 0.03400000000000003
+          "error_low": 0.061, 
+          "value": 0.971, 
+          "error_high": 0.029000000000000026
         }, 
         {
           "bin": [
             25.0, 
             30.0
           ], 
-          "error_low": 0.047, 
+          "error_low": 0.043, 
           "value": 0.98, 
           "error_high": 0.020000000000000018
         }, 
@@ -780,36 +780,36 @@
             30.0, 
             40.0
           ], 
-          "error_low": 0.022, 
-          "value": 0.991, 
-          "error_high": 0.009000000000000008
+          "error_low": 0.019, 
+          "value": 0.985, 
+          "error_high": 0.015000000000000013
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.019, 
-          "value": 0.991, 
-          "error_high": 0.009000000000000008
+          "error_low": 0.017, 
+          "value": 0.988, 
+          "error_high": 0.01200000000000001
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.042, 
-          "value": 0.989, 
-          "error_high": 0.01100000000000001
+          "error_low": 0.038, 
+          "value": 0.992, 
+          "error_high": 0.008000000000000007
         }, 
         {
           "bin": [
             60.0, 
             100.0
           ], 
-          "error_low": 0.069, 
-          "value": 0.988, 
-          "error_high": 0.01200000000000001
+          "error_low": 0.063, 
+          "value": 0.992, 
+          "error_high": 0.008000000000000007
         }
       ]
     }, 
@@ -860,25 +860,25 @@
             15.0, 
             17.0
           ], 
-          "error_low": 0.356, 
-          "value": 0.625, 
-          "error_high": 0.356
+          "error_low": 0.405, 
+          "value": 0.75, 
+          "error_high": 0.25
         }, 
         {
           "bin": [
             17.0, 
             20.0
           ], 
-          "error_low": 0.414, 
-          "value": 0.9, 
-          "error_high": 0.09999999999999998
+          "error_low": 0.351, 
+          "value": 0.667, 
+          "error_high": 0.33299999999999996
         }, 
         {
           "bin": [
             20.0, 
             25.0
           ], 
-          "error_low": 0.197, 
+          "error_low": 0.199, 
           "value": 0.98, 
           "error_high": 0.020000000000000018
         }, 
@@ -887,7 +887,7 @@
             25.0, 
             30.0
           ], 
-          "error_low": 0.198, 
+          "error_low": 0.164, 
           "value": 1.0, 
           "error_high": 0.0
         }, 
@@ -896,36 +896,36 @@
             30.0, 
             40.0
           ], 
-          "error_low": 0.091, 
-          "value": 1.0, 
-          "error_high": 0.0
+          "error_low": 0.073, 
+          "value": 0.981, 
+          "error_high": 0.019000000000000017
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.092, 
-          "value": 0.996, 
-          "error_high": 0.0040000000000000036
+          "error_low": 0.071, 
+          "value": 0.992, 
+          "error_high": 0.008000000000000007
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.182, 
-          "value": 0.983, 
-          "error_high": 0.017000000000000015
+          "error_low": 0.142, 
+          "value": 0.99, 
+          "error_high": 0.010000000000000009
         }, 
         {
           "bin": [
             60.0, 
             100.0
           ], 
-          "error_low": 0.302, 
-          "value": 1.0, 
-          "error_high": 0.0
+          "error_low": 0.269, 
+          "value": 0.962, 
+          "error_high": 0.038000000000000034
         }
       ]
     }, 
@@ -949,99 +949,99 @@
             12.0, 
             13.0
           ], 
-          "error_low": 0.0, 
-          "value": 0.0, 
-          "error_high": 0.0
+          "error_low": 0.143, 
+          "value": 0.143, 
+          "error_high": 0.153
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.335, 
-          "value": 0.4, 
-          "error_high": 0.335
+          "error_low": 0.198, 
+          "value": 0.25, 
+          "error_high": 0.198
         }, 
         {
           "bin": [
             14.0, 
             15.0
           ], 
-          "error_low": 0.438, 
-          "value": 0.6, 
-          "error_high": 0.4
+          "error_low": 0.3, 
+          "value": 0.692, 
+          "error_high": 0.3
         }, 
         {
           "bin": [
             15.0, 
             17.0
           ], 
-          "error_low": 0.471, 
-          "value": 1.0, 
-          "error_high": 0.0
+          "error_low": 0.273, 
+          "value": 0.789, 
+          "error_high": 0.21099999999999997
         }, 
         {
           "bin": [
             17.0, 
             20.0
           ], 
-          "error_low": 0.21, 
-          "value": 0.977, 
-          "error_high": 0.02300000000000002
+          "error_low": 0.143, 
+          "value": 0.979, 
+          "error_high": 0.02100000000000002
         }, 
         {
           "bin": [
             20.0, 
             25.0
           ], 
-          "error_low": 0.115, 
-          "value": 0.987, 
-          "error_high": 0.013000000000000012
+          "error_low": 0.09, 
+          "value": 0.974, 
+          "error_high": 0.026000000000000023
         }, 
         {
           "bin": [
             25.0, 
             30.0
           ], 
-          "error_low": 0.082, 
-          "value": 0.993, 
-          "error_high": 0.007000000000000006
+          "error_low": 0.064, 
+          "value": 0.983, 
+          "error_high": 0.017000000000000015
         }, 
         {
           "bin": [
             30.0, 
             40.0
           ], 
-          "error_low": 0.041, 
-          "value": 0.993, 
-          "error_high": 0.007000000000000006
+          "error_low": 0.032, 
+          "value": 0.99, 
+          "error_high": 0.010000000000000009
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.043, 
-          "value": 0.993, 
-          "error_high": 0.007000000000000006
+          "error_low": 0.03, 
+          "value": 0.991, 
+          "error_high": 0.009000000000000008
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.094, 
-          "value": 0.987, 
-          "error_high": 0.013000000000000012
+          "error_low": 0.067, 
+          "value": 0.998, 
+          "error_high": 0.0020000000000000018
         }, 
         {
           "bin": [
             60.0, 
             100.0
           ], 
-          "error_low": 0.155, 
-          "value": 0.988, 
-          "error_high": 0.01200000000000001
+          "error_low": 0.114, 
+          "value": 0.993, 
+          "error_high": 0.007000000000000006
         }
       ]
     }, 
@@ -1065,16 +1065,16 @@
             12.0, 
             13.0
           ], 
-          "error_low": 0.25, 
-          "value": 0.25, 
-          "error_high": 0.28
+          "error_low": 0.0, 
+          "value": 0.0, 
+          "error_high": 0.0
         }, 
         {
           "bin": [
             13.0, 
             14.0
           ], 
-          "error_low": 0.573, 
+          "error_low": 0.405, 
           "value": 0.75, 
           "error_high": 0.25
         }, 
@@ -1083,87 +1083,85 @@
             14.0, 
             15.0
           ], 
-          "error_low": 0.609, 
-          "value": 0.667, 
-          "error_high": 0.33299999999999996
+          "error_low": 0.357, 
+          "value": 0.833, 
+          "error_high": 0.16700000000000004
         }, 
         {
           "bin": [
             15.0, 
             17.0
           ], 
-          "error_low": 0.471, 
-          "value": 1.0, 
-          "error_high": 0.0
+          "error_low": 0.246, 
+          "value": 0.893, 
+          "error_high": 0.10699999999999998
         }, 
         {
           "bin": [
             17.0, 
             20.0
           ], 
-          "error_low": 0.365, 
-          "value": 1.0, 
-          "error_high": 0.0
+          "error_low": 0.151, 
+          "value": 0.951, 
+          "error_high": 0.049000000000000044
         }, 
         {
           "bin": [
             20.0, 
             25.0
           ], 
-          "error_low": 0.174, 
-          "value": 0.968, 
-          "error_high": 0.03200000000000003
+          "error_low": 0.108, 
+          "value": 0.969, 
+          "error_high": 0.031000000000000028
         }, 
         {
           "bin": [
             25.0, 
             30.0
           ], 
-          "error_low": 0.146, 
-          "value": 0.989, 
-          "error_high": 0.01100000000000001
+          "error_low": 0.08, 
+          "value": 0.977, 
+          "error_high": 0.02300000000000002
         }, 
         {
           "bin": [
             30.0, 
             40.0
           ], 
-          "error_low": 0.069, 
-          "value": 0.983, 
-          "error_high": 0.017000000000000015
+          "error_low": 0.043, 
+          "value": 0.988, 
+          "error_high": 0.01200000000000001
         }, 
         {
           "bin": [
             40.0, 
             50.0
           ], 
-          "error_low": 0.084, 
-          "value": 0.978, 
-          "error_high": 0.02200000000000002
+          "error_low": 0.043, 
+          "value": 0.989, 
+          "error_high": 0.01100000000000001
         }, 
         {
           "bin": [
             50.0, 
             60.0
           ], 
-          "error_low": 0.201, 
-          "value": 0.979, 
-          "error_high": 0.02100000000000002
+          "error_low": 0.095, 
+          "value": 0.986, 
+          "error_high": 0.014000000000000012
         }, 
         {
           "bin": [
             60.0, 
             100.0
           ], 
-          "error_low": 0.324, 
+          "error_low": 0.175, 
           "value": 1.0, 
           "error_high": 0.0
         }
       ]
     }
   ], 
-  "maximum": 1,
-  "minimum": 0,
   "dimension": 2, 
   "binning": {
     "y": [
