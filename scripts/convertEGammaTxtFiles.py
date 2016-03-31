@@ -18,8 +18,8 @@ def format_eta_bin(eta_bin):
 parser = argparse.ArgumentParser()
 parser.add_argument('file', help='Txt file containing electron scale factors')
 parser.add_argument('-a', '--asymm-errors', action='store_true', dest='asymm', help='If True, expect to find in the text fields two fields for the errors instead of one, first high error and them down error')
-parser.add_argument('-p', '--prefix', help='Prefix to prepend to the output filename', required=True)
-parser.add_argument('-s', '--suffix', help='Suffix to append at the end of the output filename', required=True)
+parser.add_argument('-p', '--prefix', help='Prefix to prepend to the output filename')
+parser.add_argument('-s', '--suffix', help='Suffix to append at the end of the output filename')
 parser.add_argument('--no-systs', action='store_true', dest='no_systs', help='If True, do not consider the systematics errors from the input file')
 parser.add_argument('--variated-systematics', action='store_true', dest='variated_systs', help='Use this flag if the systematics uncertainties are stored like "eff_mc + syst" instead of just "syst')
 parser.add_argument('--indent', help='Identation of the JSON file', dest="indent", type=int, default=None)
@@ -145,7 +145,14 @@ for i in range(0, len(eta_binning) - 1):
 # Save JSON file
 import os
 wp = os.path.splitext(os.path.basename(args.file))[0]
-filename = '%s_%s_%s.json' % (args.prefix, wp, args.suffix)
+if args.prefix and args.suffix:
+    filename = '%s_%s_%s.json' % (args.prefix, wp, args.suffix)
+elif args.prefix and not args.suffix:
+    filename = '%s_%s.json' % (args.prefix, wp)
+elif not args.prefix and args.suffix:
+    filename = '%s_%s.json' % (wp, args.suffix)
+else :
+    filename = '%s.json' % (wp)
 with open(filename, 'w') as j:
     import json
     json.dump(json_content, j, indent=args.indent)
