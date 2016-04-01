@@ -21,7 +21,8 @@ default_configuration = cms.PSet(
                 iso_tight_id_medium = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Muon_TightRelIso_MediumID_iso.json'),
                 iso_tight_id_tight = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Muon_TightRelIso_TightID_iso.json'),
 
-                hww_wp = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Muons_HWW_TnP_MediumIDandISO_Data_MC_25ns_PTvsETA_binBig_id_iso.json'),
+                id_hww = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Muon_MediumID_Data_MC_25ns_PTvsETA_HWW_76.json'),
+                iso_tight_id_hww = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Muon_ISOTight_Data_MC_25ns_PTvsETA_HWW.json'),
                 )
             )
         )
