@@ -17,8 +17,9 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
 
     double rho = *rho_handle;
 
-    size_t index = 0;
+    size_t index = -1;
     for (const auto& electron: *electrons) {
+        ++index;
         if (! pass_cut(electron))
             continue;
 
@@ -28,7 +29,7 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
         computeIsolations_R03(pfIso.sumChargedHadronPt, pfIso.sumNeutralHadronEt, pfIso.sumPhotonEt, pfIso.sumPUPt, electron.pt(), electron.superCluster()->eta(), rho);
         computeIsolations_R04(electron.chargedHadronIso(), electron.neutralHadronIso(), electron.photonIso(), electron.puChargedHadronIso(), electron.pt(), electron.superCluster()->eta(), rho);
 
-        const pat::ElectronRef electronRef(electrons, index++);
+        const pat::ElectronRef electronRef(electrons, index);
         Identifiable::produce_id(electronRef);
 
         isEB.push_back(electron.isEB());
