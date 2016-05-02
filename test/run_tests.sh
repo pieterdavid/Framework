@@ -11,7 +11,7 @@ F2=${LOCAL_TEST_DIR}/unit_tests_data.py
 (cmsRun $F2 ) || die "Failure using $F2" $?
 (cp3llbbTestFrameworkOutput ${LOCAL_TEST_DIR}/unit_tests_data_ref.root output_data.root) || die "Output file does not match reference file" $?
 
-wget https://github.com/cms-jet/JECDatabase/raw/master/SQLiteFiles/Summer15_25nsV5_MC.db
+wget https://github.com/cms-jet/JECDatabase/raw/master/SQLiteFiles/Spring16_25nsV1_MC.db
 F3=${LOCAL_TEST_DIR}/unit_tests_mc_with_db.py
 (cmsRun $F3 ) || die "Failure using $F3" $?
 (cp3llbbTestFrameworkOutput ${LOCAL_TEST_DIR}/unit_tests_mc_with_db_ref.root output_mc.root) || die "Output file does not match reference file" $?

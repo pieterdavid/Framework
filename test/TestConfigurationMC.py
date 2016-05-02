@@ -4,7 +4,7 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 from cp3_llbb.Framework import Framework
 
-framework = Framework.Framework(False, eras.Run2_25ns, globalTag='76X_mcRun2_asymptotic_v12')
+framework = Framework.Framework(False, eras.Run2_25ns, globalTag='80X_mcRun2_asymptotic_2016_miniAODv2')
 
 framework.addAnalyzer('dilepton', cms.PSet(
     type = cms.string('dilepton_analyzer'),
@@ -47,7 +47,7 @@ framework.smearJets()
 process = framework.create()
 
 process.source.fileNames = cms.untracked.vstring(
-        '/store/mc/RunIIFall15MiniAODv1/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/30000/2EE074B2-0EA2-E511-9505-44A842CFD619.root'
+        '/store/mc/RunIISpring16MiniAODv1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/008099CA-5501-E611-9AAE-24BE05BDCEF1.root'
         )
 
 # Only run on a specific event. Useful for debugging

@@ -159,26 +159,24 @@ def setup_jets_mets_(process, isData):
     """
 
     # Jets
+    from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
-    from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
-    process.patJetCorrFactorsReapplyJEC = patJetCorrFactorsUpdated.clone(
-      src = cms.InputTag("slimmedJets"),
-      levels = ['L1FastJet', 'L2Relative', 'L3Absolute'],
-      payload = 'AK4PFchs')
-
+    levels = ['L1FastJet', 'L2Relative', 'L3Absolute']
     if isData:
-        process.patJetCorrFactorsReapplyJEC.levels.append('L2L3Residual')
+        levels.append('L2L3Residual')
 
-
-    from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
-    process.slimmedJetsNewJEC = patJetsUpdated.clone(
-            jetSource = cms.InputTag("slimmedJets"),
-            jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+    # Create the updated jet collection with new JEC
+    # Name of the new collection: updatedPatJetsNewJEC
+    updateJetCollection(
+            process,
+            jetSource = cms.InputTag('slimmedJets'),
+            labelName = 'NewJEC',
+            jetCorrections = ('AK4PFchs', cms.vstring(levels), 'None')
             )
 
     process.shiftedMETCorrModuleForNewJEC = cms.EDProducer('ShiftedParticleMETcorrInputProducer',
        srcOriginal = cms.InputTag('slimmedJets'),
-       srcShifted = cms.InputTag('slimmedJetsNewJEC')
+       srcShifted = cms.InputTag('updatedPatJetsNewJEC')
        )
 
     process.slimmedMETsNewJEC = cms.EDProducer('CorrectedPATMETProducer',
@@ -186,7 +184,7 @@ def setup_jets_mets_(process, isData):
             srcCorrections = cms.VInputTag(cms.InputTag('shiftedMETCorrModuleForNewJEC'))
             )
 
-    return ('slimmedJetsNewJEC', 'slimmedMETsNewJEC')
+    return ('updatedPatJetsNewJEC', 'slimmedMETsNewJEC')
 
 
 def check_tag_(db_file, tag):
@@ -227,7 +225,7 @@ def load_jec_from_db(process, db, algorithmes):
     if os.path.isabs(db):
         raise ValueError('You cannot use an absolute for the database, as it breaks crab submission. Please put the database in the same folder as your python configuration file and pass only the filename as argument of the create function')
 
-    process.load("CondCore.DBCommon.CondDBCommon_cfi")
+    process.load("CondCore.CondDB.CondDB_cfi")
 
     if verbosity:
         print("Using database %r for JECs\n" % db)
