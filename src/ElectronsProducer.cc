@@ -19,8 +19,10 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
 
     size_t index = 0;
     for (const auto& electron: *electrons) {
-        if (! pass_cut(electron))
+        if (! pass_cut(electron)) {
+            index++;
             continue;
+        }
 
         fill_candidate(electron, electron.genParticle());
 
@@ -43,7 +45,7 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
         ecalPFClusterIso.push_back(electron.ecalPFClusterIso());
         hcalPFClusterIso.push_back(electron.hcalPFClusterIso());
         trackIso.push_back(electron.trackIso());
-        ScaleFactors::store_scale_factors({static_cast<float>(fabs(electron.eta())), static_cast<float>(electron.pt())},event.isRealData());
+        ScaleFactors::store_scale_factors({static_cast<float>(fabs(electron.eta())), static_cast<float>(electron.pt())}, event.isRealData());
     }
     Identifiable::clean();
 }
