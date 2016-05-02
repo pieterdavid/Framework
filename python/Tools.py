@@ -127,30 +127,6 @@ def module_has_string(module, string):
 
     return False
 
-def configure_slimmedmet_(met):
-    del met.t01Variation
-    del met.t1Uncertainties
-    del met.t1SmearedVarsAndUncs
-    del met.tXYUncForRaw
-    del met.tXYUncForT1
-    del met.tXYUncForT01
-    del met.tXYUncForT1Smear
-    del met.tXYUncForT01Smear
-
-def add_ak4_chs_jets_(process, isData, bTagDiscriminators):
-    from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
-    if verbosity:
-        jetToolbox(process, 'ak4', 'ak4CHSJetSequence', 'out', PUMethod='CHS', runOnMC=not isData, miniAOD=True, addPUJetID=False, bTagDiscriminators=bTagDiscriminators)
-    else:
-        with StdStreamSilenter():
-            jetToolbox(process, 'ak4', 'ak4CHSJetSequence', 'out', PUMethod='CHS', runOnMC=not isData, miniAOD=True, addPUJetID=False, bTagDiscriminators=bTagDiscriminators)
-
-    if (hasattr(process, 'softPFElectronsTagInfosAK4PFCHS')):
-        process.softPFElectronsTagInfosAK4PFCHS.electrons = cms.InputTag('slimmedElectrons')
-
-    if (hasattr(process, 'softPFMuonsTagInfosAK4PFCHS')):
-        process.softPFMuonsTagInfosAK4PFCHS.muons = cms.InputTag('slimmedMuons')
-
 def setup_jets_mets_(process, isData):
     """
     Create a new jets collection and a new MET collection with new JECs applied
@@ -174,14 +150,42 @@ def setup_jets_mets_(process, isData):
             jetCorrections = ('AK4PFchs', cms.vstring(levels), 'None')
             )
 
-    process.shiftedMETCorrModuleForNewJEC = cms.EDProducer('ShiftedParticleMETcorrInputProducer',
-       srcOriginal = cms.InputTag('slimmedJets'),
-       srcShifted = cms.InputTag('updatedPatJetsNewJEC')
-       )
+    # Propagate JEC to MET (Type-1)
+    if not isData:
+        process.genMet = cms.EDProducer('GenMETExtractor',
+                metSource = cms.InputTag('slimmedMETs', '', '@skipCurrentProcess')
+                )
+
+    # Raw MET
+    process.uncorrectedMet = cms.EDProducer('RecoMETExtractor',
+            correctionLevel = cms.string('raw'),
+            metSource = cms.InputTag('slimmedMETs', '', '@skipCurrentProcess')
+            )
+
+    # Raw PAT MET
+    from PhysicsTools.PatAlgos.tools.metTools import addMETCollection
+    addMETCollection(process, labelName='uncorrectedPatMet', metSource='uncorrectedMet')
+    if isData:
+        process.uncorrectedPatMet.addGenMET = False
+    else:
+        process.uncorrectedPatMet.genMETSource = cms.InputTag('genMet')
+
+    # Type-1 correction
+    process.Type1CorrForNewJEC = cms.EDProducer('PATPFJetMETcorrInputProducer',
+            jetCorrLabel = cms.InputTag('L3Absolute'),
+            jetCorrLabelRes = cms.InputTag('L2L3Residual'),
+            offsetCorrLabel = cms.InputTag('L1FastJet'),
+            skipEM = cms.bool(True),
+            skipEMfractionThreshold = cms.double(0.9),
+            skipMuonSelection = cms.string('isGlobalMuon | isStandAloneMuon'),
+            skipMuons = cms.bool(True),
+            src = cms.InputTag('updatedPatJetsNewJEC'),
+            type1JetPtThreshold = cms.double(15.0),
+            )
 
     process.slimmedMETsNewJEC = cms.EDProducer('CorrectedPATMETProducer',
-            src = cms.InputTag('slimmedMETs'),
-            srcCorrections = cms.VInputTag(cms.InputTag('shiftedMETCorrModuleForNewJEC'))
+            src = cms.InputTag('uncorrectedPatMet'),
+            srcCorrections = cms.VInputTag(cms.InputTag('Type1CorrForNewJEC', 'type1'))
             )
 
     return ('updatedPatJetsNewJEC', 'slimmedMETsNewJEC')
