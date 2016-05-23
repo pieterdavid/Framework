@@ -127,14 +127,20 @@ def module_has_string(module, string):
 
     return False
 
-def setup_jets_mets_(process, isData):
+def recorrect_jets(process, isData, jetAlgo, jetCollection):
     """
-    Create a new jets collection and a new MET collection with new JECs applied
+    Create a new jets collection with new JECs applied
 
-    Return a tuple of newly created collections (jet, met)
+    Parameters:
+    process     The CMSSW process
+    isData      True if running over data, False otherwise
+    jetAlgo     The jet algorithm used to produce jetCollection (like AK4PFchs, or AK8PF)
+    jetCollection   The name of the input jet collection
+
+    Returns:
+    The name of the new collection
     """
 
-    # Jets
     from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
     levels = ['L1FastJet', 'L2Relative', 'L3Absolute']
@@ -145,33 +151,53 @@ def setup_jets_mets_(process, isData):
     # Name of the new collection: updatedPatJetsNewJEC
     updateJetCollection(
             process,
-            jetSource = cms.InputTag('slimmedJets'),
-            labelName = 'NewJEC',
-            jetCorrections = ('AK4PFchs', cms.vstring(levels), 'None')
+            jetSource = cms.InputTag(jetCollection),
+            labelName = '%sNewJEC' % jetAlgo,
+            jetCorrections = (jetAlgo, cms.vstring(levels), 'None')
             )
 
-    # Propagate JEC to MET (Type-1)
+    return 'updatedPatJets%sNewJEC' % jetAlgo
+
+def recorrect_met(process, isData, metCollection, jetCollection):
+    """
+    Create a new MET collection, propagating new JEC from jetCollection
+
+    Parameters:
+    process     The CMSSW process
+    isData      True if running over data, false otherwise
+    metCollection   The name of the input met collection
+    jetCollection   The name of the input jet collection
+
+    Returns:
+    The name of the new collection
+    """
+
+    genMetTag = 'genMet%s' % metCollection
     if not isData:
-        process.genMet = cms.EDProducer('GenMETExtractor',
-                metSource = cms.InputTag('slimmedMETs', '', '@skipCurrentProcess')
-                )
+        setattr(process, genMetTag, cms.EDProducer('GenMETExtractor',
+                metSource = cms.InputTag(metCollection, '', '@skipCurrentProcess')
+                ))
 
     # Raw MET
-    process.uncorrectedMet = cms.EDProducer('RecoMETExtractor',
+    uncorrectedMetTag = 'uncorrectedMet%s' % metCollection
+    setattr(process, uncorrectedMetTag, cms.EDProducer('RecoMETExtractor',
             correctionLevel = cms.string('raw'),
-            metSource = cms.InputTag('slimmedMETs', '', '@skipCurrentProcess')
-            )
+            metSource = cms.InputTag(metCollection, '', '@skipCurrentProcess')
+            ))
 
     # Raw PAT MET
     from PhysicsTools.PatAlgos.tools.metTools import addMETCollection
-    addMETCollection(process, labelName='uncorrectedPatMet', metSource='uncorrectedMet')
+    uncorrectedPatMetTag = 'uncorrectedPatMet%s' % metCollection
+    addMETCollection(process, labelName=uncorrectedPatMetTag, metSource=uncorrectedMetTag)
+    uncorrectedPatMet = getattr(process, uncorrectedPatMetTag)
     if isData:
-        process.uncorrectedPatMet.addGenMET = False
+        uncorrectedPatMet.addGenMET = False
     else:
-        process.uncorrectedPatMet.genMETSource = cms.InputTag('genMet')
+        uncorrectedPatMet.genMETSource = cms.InputTag(genMetTag)
 
     # Type-1 correction
-    process.Type1CorrForNewJEC = cms.EDProducer('PATPFJetMETcorrInputProducer',
+    type1CorrForNewJecTag = 'type1CorrForNewJEC%s' % metCollection
+    setattr(process, type1CorrForNewJecTag, cms.EDProducer('PATPFJetMETcorrInputProducer',
             jetCorrLabel = cms.InputTag('L3Absolute'),
             jetCorrLabelRes = cms.InputTag('L2L3Residual'),
             offsetCorrLabel = cms.InputTag('L1FastJet'),
@@ -179,17 +205,17 @@ def setup_jets_mets_(process, isData):
             skipEMfractionThreshold = cms.double(0.9),
             skipMuonSelection = cms.string('isGlobalMuon | isStandAloneMuon'),
             skipMuons = cms.bool(True),
-            src = cms.InputTag('updatedPatJetsNewJEC'),
+            src = cms.InputTag(jetCollection),
             type1JetPtThreshold = cms.double(15.0),
-            )
+            ))
 
-    process.slimmedMETsNewJEC = cms.EDProducer('CorrectedPATMETProducer',
-            src = cms.InputTag('uncorrectedPatMet'),
-            srcCorrections = cms.VInputTag(cms.InputTag('Type1CorrForNewJEC', 'type1'))
-            )
+    slimmedMETsTag = '%sNewJEC' % metCollection
+    setattr(process, slimmedMETsTag, cms.EDProducer('CorrectedPATMETProducer',
+            src = cms.InputTag(uncorrectedPatMetTag),
+            srcCorrections = cms.VInputTag(cms.InputTag(type1CorrForNewJecTag, 'type1'))
+            ))
 
-    return ('updatedPatJetsNewJEC', 'slimmedMETsNewJEC')
-
+    return (slimmedMETsTag)
 
 def check_tag_(db_file, tag):
     import sqlite3

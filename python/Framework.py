@@ -18,6 +18,7 @@ class Framework(object):
 
         # Default configuration
         self.__miniaod_jet_collection = 'slimmedJets'
+        self.__miniaod_fat_jet_collection = 'slimmedJetsAK8'
         self.__miniaod_gen_jet_collection = 'slimmedGenJets'
         self.__miniaod_met_collection = 'slimmedMETs'
         self.__jer_resolution_file = 'cp3_llbb/Framework/data/Systematics/Summer15_25nsV6_MC_PtResolution_AK4PFchs.txt'
@@ -273,13 +274,18 @@ class Framework(object):
             # Read the JEC from a database
             self.useJECDatabase(JECDatabase)
 
-        from cp3_llbb.Framework.Tools import setup_jets_mets_
-        jet_collection, met_collection = setup_jets_mets_(self.process, self.isData)
+        from cp3_llbb.Framework.Tools import recorrect_jets, recorrect_met
+        jet_collection = recorrect_jets(self.process, self.isData, 'AK4PFchs', self.__miniaod_jet_collection)
+        met_collection = recorrect_met(self.process, self.isData, self.__miniaod_met_collection, jet_collection)
+
+        # Fat jets
+        fat_jet_collection = recorrect_jets(self.process, self.isData, 'AK8PFchs', self.__miniaod_fat_jet_collection)
 
         # Look for producers using the default jet and met collections
         for producer in self.producers:
             p = getattr(self.process.framework.producers, producer)
             change_input_tags_and_strings(p, self.__miniaod_jet_collection, jet_collection, 'producers.' + producer, '    ')
+            change_input_tags_and_strings(p, self.__miniaod_fat_jet_collection, fat_jet_collection, 'producers.' + producer, '    ')
             change_input_tags_and_strings(p, self.__miniaod_met_collection, met_collection, 'producers.' + producer, '    ')
 
             if p.type == 'met':
@@ -287,10 +293,11 @@ class Framework(object):
 
         # Change the default collections to the newly created
         self.__miniaod_jet_collection = jet_collection
+        self.__miniaod_fat_jet_collection = fat_jet_collection
         self.__miniaod_met_collection = met_collection
 
         if self.verbose:
-            print("New jets and MET collections: %r and %r" % (jet_collection, met_collection))
+            print("New jets and MET collections: %r, %r and %r" % (jet_collection, fat_jet_collection, met_collection))
 
         print("")
 
