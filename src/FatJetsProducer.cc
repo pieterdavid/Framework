@@ -26,25 +26,20 @@ void FatJetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSet
         tau2.push_back(jet.userFloat(Njettinesstau2));
         tau3.push_back(jet.userFloat(Njettinesstau3));
 
-        softdrop_mass.push_back(jet.userFloat("ak8PFJetsCHSSoftDropMass"));
-        trimmed_mass.push_back(jet.userFloat("ak8PFJetsCHSTrimmedMass"));
-        pruned_mass.push_back(jet.userFloat("ak8PFJetsCHSPrunedMass"));
-        filtered_mass.push_back(jet.userFloat("ak8PFJetsCHSFilteredMass"));
+        // Reconstruct puppi p4
+        ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiM4D<float>> puppi_p4_(
+                jet.userFloat("ak8PFJetsPuppiValueMap:pt"),
+                jet.userFloat("ak8PFJetsPuppiValueMap:eta"),
+                jet.userFloat("ak8PFJetsPuppiValueMap:phi"),
+                jet.userFloat("ak8PFJetsPuppiValueMap:mass")
+                );
+        puppi_p4.push_back(LorentzVector(puppi_p4_));
+        puppi_tau1.push_back(jet.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau1"));
+        puppi_tau2.push_back(jet.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau2"));
+        puppi_tau3.push_back(jet.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau3"));
 
-        reco::CATopJetTagInfo const * tagInfo =  dynamic_cast<reco::CATopJetTagInfo const *>(jet.tagInfo("caTop"));
-        if (tagInfo) {
-            has_toptag_info.push_back(true);
-            toptag_min_mass.push_back(tagInfo->properties().minMass);
-            toptag_top_mass.push_back(tagInfo->properties().topMass);
-            toptag_w_mass.push_back(tagInfo->properties().wMass);
-            toptag_n_subjets.push_back(tagInfo->properties().nSubJets);
-        } else {
-            has_toptag_info.push_back(false);
-            toptag_min_mass.push_back(0);
-            toptag_top_mass.push_back(0);
-            toptag_w_mass.push_back(0);
-            toptag_n_subjets.push_back(0);
-        }
+        softdrop_mass.push_back(jet.userFloat("ak8PFJetsCHSSoftDropMass"));
+        pruned_mass.push_back(jet.userFloat("ak8PFJetsCHSPrunedMass"));
 
         // Subjets
         // 1) SoftDrop
@@ -64,19 +59,19 @@ void FatJetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSet
         }
 
         // 2) Top tagger
-        const auto& wTopjets = jet.subjets(TopTagSubjets);
+        const auto& wPuppiSubjets = jet.subjets(SoftDropPuppiSubjets);
         subjets_p4.clear();
         subjets_btag_discriminators.clear();
-        for (const auto& it: wTopjets) {
+        for (const auto& it: wPuppiSubjets) {
             subjets_p4.push_back(LorentzVector(it->pt(), it->eta(), it->phi(), it->energy()));
             for (const auto& subjet_btag: m_subjets_btag_discriminators) {
                 subjets_btag_discriminators[subjet_btag].push_back(it->bDiscriminator(subjet_btag));
             }
         }
 
-        toptag_subjets_p4.push_back(subjets_p4);
+        softdrop_puppi_subjets_p4.push_back(subjets_p4);
         for (const auto& subjet_btag: m_subjets_btag_discriminators) {
-            m_toptag_btag_discriminators_branches[subjet_btag]->push_back(subjets_btag_discriminators[subjet_btag]);
+            m_softdrop_puppi_btag_discriminators_branches[subjet_btag]->push_back(subjets_btag_discriminators[subjet_btag]);
         }
 
         for (auto& it: m_btag_discriminators) {
