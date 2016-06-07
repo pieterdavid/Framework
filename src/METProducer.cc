@@ -10,6 +10,7 @@ void METProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup) 
     p4 = LorentzVector(met.pt(), met.eta(), met.phi(), met.energy());
 
     sumEt = met.sumEt();
+    significance = met.metSignificance();
 
     if (m_slimmed) {
         uncorrectedPt = met.uncorPt();
