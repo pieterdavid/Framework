@@ -29,15 +29,15 @@ class FatJetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScale
                 for (const std::string& btag: m_subjets_btag_discriminators) {
                     m_softdrop_btag_discriminators_branches.emplace(btag,
                             &CandidatesProducer<pat::Jet>::tree["softdrop_" + btag].write<std::vector<std::vector<float>>>());
-                    m_toptag_btag_discriminators_branches.emplace(btag,
-                            &CandidatesProducer<pat::Jet>::tree["toptag_" + btag].write<std::vector<std::vector<float>>>());
+                    m_softdrop_puppi_btag_discriminators_branches.emplace(btag,
+                            &CandidatesProducer<pat::Jet>::tree["softdrop_puppi_" + btag].write<std::vector<std::vector<float>>>());
                 }
             }
-            Njettinesstau1 = config.getUntrackedParameter<std::string>("Njettinesstau1","NjettinessAK8:tau1");
-            Njettinesstau2 = config.getUntrackedParameter<std::string>("Njettinesstau2","NjettinessAK8:tau2");
-            Njettinesstau3 = config.getUntrackedParameter<std::string>("Njettinesstau3","NjettinessAK8:tau3");
-            SoftDropSubjets = config.getUntrackedParameter<std::string>("SoftDropSubjets","SoftDrop");
-            TopTagSubjets = config.getUntrackedParameter<std::string>("TopTagSubjets","CMSTopTag");
+            Njettinesstau1 = config.getUntrackedParameter<std::string>("Njettinesstau1", "NjettinessAK8:tau1");
+            Njettinesstau2 = config.getUntrackedParameter<std::string>("Njettinesstau2", "NjettinessAK8:tau2");
+            Njettinesstau3 = config.getUntrackedParameter<std::string>("Njettinesstau3", "NjettinessAK8:tau3");
+            SoftDropSubjets = config.getUntrackedParameter<std::string>("SoftDropSubjets", "SoftDrop");
+            SoftDropPuppiSubjets = config.getUntrackedParameter<std::string>("SoftDropPuppiSubjets", "SoftDropPuppi");
         }
 
         virtual ~FatJetsProducer() {}
@@ -56,8 +56,8 @@ class FatJetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScale
             return m_softdrop_btag_discriminators_branches.at(btag_name)->at(index).at(sj_index);
         }
 
-        float getTopTagBTagDiscriminant(size_t index, size_t sj_index, const std::string& btag_name) const {
-            return m_toptag_btag_discriminators_branches.at(btag_name)->at(index).at(sj_index);
+        float getSoftDropPuppiBTagDiscriminant(size_t index, size_t sj_index, const std::string& btag_name) const {
+            return m_softdrop_puppi_btag_discriminators_branches.at(btag_name)->at(index).at(sj_index);
         }
 
     private:
@@ -69,13 +69,13 @@ class FatJetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScale
 
         std::vector<std::string> m_subjets_btag_discriminators;
         std::map<std::string, std::vector<std::vector<float>>*> m_softdrop_btag_discriminators_branches;
-        std::map<std::string, std::vector<std::vector<float>>*> m_toptag_btag_discriminators_branches;
+        std::map<std::string, std::vector<std::vector<float>>*> m_softdrop_puppi_btag_discriminators_branches;
 
         std::string Njettinesstau1;
         std::string Njettinesstau2;
         std::string Njettinesstau3;
         std::string SoftDropSubjets;
-        std::string TopTagSubjets;
+        std::string SoftDropPuppiSubjets;
 
     public:
         // Tree members
@@ -92,19 +92,16 @@ class FatJetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScale
         BRANCH(tau2, std::vector<float>);
         BRANCH(tau3, std::vector<float>);
 
+        BRANCH(puppi_p4, std::vector<LorentzVector>);
+        BRANCH(puppi_tau1, std::vector<float>);
+        BRANCH(puppi_tau2, std::vector<float>);
+        BRANCH(puppi_tau3, std::vector<float>);
+
         BRANCH(softdrop_mass, std::vector<float>);
-        BRANCH(trimmed_mass, std::vector<float>);
         BRANCH(pruned_mass, std::vector<float>);
-        BRANCH(filtered_mass, std::vector<float>);
 
-        BRANCH(has_toptag_info, std::vector<bool>);
-        BRANCH(toptag_min_mass, std::vector<float>);
-        BRANCH(toptag_top_mass, std::vector<float>);
-        BRANCH(toptag_w_mass, std::vector<float>);
-        BRANCH(toptag_n_subjets, std::vector<uint8_t>);
-
-        BRANCH(toptag_subjets_p4, std::vector<std::vector<LorentzVector>>);
         BRANCH(softdrop_subjets_p4, std::vector<std::vector<LorentzVector>>);
+        BRANCH(softdrop_puppi_subjets_p4, std::vector<std::vector<LorentzVector>>);
 };
 
 #endif

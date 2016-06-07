@@ -37,6 +37,7 @@ class METProducer: public Framework::Producer {
         // Tree members
         LorentzVector& p4 = tree["p4"].write<LorentzVector>();
         float& sumEt = tree["sumEt"].write<float>();
+        float& significance = tree["significance"].write<float>();
 
         float& uncorrectedPt = create_branch("uncorrectedPt");
         float& uncorrectedPhi = create_branch("uncorrectedPhi");
