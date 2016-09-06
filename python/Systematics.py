@@ -167,11 +167,9 @@ class JECSystematics(JetsSystematics):
         return module
 
 class JERSystematics(JetsSystematics):
-    def __init__(self, name, framework, jetCollection, metCollection, genJetCollection, resolutionFile, scaleFactorFile):
+    def __init__(self, name, framework, jetCollection, metCollection, genJetCollection):
         super(JERSystematics, self).__init__(name, framework, jetCollection, metCollection)
         self.genJetCollection = genJetCollection
-        self.resolutionFile = resolutionFile
-        self.scaleFactorFile = scaleFactorFile
 
     def getJetSystematicsProducer_(self, shift):
 
@@ -179,8 +177,8 @@ class JERSystematics(JetsSystematics):
                     src = cms.InputTag(self.jetCollection),
                     enabled = cms.bool(True),
                     rho = cms.InputTag("fixedGridRhoFastjetAll"),
-                    resolutionFile = cms.FileInPath(self.resolutionFile),
-                    scaleFactorFile = cms.FileInPath(self.scaleFactorFile),
+                    algo = cms.string('AK4PFchs'),
+                    algopt = cms.string('AK4PFchs_pt'),
 
                     genJets = cms.InputTag(self.genJetCollection),
                     dRMax = cms.double(0.2),
