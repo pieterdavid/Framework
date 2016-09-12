@@ -21,8 +21,6 @@ class Framework(object):
         self.__miniaod_fat_jet_collection = 'slimmedJetsAK8'
         self.__miniaod_gen_jet_collection = 'slimmedGenJets'
         self.__miniaod_met_collection = 'slimmedMETs'
-        self.__jer_resolution_file = 'cp3_llbb/Framework/data/Systematics/Summer15_25nsV6_MC_PtResolution_AK4PFchs.txt'
-        self.__jer_scale_factor_file = 'cp3_llbb/Framework/data/Systematics/Summer15_25nsV6_DATAMCSF_AK4PFchs.txt'
 
         self.isData = isData
         self.era = era
@@ -109,9 +107,7 @@ class Framework(object):
                         'uncertaintiesFile': None},
                     'jer': {'jetCollection': self.__miniaod_jet_collection,
                         'metCollection': self.__miniaod_met_collection,
-                        'genJetCollection': self.__miniaod_gen_jet_collection,
-                        'resolutionFile': self.__jer_resolution_file,
-                        'scaleFactorFile': self.__jer_scale_factor_file}
+                        'genJetCollection': self.__miniaod_gen_jet_collection}
                     }
 
             systematics = {}
@@ -321,8 +317,8 @@ class Framework(object):
                     src = cms.InputTag(self.__miniaod_jet_collection),
                     enabled = cms.bool(True),
                     rho = cms.InputTag("fixedGridRhoFastjetAll"),
-                    resolutionFile = cms.FileInPath(self.__jer_resolution_file),
-                    scaleFactorFile = cms.FileInPath(self.__jer_scale_factor_file),
+                    algo = cms.string('AK4PFchs'),
+                    algopt = cms.string('AK4PFchs_pt'),
 
                     genJets = cms.InputTag(self.__miniaod_gen_jet_collection),
                     dRMax = cms.double(0.2),
