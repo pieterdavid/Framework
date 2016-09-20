@@ -390,13 +390,19 @@ class Framework(object):
 
         parseCommandLine = False
         for argv in sys.argv:
-            if 'globalTag' in argv or 'era' in argv or 'process' in argv:
+            if 'runOnData' in argv or 'globalTag' in argv or 'era' in argv or 'process' in argv:
                 parseCommandLine = True
                 break
 
         if parseCommandLine:
             from FWCore.ParameterSet.VarParsing import VarParsing
             options = VarParsing()
+            options.register('runOnData',
+                    -1,
+                    VarParsing.multiplicity.singleton,
+                    VarParsing.varType.int,
+                    'If running over MC (0) or data (1)')
+
             options.register('globalTag',
                     '',
                     VarParsing.multiplicity.singleton,
@@ -416,6 +422,11 @@ class Framework(object):
                     'Process name of the MiniAOD production.')
 
             options.parseArguments()
+
+            if options.runOnData != -1:
+                runOnData = options.runOnData == 1
+                if self.isData != runOnData:
+                    raise Exception("Inconsistency between the command line argument 'runOnData' and the first argument of the Framework constructor.")
 
             if options.globalTag:
                 self.globalTag = options.globalTag
