@@ -28,9 +28,11 @@ class EventProducer: public Framework::Producer {
         {
 
             if (config.getUntrackedParameter<bool>("compute_pu_weights", true)) {
-                m_pu_reweighter = std::make_shared<Framework::PUReweighter>(config.getParameterSet("pu_reweighter"), Framework::PUProfile::Fall15_25ns);
-                m_pu_reweighter_up = std::make_shared<Framework::PUReweighter>(config.getParameterSet("pu_reweighter_up"), Framework::PUProfile::Fall15_25ns);
-                m_pu_reweighter_down = std::make_shared<Framework::PUReweighter>(config.getParameterSet("pu_reweighter_down"), Framework::PUProfile::Fall15_25ns);
+                std::string puProfileString = config.getUntrackedParameter<std::string>("pu_profile");
+                Framework::PUProfile puProfile = Framework::stringToPUProfile(puProfileString); // Throw if invalid
+                m_pu_reweighter = std::make_shared<Framework::PUReweighter>(config.getParameterSet("pu_reweighter"), puProfile);
+                m_pu_reweighter_up = std::make_shared<Framework::PUReweighter>(config.getParameterSet("pu_reweighter_up"), puProfile);
+                m_pu_reweighter_down = std::make_shared<Framework::PUReweighter>(config.getParameterSet("pu_reweighter_down"), puProfile);
             }
         }
 

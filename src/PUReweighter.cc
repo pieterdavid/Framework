@@ -8,6 +8,19 @@
 
 namespace Framework {
 
+    PUProfile stringToPUProfile(const std::string& str) {
+        if (str == "Moriond17_25ns")
+            return PUProfile::Moriond17_25ns;
+        else if (str == "Spring16_25ns")
+            return PUProfile::Spring16_25ns;
+        else if (str == "Fall15_25ns")
+            return PUProfile::Fall15_25ns;
+        else if (str == "Spring15_25ns")
+            return PUProfile::Spring15_25ns;
+
+        throw std::runtime_error("Unknown PU profile: " + str);
+    }
+
     PUReweighter::PUReweighter(const edm::ParameterSet& config, PUProfile mc_pu_profile) {
 
         std::string file = config.getUntrackedParameter<edm::FileInPath>("data_pu_profile").fullPath();
