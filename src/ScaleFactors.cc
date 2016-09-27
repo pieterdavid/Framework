@@ -26,12 +26,12 @@ void ScaleFactors::create_branch(const std::string& scale_factor, const std::str
         m_branches.emplace(scale_factor, & m_tree[branch_name].write<std::vector<std::vector<float>>>());
 }
 
-void ScaleFactors::store_scale_factors(const std::vector<float>& values,bool isData) {
+void ScaleFactors::store_scale_factors(const Parameters& parameters, bool isData) {
     for (const auto& sf: m_scale_factors) {
         if (isData)
             (*m_branches[sf.first]).push_back({1., 0., 0.});
         else
-            (*m_branches[sf.first]).push_back(sf.second.get(values));
+            (*m_branches[sf.first]).push_back(sf.second.get(parameters));
     }
 }
 

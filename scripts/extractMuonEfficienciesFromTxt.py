@@ -59,7 +59,9 @@ with open(args.file, 'r') as f:
 eta_binning = sorted(list(set(eta_binning)))
 pt_binning = sorted(list(set(pt_binning)))
 
-json_content = {'dimension': 2, 'binning': {'x': eta_binning, 'y': pt_binning}, 'data': [], 'error_type': 'absolute'}
+eta = 'Eta' if eta_binning[0] < 0 else 'AbsEta'
+
+json_content = {'dimension': 2, 'variables': [eta, 'Pt'], 'binning': {'x': eta_binning, 'y': pt_binning}, 'data': [], 'error_type': 'absolute'}
 json_content_data = json_content['data']
 
 

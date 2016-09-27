@@ -3,6 +3,8 @@
 #include <cp3_llbb/Framework/interface/Histogram.h>
 
 #include <memory>
+#include <unordered_map>
+
 #include <TFormula.h>
 
 enum Variation {
@@ -11,7 +13,83 @@ enum Variation {
     Up = 2
 };
 
+template <typename T, typename U>
+struct bimap {
+    typedef std::unordered_map<T, U> left_type;
+    typedef std::unordered_map<U, T> right_type;
+
+    left_type left;
+    right_type right;
+    
+    bimap(std::initializer_list<typename left_type::value_type> l) {
+        for (auto& v: l) {
+            left.insert(v);
+            right.insert(typename right_type::value_type(v.second, v.first));
+        }
+    }
+
+    bimap() {
+        // Empty
+    }
+
+    bimap(bimap&& rhs) {
+        left = std::move(rhs.left);
+        right = std::move(rhs.right);
+    }
+};
+
+/**
+ * Enum of possible Variables used for binning values
+ */
+enum class BinningVariable {
+    Pt,
+    Eta,
+    AbsEta,
+    BTagDiscri
+};
+
+// Hash function for BinningVariable enum class
+namespace std {
+    template<>
+    struct hash<BinningVariable> {
+        typedef BinningVariable argument_type;
+        typedef std::size_t result_type;
+
+        hash<uint8_t> int_hash;
+ 
+        result_type operator()(argument_type const& s) const {
+            return int_hash(static_cast<uint8_t>(s));
+        }
+    };
+};
+
+class Parameters {
+    public:
+        typedef std::unordered_map<BinningVariable, float> value_type;
+
+        Parameters() = default;
+        Parameters(Parameters&& rhs);
+        Parameters(std::initializer_list<typename value_type::value_type> init);
+
+
+        Parameters& setPt(float pt);
+        Parameters& setEta(float eta);
+        Parameters& setBTagDiscri(float d);
+        Parameters& set(const BinningVariable& bin, float value);
+        Parameters& set(const typename value_type::value_type& value);
+
+        static const bimap<BinningVariable, std::string> binning_to_string;
+
+        std::vector<float> toArray(const std::vector<BinningVariable>&) const;
+
+    private:
+        value_type m_values;
+};
+
 struct BinnedValues {
+
+    typedef bimap<BinningVariable, std::string> mapping_bimap;
+    static const mapping_bimap variable_to_string_mapping;
 
     /**
      * Type of possible errors: Suppose we have E +- ΔE
@@ -27,15 +105,7 @@ struct BinnedValues {
 
     friend class BinnedValuesJSONParser;
 
-    BinnedValues(BinnedValues&& rhs) {
-        binned = std::move(rhs.binned);
-        formula = std::move(rhs.formula);
-        use_formula = rhs.use_formula;
-        error_type = rhs.error_type;
-        formula_variable_index = rhs.formula_variable_index;
-        maximum = rhs.maximum;
-        minimum = rhs.minimum;
-    }
+    BinnedValues(BinnedValues&& rhs) = default;
 
     BinnedValues() = default;
 
@@ -58,6 +128,11 @@ struct BinnedValues {
 
             return {h.getBinContent(bin), h.getBinErrorLow(bin), h.getBinErrorHigh(bin)};
         }
+
+    void setVariables(const std::vector<std::string>&);
+
+    // List of variables used in the binning. First entry is the X variable, second one Y, etc.
+    std::vector<BinningVariable> binning_variables;
 
     bool use_formula = false;
 
@@ -127,11 +202,13 @@ struct BinnedValues {
     }
 
     public:
-    std::vector<float> get(const std::vector<float>& variables) const {
+    std::vector<float> get(const Parameters& parameters) const {
         static auto double_errors = [](std::vector<float>& values) {
             values[Up] *= 2;
             values[Down] *= 2;
         };
+
+        std::vector<float> variables = parameters.toArray(binning_variables);
 
         bool outOfRange = false;
 

@@ -104,9 +104,11 @@ void JetsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup)
 
             it.second->push_back(btag_discriminator);
 
+            Parameters p {{BinningVariable::Eta, jet.eta()}, {BinningVariable::Pt, jet.pt()}, {BinningVariable::BTagDiscri, btag_discriminator}};
+
             Algorithm algo = string_to_algorithm(it.first);
             if (algo != Algorithm::UNKNOWN && BTaggingScaleFactors::has_scale_factors(algo)) {
-                BTaggingScaleFactors::store_scale_factors(algo, get_flavor(jet.hadronFlavour()), {static_cast<float>(std::abs(jet.eta())), static_cast<float>(jet.pt()), btag_discriminator}, event.isRealData());
+                BTaggingScaleFactors::store_scale_factors(algo, get_flavor(jet.hadronFlavour()), p, event.isRealData());
             }
         }
     }

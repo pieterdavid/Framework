@@ -2,6 +2,7 @@
 #include "DataFormats/Math/interface/Vector3D.h"
 #include <cp3_llbb/Framework/interface/MuonsProducer.h>
 #include "TLorentzVector.h"
+
 void MuonsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup) {
     edm::Handle<std::vector<pat::Muon>> muons;
     event.getByToken(m_leptons_token, muons);
@@ -43,6 +44,8 @@ void MuonsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup
         dxy.push_back(muon.muonBestTrack()->dxy(primary_vertex.position()));
         dz.push_back(muon.muonBestTrack()->dz(primary_vertex.position()));
         dca.push_back(muon.dB(pat::Muon::PV3D)/muon.edB(pat::Muon::PV3D));
-        ScaleFactors::store_scale_factors({static_cast<float>(fabs(muon.eta())), static_cast<float>(muon.pt())},event.isRealData());
+
+        Parameters p {{BinningVariable::Eta, muon.eta()}, {BinningVariable::Pt, muon.pt()}};
+        ScaleFactors::store_scale_factors(p, event.isRealData());
     }
 }

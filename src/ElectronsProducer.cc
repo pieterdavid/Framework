@@ -45,7 +45,9 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
         ecalPFClusterIso.push_back(electron.ecalPFClusterIso());
         hcalPFClusterIso.push_back(electron.hcalPFClusterIso());
         trackIso.push_back(electron.trackIso());
-        ScaleFactors::store_scale_factors({static_cast<float>(fabs(electron.eta())), static_cast<float>(electron.pt())}, event.isRealData());
+
+        Parameters p {{BinningVariable::Eta, electron.eta()}, {BinningVariable::Pt, electron.pt()}};
+        ScaleFactors::store_scale_factors(p, event.isRealData());
     }
     Identifiable::clean();
 }

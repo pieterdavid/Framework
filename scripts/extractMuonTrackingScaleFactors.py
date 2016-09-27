@@ -39,7 +39,9 @@ for key in f.GetListOfKeys():
 
     pt_binning = [10., 14000.]
 
-    json_content = {'dimension': 2, 'binning': {'x': eta_binning, 'y': pt_binning}, 'data': [], 'error_type': 'absolute'}
+    eta = 'Eta' if eta_binning[0] < 0 else 'AbsEta'
+
+    json_content = {'dimension': 2, 'variables': [eta, 'Pt'], 'binning': {'x': eta_binning, 'y': pt_binning}, 'data': [], 'error_type': 'absolute'}
     json_content_data = json_content['data']
 
     for i in range(0, len(eta_binning) - 1):

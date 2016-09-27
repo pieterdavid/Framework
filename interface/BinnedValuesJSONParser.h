@@ -39,6 +39,15 @@ class BinnedValuesJSONParser {
             return vector;
         }
 
+        std::vector<std::string> get_string_array(boost::property_tree::ptree& ptree) {
+            std::vector<std::string> vector;
+            for (auto& value: ptree) {
+                vector.push_back(value.second.data());
+            }
+
+            return vector;
+        }
+
         template <class T, typename _Value>
         void fillHistogram(T& h, const std::vector<float>& bins, const _Value& value, const _Value& error_low, const _Value& error_high) {
             std::size_t bin = h.findBin(bins);

@@ -1511,6 +1511,7 @@
     }
   ], 
   "dimension": 2, 
+  "variables": ["Eta", "Pt"],
   "binning": {
     "y": [
       10.0, 
