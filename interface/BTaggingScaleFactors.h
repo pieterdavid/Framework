@@ -43,7 +43,7 @@ class BTaggingScaleFactors {
 
         virtual void create_branches(const edm::ParameterSet&) final;
 
-        virtual void store_scale_factors(Algorithm algo, Flavor flavor, const std::vector<float>& values,bool isData) final;
+        virtual void store_scale_factors(Algorithm algo, Flavor flavor, const Parameters&, bool isData) final;
 
         virtual float get_scale_factor(Algorithm algo, const std::string& wp, size_t index, Variation variation = Variation::Nominal) final;
 

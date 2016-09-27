@@ -68,7 +68,7 @@ with open(args.file, 'r') as f:
         if token in all_json_content:
             json_content = all_json_content[token]
         else:
-            json_content = {'dimension': 3, 'binning': {'x': [], 'y': [], 'z': []}, 'data': [], 'error_type': 'variated', 'formula': True,
+            json_content = {'dimension': 3, 'variables': ['Eta', 'Pt', 'BTagDiscri'], 'binning': {'x': [], 'y': [], 'z': []}, 'data': [], 'error_type': 'variated', 'formula': True,
                     'variable': 'y' if operating_point != 3 else 'z'}
             all_json_content[token] = json_content
 
@@ -148,6 +148,9 @@ for (operating_point, measurement_type, jet_flavor), json_content in all_json_co
     json_content['binning']['x'] = create_binning(json_content_data)
     json_content['binning']['y'] = create_binning(json_content_data[0]['values'])
     json_content['binning']['z'] = create_binning(json_content_data[0]['values'][0]['values'])
+
+    if (json_content['binning']['x'][0] >= 0):
+        json_content['variables'][0] = 'AbsEta'
 
     import json
     filename = 'BTagging_%s_%s_%s_%s.json' % (operating_point_to_string(operating_point), jet_flavor_to_string(jet_flavor), measurement_type, args.suffix)

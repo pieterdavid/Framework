@@ -1,5 +1,6 @@
 {
   "error_type": "variated", 
+  "variables": ["AbsEta", "Pt", "BTagDiscri"],
   "binning": {
     "y": [
       20.0, 

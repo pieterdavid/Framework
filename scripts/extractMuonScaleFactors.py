@@ -56,7 +56,7 @@ with open(args.pkl) as f:
 
         pt_binning = None
 
-        json_content = {'dimension': 2, 'binning': {'x': eta_binning, 'y': []}, 'data': [], 'error_type': 'absolute'}
+        json_content = {'dimension': 2, 'variables': ['AbsEta', 'Pt'], 'binning': {'x': eta_binning, 'y': []}, 'data': [], 'error_type': 'absolute'}
         json_content_data = json_content['data']
 
         for i in range(0, len(eta_binning) - 1):

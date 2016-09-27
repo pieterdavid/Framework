@@ -58,7 +58,7 @@ void BTaggingScaleFactors::create_branches(const edm::ParameterSet& config) {
 
 }
 
-void BTaggingScaleFactors::store_scale_factors(Algorithm algo_, Flavor flavor, const std::vector<float>& values,const bool isData) {
+void BTaggingScaleFactors::store_scale_factors(Algorithm algo_, Flavor flavor, const Parameters& parameters, bool isData) {
 
     auto algo_it = m_algos.find(algo_);
     if (algo_it == m_algos.end())
@@ -71,7 +71,7 @@ void BTaggingScaleFactors::store_scale_factors(Algorithm algo_, Flavor flavor, c
         if (isData)
             (*m_branches[branch_key]).push_back({1., 0., 0.});
         else
-            (*m_branches[branch_key]).push_back(m_scale_factors[sf_key].get(values));
+            (*m_branches[branch_key]).push_back(m_scale_factors[sf_key].get(parameters));
     }
 }
 

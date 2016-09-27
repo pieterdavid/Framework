@@ -1,7 +1,5 @@
 #include <cp3_llbb/Framework/interface/BinnedValuesJSONParser.h>
 
-#include <iostream>
-
 #include <boost/property_tree/json_parser.hpp>
 
 void BinnedValuesJSONParser::parse_file(const std::string& file) {
@@ -11,6 +9,11 @@ void BinnedValuesJSONParser::parse_file(const std::string& file) {
 
     size_t dimension = ptree.get<size_t>("dimension", 1);
 
+    std::vector<std::string> variables = get_string_array(ptree.get_child("variables"));
+    if (variables.size() != dimension) {
+        throw edm::Exception(edm::errors::LogicError, "Invalid number of variables. Expected " + std::to_string(dimension) + ", got " + std::to_string(variables.size()));
+    }
+
     std::vector<float> binning_x = get_array(ptree.get_child("binning.x"));
 
     std::vector<float> binning_y;
@@ -19,6 +22,8 @@ void BinnedValuesJSONParser::parse_file(const std::string& file) {
         binning_y = get_array(ptree.get_child("binning.y"));
     if (dimension > 2)
         binning_z = get_array(ptree.get_child("binning.z"));
+
+    m_values.setVariables(variables);
 
     bool formula = ptree.get<bool>("formula", false);
     
