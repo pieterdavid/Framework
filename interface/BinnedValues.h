@@ -78,8 +78,6 @@ class Parameters {
         Parameters& set(const BinningVariable& bin, float value);
         Parameters& set(const typename value_type::value_type& value);
 
-        static const bimap<BinningVariable, std::string> binning_to_string;
-
         std::vector<float> toArray(const std::vector<BinningVariable>&) const;
 
     private:
