@@ -25,6 +25,8 @@ with open(args.file, 'r') as f:
     pt_binning = []
 
     for line in f:
+        if 'etamin' in line:
+            continue
         data = line.strip().split()
 
         eta_bin = (float(data[0]), float(data[1]))
