@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <triggers>
+    <!-- dummy MC triggers -->
+    <runs from="0" to="1">
+        <!-- Double mu -->
+        <path>HLT_.*Mu.*_Mu.*_v.*</path>
+        <!-- Double ele -->
+        <path>HLT_.*Ele.*_Ele.*_v.*</path>
+        <!-- Muon + electron -->
+        <path>HLT_.*Mu.*_Ele.*_v.*</path>
+        <path>HLT_.*Ele.*_Mu.*_v.*</path>
+        <!-- Single mu -->
+        <path>HLT_.*Mu.*_v.*</path>
+        <!-- Single ele -->
+        <path>HLT_.*Ele.*_v.*</path>
+    </runs>
     <!-- Run 2015 -->
     <runs from="253659" to="260627">
         <!-- Double mu -->
