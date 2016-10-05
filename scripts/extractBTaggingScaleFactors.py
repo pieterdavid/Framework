@@ -27,6 +27,8 @@ def jet_flavor_to_string(jet_flavor):
         return "lightjets"
     else:
         return "unknown"
+
+valid_syst_types = ['central', 'up', 'down']
            
 
 parser = argparse.ArgumentParser()
@@ -59,6 +61,9 @@ with open(args.file, 'r') as f:
         measurement_type = row[1]
         syst_type = row[2]
         jet_flavor = int(row[3])
+
+        if not syst_type in valid_syst_types:
+            continue
 
         token = get_token(operating_point, measurement_type, jet_flavor)
 
