@@ -384,78 +384,32 @@ class Framework(object):
             raise RuntimeError("The framework configuration is frozen. Framework.create() must be the last function called.")
 
     def parseCommandLine_(self):
-        """
-        Parse the command line for options. Supported options are 'globalTag', 'era' and 'process'.
-
-        Used mainly by GridIn and crab to override user configuration of the framework with correct values
-        for a given dataset.
-        """
-
         self.ensureNotCreated()
 
-        import sys
+        from cp3_llbb.Framework.CmdLine import CmdLine
 
-        parseCommandLine = False
-        for argv in sys.argv:
-            if 'hltProcessName' in argv or 'runOnData' in argv or 'globalTag' in argv or 'era' in argv or 'process' in argv:
-                parseCommandLine = True
-                break
+        options = CmdLine()
 
-        if parseCommandLine:
-            from FWCore.ParameterSet.VarParsing import VarParsing
-            options = VarParsing()
-            options.register('hltProcessName',
-                    '',
-                    VarParsing.multiplicity.singleton,
-                    VarParsing.varType.string,
-                    'The HLT processName to use')
+        if options.hltProcessName:
+            self.hltProcessName = options.hltProcessName
 
-            options.register('runOnData',
-                    -1,
-                    VarParsing.multiplicity.singleton,
-                    VarParsing.varType.int,
-                    'If running over MC (0) or data (1)')
+        if options.runOnData != -1:
+            runOnData = options.runOnData == 1
+            if self.isData != runOnData:
+                raise Exception("Inconsistency between the command line argument 'runOnData' and the first argument of the Framework constructor.")
 
-            options.register('globalTag',
-                    '',
-                    VarParsing.multiplicity.singleton,
-                    VarParsing.varType.string,
-                    'The globaltag to use')
+        if options.globalTag:
+            self.globalTag = options.globalTag
 
-            options.register('era',
-                    '',
-                    VarParsing.multiplicity.singleton,
-                    VarParsing.varType.string,
-                    'Era of the dataset')
+        if options.era:
+            assert options.era == '25ns' or options.era == '50ns'
+            if options.era == '25ns':
+                self.era = eras.Run2_25ns
+            else:
+                self.era = eras.Run2_50ns
 
-            options.register('process',
-                    '',
-                    VarParsing.multiplicity.singleton,
-                    VarParsing.varType.string,
-                    'Process name of the MiniAOD production.')
-
-            options.parseArguments()
-
-            if options.hltProcessName:
-                self.hltProcessName = options.hltProcessName
-
-            if options.runOnData != -1:
-                runOnData = options.runOnData == 1
-                if self.isData != runOnData:
-                    raise Exception("Inconsistency between the command line argument 'runOnData' and the first argument of the Framework constructor.")
-
-            if options.globalTag:
-                self.globalTag = options.globalTag
-
-            if options.era:
-                assert options.era == '25ns' or options.era == '50ns'
-                if options.era == '25ns':
-                    self.era = eras.Run2_25ns
-                else:
-                    self.era = eras.Run2_50ns
-
-            if options.process:
-                self.processName = options.process
+        if options.process:
+            self.processName = options.process
 
     def configureElectronId_(self):
 
