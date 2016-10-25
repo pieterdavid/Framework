@@ -274,8 +274,6 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         }
     }
 
-    m_event_weight_sum += weight;
-
     pdf_weight = 1;
     pdf_weight_up = 1;
     pdf_weight_down = 1;
@@ -341,8 +339,10 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         // Scale variations
         for (auto& m: m_scale_variations_matching) {
             float weight = lhe_info->weights()[m.second].wgt / lhe_weight_nominal_weight;
-            if ((weight < 0.1) || (weight > 10.)) {
+            if (std::isnan(weight)) {
+#ifdef DEBUG_PDF
                 std::cout << "Corrupted scale weight #" << scale_weights.size() << std::endl;
+#endif
                 weight = 1.;
             }
             scale_weights.push_back(weight);
@@ -357,7 +357,6 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         pdf_weights.reserve(110);
         float mean = 0.;
         size_t n = 0;
-        bool corrupted_event = false;
 
         if (m_pdf_weights_matching.empty()) {
 #ifndef USE_LHE_WEIGHTS_FOR_LO
@@ -400,50 +399,52 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
 #ifdef DEBUG_PDF
                 std::cout << "Computed weight #" << i + 1 << " = " << weight << " (raw LHE weight: " << lhe_info->weights()[m_pdf_weights_matching[i].second].wgt << ")" << std::endl;
 #endif
-                // On some samples, some PDF weights are corrupted (value close to 0, very high or even NaN). If we detect such a weight, consider the event as corrupted, and force pdf_weight to be one without uncertainty.
-                if (std::isnan(weight) || weight < 0.4 || weight > 2.5) {
-                    corrupted_event = true;
-                    break;
+                if (std::isnan(weight)) {
+                    continue;
                 }
+
                 mean += weight;
                 pdf_weights.push_back(weight);
             }
         }
 
-        if (corrupted_event) {
-            std::cout << "PDF weights for this event are corrupted. Forcing value to 1" << std::endl;
-            goto end;
-        }
-
-        mean /= n;
-
-        // Compute standard deviation
         float rms = 0.;
-        for (auto weight: pdf_weights) {
-            rms += (weight - mean) * (weight - mean);
-        }
-        rms = std::sqrt(1 / (n - 1.) * rms);
+        if (pdf_weights.size() < (n * 0.8)) {
+            // Not enough weights to compute a meaningfull RMS
+            mean = 1;
+            rms = 0;
+            std::cout << "Error: not enough weights to compute PDF uncertainty." << std::endl;
+        } else {
+
+            mean /= pdf_weights.size();
+
+            // Compute standard deviation
+            for (auto weight: pdf_weights) {
+                rms += (weight - mean) * (weight - mean);
+            }
+            rms = std::sqrt(1 / (pdf_weights.size() - 1.) * rms);
 
 #ifdef DEBUG_PDF
-        std::cout << "PDF uncertainty: " << rms << " (mean value: " << mean << ")" << std::endl;
+            std::cout << "PDF uncertainty: " << rms << " (mean value: " << mean << ")" << std::endl;
 #endif
 
-        // Add alphaS uncertainty
-        if (has_alphas_uncertainty) {
-            float weight_alphas_up = lhe_info->weights()[m_pdf_weights_matching[n].second].wgt / lhe_weight_nominal_weight;
-            float weight_alphas_down = lhe_info->weights()[m_pdf_weights_matching[n + 1].second].wgt / lhe_weight_nominal_weight;
-            // 1.5 factor is needed because NNPDF30 alphaS uncertainties are
-            // +- 0.001 whereas recommendations for Run2 are +- 0.0015
-            float alphas_uncertainty = 1.5 * (weight_alphas_up - weight_alphas_down) / 2.;
+            // Add alphaS uncertainty
+            if (has_alphas_uncertainty) {
+                float weight_alphas_up = lhe_info->weights()[m_pdf_weights_matching[n].second].wgt / lhe_weight_nominal_weight;
+                float weight_alphas_down = lhe_info->weights()[m_pdf_weights_matching[n + 1].second].wgt / lhe_weight_nominal_weight;
+                // 1.5 factor is needed because NNPDF30 alphaS uncertainties are
+                // +- 0.001 whereas recommendations for Run2 are +- 0.0015
+                float alphas_uncertainty = 1.5 * (weight_alphas_up - weight_alphas_down) / 2.;
 #ifdef DEBUG_PDF
-            std::cout << "alphaS uncertainty: " << alphas_uncertainty << std::endl;
+                std::cout << "alphaS uncertainty: " << alphas_uncertainty << std::endl;
 #endif
-            rms = std::sqrt(rms * rms + alphas_uncertainty * alphas_uncertainty);
+                rms = std::sqrt(rms * rms + alphas_uncertainty * alphas_uncertainty);
+            }
         }
 
         pdf_weight = mean;
         pdf_weight_up = mean + rms;
-        pdf_weight_down = mean - rms;
+        pdf_weight_down = std::max(0.f, mean - rms); // Prevent negative weight
 
 #ifdef DEBUG_PDF
         std::cout << "Total PDF uncertainty: " << rms << std::endl;
@@ -452,6 +453,7 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
 
 end:
 
+    m_event_weight_sum += weight;
     m_event_weight_sum_pdf_nominal += weight * pdf_weight;
     m_event_weight_sum_pdf_up += weight * pdf_weight_up;
     m_event_weight_sum_pdf_down += weight * pdf_weight_down;
