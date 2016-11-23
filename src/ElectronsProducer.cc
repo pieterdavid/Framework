@@ -17,6 +17,8 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
 
     double rho = *rho_handle;
 
+    products.clear();
+
     size_t index = 0;
     for (const auto& electron: *electrons) {
         if (! pass_cut(electron)) {
@@ -32,6 +34,7 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
 
         const pat::ElectronRef electronRef(electrons, index++);
         Identifiable::produce_id(electronRef);
+        products.push_back(electronRef);
 
         isEB.push_back(electron.isEB());
         isEE.push_back(electron.isEE());

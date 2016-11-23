@@ -41,6 +41,8 @@ class ElectronsProducer: public LeptonsProducer<pat::Electron>, public Identifia
         BRANCH(ecalPFClusterIso, std::vector<float>);
         BRANCH(hcalPFClusterIso, std::vector<float>);
         BRANCH(trackIso, std::vector<float>);
+
+        std::vector<edm::Ref<std::vector<pat::Electron>>> products;
 };
 
 #endif

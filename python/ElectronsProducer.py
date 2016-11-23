@@ -13,6 +13,7 @@ default_configuration = cms.PSet(
                 'egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose',
                 'egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium',
                 'egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight',
+                'egmGsfElectronIDs:cutBasedElectronHLTPreselection-Summer16-V1'
                 ),
             scale_factors = cms.untracked.PSet(
                 id_veto = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_veto.json'),
@@ -22,8 +23,7 @@ default_configuration = cms.PSet(
 
                 gsf_tracking = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_gsfTracking.json'),
 
-                hww_wp_lt273726 = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_Tight_Run2016_lt273726_HWW.json'),
-                hww_wp_gt273726 = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_Tight_Run2016_gt273726_HWW.json'),
+                hww_wp = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_Tight_Run2016_Run273726to276811_HWW_weighted.json')
                 )
             ),
         )
