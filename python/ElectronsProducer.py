@@ -13,6 +13,7 @@ default_configuration = cms.PSet(
                 'egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose',
                 'egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium',
                 'egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight',
+                'egmGsfElectronIDs:cutBasedElectronHLTPreselection-Summer16-V1'
                 ),
             scale_factors = cms.untracked.PSet(
                 id_veto = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_veto.json'),
