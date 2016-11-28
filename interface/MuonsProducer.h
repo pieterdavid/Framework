@@ -18,26 +18,6 @@ class MuonsProducer: public LeptonsProducer<pat::Muon>, public ScaleFactors {
             LeptonsProducer(name, tree, config), ScaleFactors(const_cast<ROOT::TreeGroup&>(tree))
         {
             ScaleFactors::create_branches(config);
-            if (config.exists("applyRochester")) {
-                applyRochester = config.getUntrackedParameter<bool>("applyRochester");
-                rochesterInputFile = config.getUntrackedParameter<edm::FileInPath>("rochesterInputFile");
-            }
-            if (config.exists("applyKaMuCa")) {
-                applyKaMuCa = config.getUntrackedParameter<bool>("applyKaMuCa");
-                // The inputTagKaMuCa is decided to be either of inputTagKaMuCaData or inputTagKaMuCaMC (read from python/MuonsProducer.py) in Framework.py
-                inputTagKaMuCa = config.getUntrackedParameter<std::string>("inputTagKaMuCa");
-            }
-            if (applyRochester || applyKaMuCa) {
-                if (applyRochester && applyKaMuCa) {
-                    throw edm::Exception(edm::errors::Configuration, "Trying to apply two different muon momentum corrections");
-                } else if (applyRochester) {
-                    std::cout << "  -> applying rochester muon momentum corrections, with input file " << rochesterInputFile.fullPath() << std::endl;
-                    rmcor.reset(new rochcor2016(rochesterInputFile.fullPath()));
-                } else if (applyKaMuCa) {
-                    std::cout << "  -> applying Kalman muon calibrator (KaMuCa), with input tag: " << inputTagKaMuCa << std::endl;
-                    kamucacor.reset(new KalmanMuonCalibrator(inputTagKaMuCa));
-                }
-            }
         }
 
         virtual ~MuonsProducer() {}
@@ -53,10 +33,6 @@ class MuonsProducer: public LeptonsProducer<pat::Muon>, public ScaleFactors {
     private:
         // Tokens
         edm::EDGetTokenT<std::vector<reco::Vertex>> m_vertices_token;
-        bool applyRochester = false ;
-        edm::FileInPath rochesterInputFile;
-        bool applyKaMuCa = false ;
-        std::string inputTagKaMuCa = "";
     public:
         // Tree members
         std::vector<bool>& isLoose = tree["isLoose"].write<std::vector<bool>>();
@@ -68,9 +44,6 @@ class MuonsProducer: public LeptonsProducer<pat::Muon>, public ScaleFactors {
         BRANCH(dxy, std::vector<float>);
         BRANCH(dz, std::vector<float>);
         BRANCH(dca, std::vector<float>);
-        std::unique_ptr<rochcor2016> rmcor;
-        std::unique_ptr<KalmanMuonCalibrator> kamucacor;
-        BRANCH(scale_correction_factor, std::vector<float>);
 };
 
 #endif

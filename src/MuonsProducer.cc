@@ -18,30 +18,6 @@ void MuonsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup
     double rho = *rho_handle;
 
     for (auto muon: *muons) {
-        float scale_correction_factor_ = 1.0;
-        if(applyRochester){
-            scale_correction_factor_ /= muon.pt();
-            float qter = 1.0;
-            TLorentzVector TLmu(muon.px(), muon.py(), muon.pz(), muon.energy());
-            if (event.isRealData()) {
-                rmcor->momcor_data(TLmu, muon.charge(), 0, qter);
-            } else {
-                int ntrk = 0;
-                if (!muon.innerTrack().isNull()) {
-                    ntrk = muon.innerTrack()->hitPattern().trackerLayersWithMeasurement();
-                }
-                rmcor->momcor_mc(TLmu, muon.charge(), ntrk, qter);
-            }
-            muon.setP4(math::XYZTLorentzVector(TLmu.Px(), TLmu.Py(), TLmu.Pz(), TLmu.E()));
-            scale_correction_factor_ *= muon.pt();
-        }
-        if (applyKaMuCa) {
-            scale_correction_factor_ /= muon.pt();
-            muon.setP4(muon.p4() * kamucacor->getCorrectedPt(muon.pt(), muon.eta(), muon.phi(), muon.charge()) / muon.pt());
-            if (!event.isRealData())
-                muon.setP4(muon.p4() * kamucacor->smear(muon.pt(), muon.eta()) / muon.pt());
-            scale_correction_factor_ *= muon.pt();
-        }
         if (! pass_cut(muon))
             continue;
         fill_candidate(muon, muon.genParticle());
@@ -62,7 +38,6 @@ void MuonsProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup
         dxy.push_back(muon.muonBestTrack()->dxy(primary_vertex.position()));
         dz.push_back(muon.muonBestTrack()->dz(primary_vertex.position()));
         dca.push_back(muon.dB(pat::Muon::PV3D)/muon.edB(pat::Muon::PV3D));
-        scale_correction_factor.push_back(scale_correction_factor_);
 
         Parameters p {{BinningVariable::Eta, muon.eta()}, {BinningVariable::Pt, muon.pt()}};
         ScaleFactors::store_scale_factors(p, event.isRealData());

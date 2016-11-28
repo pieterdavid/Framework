@@ -21,6 +21,10 @@ class Framework(object):
         self.__miniaod_fat_jet_collection = 'slimmedJetsAK8'
         self.__miniaod_gen_jet_collection = 'slimmedGenJets'
         self.__miniaod_met_collection = 'slimmedMETs'
+        self.__miniaod_muon_collection = 'slimmedMuons'
+
+        self.__kamuca_tag = 'DATA_80X_13TeV' if isData else 'MC_80X_13TeV'
+        self.__rochester_input = 'cp3_llbb/Framework/data/RoccoR_13tev.txt'
 
         self.hltProcessName = kwargs['hltProcessName'] if 'hltProcessName' in kwargs else 'HLT'
         self.isData = isData
@@ -361,6 +365,50 @@ class Framework(object):
 
         self.__jer_done = True
 
+    def applyMuonCorrection(self, type):
+        """
+        Apply correction to muon
+
+        Parameters:
+            type: either "rochester" or "kamuca". Define the type of correction to apply
+        """
+
+        supported = ['kamuca', 'rochester']
+
+        if not type in supported:
+            raise Exception("Unsupported muon correction. Can only be one of %s" % supported)
+
+        self.ensureNotCreated()
+
+        if self.verbose:
+            print("")
+            print("Applying %s correction to muons..." % type.capitalize())
+
+        if type == "kamuca":
+            self.process.slimmedMuonsCorrected = cms.EDProducer('KaMuCaCorrectedPATMuonProducer',
+                        src = cms.InputTag(self.__miniaod_muon_collection),
+                        enabled = cms.bool(True),
+                        tag = cms.string(self.__kamuca_tag)
+                    )
+        elif type == "rochester":
+            self.process.slimmedMuonsCorrected = cms.EDProducer('RochesterCorrectedPATMuonProducer',
+                        src = cms.InputTag(self.__miniaod_muon_collection),
+                        enabled = cms.bool(True),
+                        input = cms.FileInPath(self.__rochester_input)
+                    )
+
+        # Look for producers using the default muon input
+        for producer in self.producers:
+            p = getattr(self.process.framework.producers, producer)
+            change_input_tags_and_strings(p, self.__miniaod_muon_collection, 'slimmedMuonsCorrected', 'producers.' + producer, '    ')
+
+        self.__miniaod_muon_collection = 'slimmedMuonsCorrected'
+
+        if self.verbose:
+            print("New muons collection: %r" % (self.__miniaod_muon_collection))
+
+        self.__muon_correction_done = True
+
     def doSystematics(self, systematics, **kwargs):
         """
         Enable systematics
@@ -464,9 +512,7 @@ class Framework(object):
 
         if not self.isData:
             self.addProducer('gen_particles', copy.deepcopy(GenParticlesProducer.default_configuration), 0)
-            self.getProducer('muons').parameters.inputTagKaMuCa = self.getProducer('muons').parameters.inputTagKaMuCaMC
         else:
             # MET Filters
             from cp3_llbb.Framework import METFilter
             self.process.framework.filters.met = copy.deepcopy(METFilter.default_configuration)
-            self.getProducer('muons').parameters.inputTagKaMuCa = self.getProducer('muons').parameters.inputTagKaMuCaData
