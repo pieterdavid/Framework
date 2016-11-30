@@ -38,6 +38,7 @@ framework.removeProducer('fat_jets')
 
 #framework.redoJEC()
 framework.smearJets()
+# framework.applyMuonCorrection("kamuca")
 
 #framework.doSystematics(['jec', 'jer'])
 
