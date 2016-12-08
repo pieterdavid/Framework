@@ -22,7 +22,8 @@ enum class Algorithm {
     UNKNOWN = -1,
     CSV = 0,
     CSVv2,
-    JP
+    JP,
+    cMVAv2
 };
 
 enum class Flavor {
@@ -80,6 +81,9 @@ class BTaggingScaleFactors {
                 case Algorithm::JP:
                     return "jp";
 
+                case Algorithm::cMVAv2:
+                    return "cmvav2";
+
                 default:
                     return "unknown";
             }
@@ -94,6 +98,9 @@ class BTaggingScaleFactors {
 
             if ((algo == "jp") || (algo == "pfJetProbabilityBJetTags"))
                 return Algorithm::JP;
+
+            if ((algo == "cmvav2") || (algo == "pfCombinedMVAV2BJetTags"))
+                return Algorithm::cMVAv2;
 
             return Algorithm::UNKNOWN;
         }
