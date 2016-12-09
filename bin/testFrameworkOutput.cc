@@ -116,25 +116,25 @@ TEST_CASE("Check if trees are equals", "[diff]") {
 
     size_t n_branches = ref_tree->GetNbranches();
     if ((size_t) test_tree->GetNbranches() != n_branches) {
-        std::vector<std::string> ref_branches;
+        std::set<std::string> ref_branches;
         TObjArray* branches = ref_tree->GetListOfBranches();
         TIter next(branches);
         TBranch* branch;
         while ((branch = (TBranch*) next())) {
-            ref_branches.push_back(branch->GetName());
+            ref_branches.emplace(branch->GetName());
         }
 
-        std::vector<std::string> test_branches;
+        std::set<std::string> test_branches;
         branches = test_tree->GetListOfBranches();
         next = TIter(branches);
         while ((branch = (TBranch*) next())) {
-            test_branches.push_back(branch->GetName());
+            test_branches.emplace(branch->GetName());
         }
 
-        std::vector<std::string> diff;
+        std::set<std::string> diff;
         std::set_difference(ref_branches.begin(), ref_branches.end(),
                 test_branches.begin(), test_branches.end(),
-                std::back_inserter(diff));
+                std::inserter(diff, diff.begin()));
 
         std::cout << "Branches found in reference tree but not in output tree:" << std::endl;
         for (const auto& b: diff) {
@@ -144,7 +144,7 @@ TEST_CASE("Check if trees are equals", "[diff]") {
         diff.clear();
         std::set_difference(test_branches.begin(), test_branches.end(),
                 ref_branches.begin(), ref_branches.end(),
-                std::back_inserter(diff));
+                std::inserter(diff, diff.begin()));
 
         std::cout << std::endl << "Branches found in output tree but not in the reference tree:" << std::endl;
         for (const auto& b: diff) {
