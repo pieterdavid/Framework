@@ -13,6 +13,14 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
     edm::Handle<std::vector<reco::Vertex>> vertices_handle;
     event.getByToken(m_vertices_token, vertices_handle);
 
+    edm::Handle<edm::ValueMap<float>> mva_id_values_handle;
+    edm::Handle<edm::ValueMap<int>> mva_id_categories_handle;
+
+    if (! m_mva_id_values_map_token.isUninitialized()) {
+        event.getByToken(m_mva_id_values_map_token, mva_id_values_handle);
+        event.getByToken(m_mva_id_categories_map_token, mva_id_categories_handle);
+    }
+
     const reco::Vertex& primary_vertex = (*vertices_handle)[0];
 
     double rho = *rho_handle;
@@ -48,6 +56,12 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
         ecalPFClusterIso.push_back(electron.ecalPFClusterIso());
         hcalPFClusterIso.push_back(electron.hcalPFClusterIso());
         trackIso.push_back(electron.trackIso());
+
+        // MVA id
+        if (! m_mva_id_values_map_token.isUninitialized()) {
+            mva_id_values.push_back((*mva_id_values_handle)[electronRef]);
+            mva_id_categories.push_back((*mva_id_categories_handle)[electronRef]);
+        }
 
         Parameters p {{BinningVariable::Eta, electron.eta()}, {BinningVariable::Pt, electron.pt()}};
         ScaleFactors::store_scale_factors(p, event.isRealData());
