@@ -30,15 +30,22 @@ git clone -b CMSSW_8_0_6p -o upstream git@github.com:cp3-llbb/Framework.git cp3_
 
 # Stuff not yet in central CMSSW:
 # 8010+ electron ID WPs
-git cms-merge-topic ikrav:egm_id_80X_v1
+git cms-merge-topic ikrav:egm_id_80X_v2
 # KalmanMuonCalibrator
 git clone -o upstream https://github.com/bachtis/analysis.git -b KaMuCa_V4 KaMuCa 
 pushd KaMuCa
 git checkout 2ad38daae37a41a9c07f482e95f2455e3eb915b0
 popd
 
-
 scram b -j 4
+
+# Add the area containing the MVA weights (from cms-data, to appear in “external”).
+# Note: the “external” area appears after “scram build” is run at least once, as above
+cd ${CMSSW_BASE}/external/${SCRAM_ARCH}
+git clone https://github.com/ikrav/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data
+cd data/RecoEgamma/ElectronIdentification/data
+git checkout egm_id_80X_v1
+cd ${CMSSW_BASE}/src
 
 cd ${CMSSW_BASE}/src/cp3_llbb/Framework
 source first_setup.sh
