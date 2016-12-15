@@ -22,6 +22,7 @@ class Framework(object):
         self.__miniaod_gen_jet_collection = 'slimmedGenJets'
         self.__miniaod_met_collection = 'slimmedMETs'
         self.__miniaod_muon_collection = 'slimmedMuons'
+        self.__miniaod_electron_collection = 'slimmedElectrons'
 
         self.__kamuca_tag = 'DATA_80X_13TeV' if isData else 'MC_80X_13TeV'
         self.__rochester_input = 'cp3_llbb/Framework/data/RoccoR_13tev.txt'
@@ -84,7 +85,6 @@ class Framework(object):
         process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
         process.source = cms.Source("PoolSource")
 
-        self.configureElectronId_()
         self.configureFramework_()
 
     def create(self):
@@ -94,6 +94,8 @@ class Framework(object):
 
         if self.__created:
             return self.process
+
+        self.configureElectronId_()
 
         # Change process name if needed
         if self.processName is not None and self.processName != 'PAT':
@@ -409,6 +411,35 @@ class Framework(object):
 
         self.__muon_correction_done = True
 
+    def applyElectronRegression(self):
+        """
+        Apply electron regression from
+            https://twiki.cern.ch/twiki/bin/view/CMS/EGMRegression
+        """
+
+        self.ensureNotCreated()
+
+        if self.verbose:
+            print("")
+            print("Applying electron regression...")
+
+        self.process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
+
+        # Rename the collection
+        self.process.slimmedElectronsWithRegression = self.process.regressionElectrons.clone()
+
+        # Look for producers using the default electron input
+        for producer in self.producers:
+            p = getattr(self.process.framework.producers, producer)
+            change_input_tags_and_strings(p, self.__miniaod_electron_collection, 'slimmedElectronsWithRegression', 'producers.' + producer, '    ')
+
+        self.__miniaod_electron_collection = 'slimmedElectronsWithRegression'
+
+        if self.verbose:
+            print("New electrons collection: %r" % (self.__miniaod_electron_collection))
+
+        self.__electron_regression_done = True
+
     def doSystematics(self, systematics, **kwargs):
         """
         Enable systematics
@@ -467,6 +498,9 @@ class Framework(object):
             from PhysicsTools.SelectorUtils.tools.vid_id_tools import DataFormat, switchOnVIDElectronIdProducer, setupAllVIDIdsInModule, setupVIDElectronSelection
             switchOnVIDElectronIdProducer(self.process, DataFormat.MiniAOD)
 
+            # Use in input our own electorn collection
+            self.process.egmGsfElectronIDs.physicsObjectSrc = self.__miniaod_electron_collection
+
             id_modules = [
                     'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff',
                     'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronHLTPreselecition_Summer16_V1_cff',
@@ -475,6 +509,8 @@ class Framework(object):
 
             for mod in id_modules:
                 setupAllVIDIdsInModule(self.process, mod, setupVIDElectronSelection)
+
+            self.process.electronMVAValueMapProducer.srcMiniAOD = self.__miniaod_electron_collection
 
     def configureFramework_(self):
 

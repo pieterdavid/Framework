@@ -37,6 +37,9 @@ pushd KaMuCa
 git checkout 2ad38daae37a41a9c07f482e95f2455e3eb915b0
 popd
 
+# Electron regression
+git cms-merge-topic rafaellopesdesa:Regression80XEgammaAnalysis
+
 scram b -j 4
 
 # Add the area containing the MVA weights (from cms-data, to appear in “external”).
