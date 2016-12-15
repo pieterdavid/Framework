@@ -4,7 +4,7 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 from cp3_llbb.Framework import Framework
 
-framework = Framework.Framework(True, eras.Run2_25ns, globalTag='80X_dataRun2_Prompt_ICHEP16JEC_v0', processName='RECO')
+framework = Framework.Framework(True, eras.Run2_25ns, globalTag='80X_dataRun2_2016SeptRepro_v6', processName='RECO')
 
 framework.addAnalyzer('dilepton', cms.PSet(
         type = cms.string('dilepton_analyzer'),
@@ -26,12 +26,15 @@ framework.addAnalyzer('test', cms.PSet(
         enable = cms.bool(True)
         ))
 
+framework.applyElectronRegression()
+
 framework.doSystematics(['jec', 'jer'])
     
 process = framework.create()
 
 process.source.fileNames = cms.untracked.vstring(
-        '/store/data/Run2016B/DoubleMuon/MINIAOD/PromptReco-v2/000/273/158/00000/A6AC80E5-121A-E611-A689-02163E01439E.root'
+        '/store/data/Run2016H/DoubleEG/MINIAOD/PromptReco-v3/000/284/036/00000/1878DF24-619F-E611-A962-02163E0146C8.root'
+        # '/store/data/Run2016B/DoubleMuon/MINIAOD/PromptReco-v2/000/273/158/00000/A6AC80E5-121A-E611-A689-02163E01439E.root'
         )
 
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(100))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))
