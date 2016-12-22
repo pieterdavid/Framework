@@ -41,7 +41,7 @@ with open(args.pkl) as f:
 
     for wp, wp_data in d.items():
 
-        if not 'pt_spliteta' in wp:
+        if not 'pt_eta' in wp:
             continue
 
         if not 'abseta_pt_ratio' in wp_data:
