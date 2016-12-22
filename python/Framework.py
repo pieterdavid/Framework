@@ -26,6 +26,10 @@ class Framework(object):
         self.__miniaod_muon_collection = 'slimmedMuons'
         self.__miniaod_electron_collection = 'slimmedElectrons'
 
+        self.__electron_regression_done = False
+        self.__electron_smearing_done = False
+        self.__muon_correction_done = False
+
         self.__kamuca_tag = 'DATA_80X_13TeV' if isData else 'MC_80X_13TeV'
         self.__rochester_input = 'cp3_llbb/Framework/data/RoccoR_13tev.txt'
 
@@ -446,6 +450,56 @@ class Framework(object):
             print("New electrons collection: %r" % (self.__miniaod_electron_collection))
 
         self.__electron_regression_done = True
+
+    def applyElectronSmearing(self):
+        """
+        Apply electron smearing from
+            https://twiki.cern.ch/twiki/bin/view/CMS/EGMSmearer
+        """
+
+        self.ensureNotCreated()
+
+        if self.verbose:
+            print("")
+            print("Applying electron smearing...")
+
+        if not self.__electron_regression_done:
+            print("Warning: electron regression is not applied. You probably want to call `applyElectronRegression()` before calling `applyElectronSmearing`")
+
+        from EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi import calibratedPatElectrons, files
+
+        # FIXME: Add a preselection on electron to prevent a crash in the producer
+        # Remove when it's no longer needed (see twiki)
+        self.process.selectedElectrons = cms.EDFilter("PATElectronSelector",
+                src = cms.InputTag(self.__miniaod_electron_collection),
+                cut = cms.string("pt > 5 && abs(eta) < 2.5")
+                )
+
+        self.process.slimmedElectronsSmeared = calibratedPatElectrons.clone(
+                electrons = "selectedElectrons",
+                isMC = not self.isData,
+                correctionFile = files['Moriond2017_JEC']
+                )
+
+        self.process.load('Configuration.StandardSequences.Services_cff')
+        self.process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
+                slimmedElectronsSmeared = cms.PSet(
+                    initialSeed = cms.untracked.uint32(42),
+                    engineName = cms.untracked.string('TRandom3')
+                    )
+                )
+
+        # Look for producers using the default electron input
+        for producer in self.producers:
+            p = getattr(self.process.framework.producers, producer)
+            change_input_tags_and_strings(p, self.__miniaod_electron_collection, 'slimmedElectronsSmeared', 'producers.' + producer, '    ')
+
+        self.__miniaod_electron_collection = 'slimmedElectronsSmeared'
+
+        if self.verbose:
+            print("New electrons collection: %r" % (self.__miniaod_electron_collection))
+
+        self.__electron_smearing_done = True
 
     def doSystematics(self, systematics, **kwargs):
         """

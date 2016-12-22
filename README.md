@@ -37,12 +37,19 @@ pushd KaMuCa
 git checkout 2ad38daae37a41a9c07f482e95f2455e3eb915b0
 popd
 
+# Fake-muon filter
+git cms-merge-topic gpetruc:badMuonFilters_80X_v2
+
+# Electron smearing
+git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
+
 # Electron regression
 # https://twiki.cern.ch/twiki/bin/view/CMS/EGMRegression
 git cms-merge-topic rafaellopesdesa:Regression80XEgammaAnalysis_v2
 
-# Fake-muon filter
-git cms-merge-topic gpetruc:badMuonFilters_80X_v2
+pushd EgammaAnalysis/ElectronTools/data
+git clone https://github.com/ECALELFS/ScalesSmearings.git
+popd
 
 scram b -j 4
 
@@ -52,7 +59,9 @@ cd ${CMSSW_BASE}/external/${SCRAM_ARCH}
 git clone https://github.com/ikrav/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data
 cd data/RecoEgamma/ElectronIdentification/data
 git checkout egm_id_80X_v1
-cd ${CMSSW_BASE}/src
+
+cd ${CMSSW_BASE}/src/EgammaAnalysis/ElectronTools/data
+git clone https://github.com/ECALELFS/ScalesSmearings.git
 
 cd ${CMSSW_BASE}/src/cp3_llbb/Framework
 source first_setup.sh
