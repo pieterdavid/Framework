@@ -22,11 +22,18 @@ def format_pt_bin(bin):
     return 'pt:[%.1f,%.1f]' % (bin[0], bin[1])
 
 def clean_wp(wp):
-    """ Assume format NUM_<WP>_DEN_A_PAR_B """
+    """ 
+    Assume format 
+        NUM_<WP>_DEN_A_PAR_B
+    or
+        <WP>_A_B
+    """
 
     r = re.search(r'NUM_(.*)_DEN_(.*)_PAR', wp)
     if not r:
-        raise RuntimeError('Failed to extract WP info from %r' % wp)
+        r = re.search(r'([^_]*)_([^_]*)_.*', wp)
+        if not r:
+            raise RuntimeError('Failed to extract WP info from %r' % wp)
 
     return "%s_%s" % (r.group(1), r.group(2))
 
@@ -41,7 +48,7 @@ with open(args.pkl) as f:
 
     for wp, wp_data in d.items():
 
-        if not 'pt_spliteta' in wp:
+        if not 'pt_eta' in wp:
             continue
 
         if not 'abseta_pt_ratio' in wp_data:
