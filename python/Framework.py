@@ -542,11 +542,6 @@ class Framework(object):
         self.addProducer('electrons', copy.deepcopy(ElectronsProducer.default_configuration))
         self.addProducer('vertices', copy.deepcopy(VerticesProducer.default_configuration))
 
-        if self.era == eras.Run2_25ns:
-            self.process.framework.producers.electrons.parameters.ea_R03 = cms.untracked.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt')
-        else:
-            self.process.framework.producers.electrons.parameters.ea_R03 = cms.untracked.FileInPath('RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_50ns.txt')
-
         if not self.isData:
             self.addProducer('gen_particles', copy.deepcopy(GenParticlesProducer.default_configuration), 0)
         else:
