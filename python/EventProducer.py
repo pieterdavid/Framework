@@ -7,7 +7,7 @@ default_configuration = cms.PSet(
         parameters = cms.PSet(
             pu_summary = cms.untracked.InputTag('slimmedAddPileupInfo'),
             compute_pu_weights = cms.untracked.bool(True),
-            pu_profile = cms.untracked.string("Spring16_25ns"),
+            pu_profile = cms.untracked.string("Moriond17_25ns"),
             pu_reweighter = cms.PSet(
                     data_pu_profile = cms.untracked.FileInPath('cp3_llbb/Framework/data/PUProfiles/pu_histogram_2016_271036-284044_ReReco_69200minbias.root'),
                 ),
