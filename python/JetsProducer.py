@@ -62,6 +62,60 @@ default_configuration = cms.PSet(
                             file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_tight_lightjets_incl_CSVv2.json'),
                             ),
                         )
+                    ),
+                cmvav2_loose = cms.untracked.PSet(
+                    algorithm = cms.untracked.string('cmvav2'),
+                    working_point = cms.untracked.string('loose'),
+                    files = cms.untracked.VPSet(
+                        cms.untracked.PSet(
+                            flavor = cms.untracked.string('bjets'),
+                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_loose_bjets_ttbar_cmvav2.json'),
+                            ),
+                        cms.untracked.PSet(
+                            flavor = cms.untracked.string('cjets'),
+                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_loose_cjets_ttbar_cmvav2.json'),
+                            ),
+                        cms.untracked.PSet(
+                            flavor = cms.untracked.string('lightjets'),
+                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_loose_lightjets_incl_cmvav2.json'),
+                            ),
+                        )
+                    ),
+                cmvav2_medium = cms.untracked.PSet(
+                    algorithm = cms.untracked.string('cmvav2'),
+                    working_point = cms.untracked.string('medium'),
+                    files = cms.untracked.VPSet(
+                        cms.untracked.PSet(
+                            flavor = cms.untracked.string('bjets'),
+                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_medium_bjets_ttbar_cmvav2.json'),
+                            ),
+                        cms.untracked.PSet(
+                            flavor = cms.untracked.string('cjets'),
+                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_medium_cjets_ttbar_cmvav2.json'),
+                            ),
+                        cms.untracked.PSet(
+                            flavor = cms.untracked.string('lightjets'),
+                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_medium_lightjets_incl_cmvav2.json'),
+                            ),
+                        )
+                    ),
+                cmvav2_tight = cms.untracked.PSet(
+                    algorithm = cms.untracked.string('cmvav2'),
+                    working_point = cms.untracked.string('tight'),
+                    files = cms.untracked.VPSet(
+                        cms.untracked.PSet(
+                            flavor = cms.untracked.string('bjets'),
+                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_tight_bjets_ttbar_cmvav2.json'),
+                            ),
+                        cms.untracked.PSet(
+                            flavor = cms.untracked.string('cjets'),
+                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_tight_cjets_ttbar_cmvav2.json'),
+                            ),
+                        cms.untracked.PSet(
+                            flavor = cms.untracked.string('lightjets'),
+                            file = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/BTagging_tight_lightjets_incl_cmvav2.json'),
+                            ),
+                        )
                     )
                 ),
                 computeRegression = cms.untracked.bool(False),
