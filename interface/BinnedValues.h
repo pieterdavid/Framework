@@ -229,6 +229,10 @@ class BinnedValues {
 
             std::vector<std::shared_ptr<TFormula>> formulas = get<std::shared_ptr<TFormula>>(*formula.get(), variables, outOfRange);
             std::vector<float> values;
+
+            // Ensure variables are not outside the validity range
+            variables = formula->clamp(variables);
+
             for (auto& formula: formulas) {
                 values.push_back(formula->Eval(variables[formula_variable_index]));
             }

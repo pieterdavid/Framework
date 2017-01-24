@@ -10,6 +10,7 @@ class Histogram {
         virtual std::size_t findBin(const std::vector<_Bin>& values) = 0;
         virtual std::size_t findClosestBin(const std::vector<_Bin>& values, bool* outOfRange = nullptr) = 0;
         virtual bool inRange(const std::vector<_Bin>& values) = 0;
+        virtual std::vector<_Bin> clamp(const std::vector<_Bin>& values) = 0;
 
         T getBinContent(std::size_t bin) {
             return m_values[bin - 1];
@@ -85,6 +86,19 @@ class Histogram {
             return ((value >= min) && (value < max));
         }
 
+        static _Bin clamp(const std::vector<_Bin>& array, _Bin value) {
+            _Bin min = array.front();
+            _Bin max = array.back();
+
+            if (value < min)
+                return min;
+
+            if (value > max)
+                return max;
+
+            return value;
+        }
+
         std::size_t m_size;
         std::unique_ptr<T[]> m_values;
         std::unique_ptr<T[]> m_errors_low;
@@ -128,6 +142,15 @@ class OneDimensionHistogram: public Histogram<T, _Bin> {
 
             _Bin value = values.front();
             return Histogram<T, _Bin>::inRange(m_bins, value);
+        }
+
+        virtual std::vector<_Bin> clamp(const std::vector<_Bin>& values) override {
+            if (values.size() != 1) {
+                return values;
+            }
+
+            _Bin value = values.front();
+            return {Histogram<T, _Bin>::clamp(m_bins, value)};
         }
 
     private:
@@ -201,6 +224,17 @@ class TwoDimensionsHistogram: public Histogram<T, _Bin> {
             _Bin value_y = values[1];
 
             return Histogram<T, _Bin>::inRange(m_bins_x, value_x) && Histogram<T, _Bin>::inRange(m_bins_y, value_y);
+        }
+
+        virtual std::vector<_Bin> clamp(const std::vector<_Bin>& values) override {
+            if (values.size() != 2) {
+                return values;
+            }
+
+            _Bin value_x = values.front();
+            _Bin value_y = values[1];
+
+            return {Histogram<T, _Bin>::clamp(m_bins_x, value_x), Histogram<T, _Bin>::clamp(m_bins_y, value_y)};
         }
 
     private:
@@ -287,6 +321,18 @@ class ThreeDimensionsHistogram: public Histogram<T, _Bin> {
             _Bin value_z = values[2];
 
             return Histogram<T, _Bin>::inRange(m_bins_x, value_x) && Histogram<T, _Bin>::inRange(m_bins_y, value_y) && Histogram<T, _Bin>::inRange(m_bins_z, value_z);
+        }
+
+        virtual std::vector<_Bin> clamp(const std::vector<_Bin>& values) override {
+            if (values.size() != 3) {
+                return values;
+            }
+
+            _Bin value_x = values[0];
+            _Bin value_y = values[1];
+            _Bin value_z = values[2];
+
+            return {Histogram<T, _Bin>::clamp(m_bins_x, value_x), Histogram<T, _Bin>::clamp(m_bins_y, value_y), Histogram<T, _Bin>::clamp(m_bins_z, value_z)};
         }
 
     private:
