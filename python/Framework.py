@@ -1,6 +1,8 @@
 import copy
 
 import FWCore.ParameterSet.Config as cms
+from FWCore.ParameterSet.SequenceTypes import _SequenceCollection
+
 from Configuration.StandardSequences.Eras import eras
 
 from cp3_llbb.Framework.Tools import change_process_name, change_input_tags_and_strings, StdStreamSilenter
@@ -61,8 +63,12 @@ class Framework(object):
         self.process = process
         self.path = cms.Path()
 
+        # Workaround a bug in cms.Path.insert, where _seq is None and no check is done to create it
+        if self.path._seq is None:
+            self.path.__dict__["_seq"] = _SequenceCollection()
+
         process.options = cms.untracked.PSet(
-                wantSummary = cms.untracked.bool(False),
+                wantSummary = cms.untracked.bool(True),
                 allowUnscheduled = cms.untracked.bool(True)
                 )
 
@@ -86,6 +92,7 @@ class Framework(object):
         process.source = cms.Source("PoolSource")
 
         self.configureFramework_()
+        self.addFakeMuonFilter()
 
     def create(self):
         """
@@ -426,7 +433,7 @@ class Framework(object):
         self.process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
 
         # Rename the collection
-        self.process.slimmedElectronsWithRegression = self.process.regressionElectrons.clone()
+        self.process.slimmedElectronsWithRegression = self.process.slimmedElectrons.clone()
 
         # Look for producers using the default electron input
         for producer in self.producers:
@@ -548,3 +555,14 @@ class Framework(object):
             # MET Filters
             from cp3_llbb.Framework import METFilter
             self.process.framework.filters.met = copy.deepcopy(METFilter.default_configuration)
+
+    def addFakeMuonFilter(self):
+        if not self.isData:
+            return
+
+        self.process.load('RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff')
+
+        self.process.badGlobalMuonTagger.verbose = cms.untracked.bool(False)
+        self.process.cloneGlobalMuonTagger.verbose = cms.untracked.bool(False)
+
+        self.path.insert(0, self.process.noBadGlobalMuons)
