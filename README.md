@@ -9,7 +9,7 @@ Common framework for all cp3-llbb analyses
 
 ## CMSSW release
 
-**CMSSW 8.0.24 patch 1**
+**CMSSW 8.0.25**
 
 ## First time setup instructions
 
@@ -18,8 +18,8 @@ source /nfs/soft/grid/ui_sl6/setup/grid-env.sh
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 
 export SCRAM_ARCH=slc6_amd64_gcc530
-cmsrel CMSSW_8_0_24_patch1
-cd CMSSW_8_0_24_patch1/src
+cmsrel CMSSW_8_0_25
+cd CMSSW_8_0_25/src
 cmsenv
 
 git cms-init
@@ -39,6 +39,9 @@ popd
 
 # Electron regression
 git cms-merge-topic rafaellopesdesa:Regression80XEgammaAnalysis
+
+# Fake-muon filter
+git cms-merge-topic gpetruc:badMuonFilters_80X_v2
 
 scram b -j 4
 
