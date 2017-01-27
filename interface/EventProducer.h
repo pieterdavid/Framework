@@ -12,7 +12,10 @@
 #include <map>
 
 // Uncomment to debug PDF uncertainties
-// #define DEBUG_PDF
+//#define DEBUG_PDF
+ 
+// Uncomment to debug PDF uncertainties (reduced output)
+//#define DEBUG_PDF_LIGHT
 
 // If uncommented, LHE weights for LO samples will be read from the LHE file, otherwise, they will be computed directly using LHAPDF.
 #define USE_LHE_WEIGHTS_FOR_LO
