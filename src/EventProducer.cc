@@ -12,7 +12,7 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
 
     int32_t pdf_set_ = lheRunProduct->heprup().PDFSUP.first;
     if (pdf_set_ < 0) {
-#ifdef DEBUG_PDF
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
         std::cout << "PDF set not stored inside LHERunInfoProduct. Parsing LHE headers." << std::endl;
 #endif
         // Powheg sample. Find the PDF set in the headers
@@ -21,7 +21,7 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
         static std::regex pdfset_regex(R"(lhans1\s+(\d+))");
         for (auto it = lheRunProduct->headers_begin(); it != lheRunProduct->headers_end(); ++it) {
             for (auto& line: it->lines()) {
-#ifdef DEBUG_PDF
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
                 std::cout << line;
 #endif
                 std::smatch results;
@@ -40,7 +40,7 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
     pdf_set = (uint32_t) pdf_set_;
     std::string pdf_set_str;
 
-#ifdef DEBUG_PDF
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
     std::cout << "PDF set: " << pdf_set_ << std::endl;
 #endif
 
@@ -81,7 +81,7 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
         size_t current_scale_variation_index = 0;
 
         for (auto& line: it->lines()) {
-#ifdef DEBUG_PDF
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
             std::cout << line;
 #endif
             std::smatch results;
@@ -90,7 +90,7 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
                 if (std::regex_search(line, results, weightgroup_regex)) {
                     in_group = true;
                     current_group_type = results[1].str();
-#ifdef DEBUG_PDF
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
                     std::cout << "New group: " << current_group_type << std::endl;
 #endif
                 }
@@ -101,7 +101,7 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
             if (line.find("</weightgroup>") != std::string::npos) {
                 in_group = false;
                 current_group_type = "";
-#ifdef DEBUG_PDF
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
                     std::cout << "End of current group" << std::endl;
 #endif
                 continue;
@@ -127,7 +127,7 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
 
             uint32_t id = std::stoi(results[1].str());
 
-#ifdef DEBUG_PDF
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
             std::cout << "Extracted id: " << id << std::endl;
 #endif
 
@@ -184,7 +184,7 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
 #endif
         }
 
-#ifdef DEBUG_PDF
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
         std::cout << "Relation table between CMSSW IDs and index" << std::endl;
         std::cout << "CMSSW ID -> index" << std::endl;
         for (const auto& m: m_pdf_weights_matching) {
@@ -210,7 +210,7 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
     // These PDF set do not have alpha_s variation
     if ((pdf_set != 263000) && (pdf_set != 263400)) {
         has_alphas_uncertainty = true;
-#ifdef DEBUG_PDF
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
         std::cout << "This PDF set has alphaS variation" << std::endl;
 #endif
     }
@@ -310,6 +310,21 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
             goto end;
         }
 
+        auto weight_is_valid = [](double weight) {
+            if (std::isnan(weight) || std::isinf(weight))
+                return false;
+
+            // On some samples, weights coming from the LHE are crazy (either small or 0, or very large) like ZZTo2L2Nu
+            // Example:
+            // Computed weight #76 = 0 (raw LHE weight: 1.99712e-62)
+            // Computed weight #77 = inf (raw LHE weight: 3.63487e+228)
+            // Protect against those pathological weight by fixing a hard limit on how big or small the weight can be
+            if ((weight < 0.01) || (weight > 100))
+                return false;
+
+            return true;
+        };
+
         if (isLO && !scalup_decision_taken) {
             scalup_decision_taken = true;
 
@@ -317,7 +332,7 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
             if (!m_pdf_weights_matching.empty()) {
                 for (auto& w: m_pdf_weights_matching) {
                     float weight = lhe_info->weights()[w.second].wgt / lhe_originalXWGTUP;
-                    if (weight > 100) {
+                    if (!weight_is_valid(weight)) {
                         use_scalup_for_lo_weights = true;
                         break;
                     }
@@ -339,7 +354,7 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         // Scale variations
         for (auto& m: m_scale_variations_matching) {
             float weight = lhe_info->weights()[m.second].wgt / lhe_weight_nominal_weight;
-            if (std::isnan(weight)) {
+            if (!weight_is_valid(weight)) {
 #ifdef DEBUG_PDF
                 std::cout << "Corrupted scale weight #" << scale_weights.size() << std::endl;
 #endif
@@ -399,7 +414,10 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
 #ifdef DEBUG_PDF
                 std::cout << "Computed weight #" << i + 1 << " = " << weight << " (raw LHE weight: " << lhe_info->weights()[m_pdf_weights_matching[i].second].wgt << ")" << std::endl;
 #endif
-                if (std::isnan(weight)) {
+                if (!weight_is_valid(weight)) {
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
+                    std::cout << "PDF weight #" << i + 1 << " is not valid, skipping." << std::endl;
+#endif
                     continue;
                 }
 
@@ -432,9 +450,13 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
             if (has_alphas_uncertainty) {
                 float weight_alphas_up = lhe_info->weights()[m_pdf_weights_matching[n].second].wgt / lhe_weight_nominal_weight;
                 float weight_alphas_down = lhe_info->weights()[m_pdf_weights_matching[n + 1].second].wgt / lhe_weight_nominal_weight;
-                // 1.5 factor is needed because NNPDF30 alphaS uncertainties are
-                // +- 0.001 whereas recommendations for Run2 are +- 0.0015
-                float alphas_uncertainty = 1.5 * (weight_alphas_up - weight_alphas_down) / 2.;
+
+                float alphas_uncertainty = 0;
+                if (weight_is_valid(weight_alphas_up) && weight_is_valid(weight_alphas_down)) {
+                    // 1.5 factor is needed because NNPDF30 alphaS uncertainties are
+                    // +- 0.001 whereas recommendations for Run2 are +- 0.0015
+                    alphas_uncertainty = 1.5 * (weight_alphas_up - weight_alphas_down) / 2.;
+                }
 #ifdef DEBUG_PDF
                 std::cout << "alphaS uncertainty: " << alphas_uncertainty << std::endl;
 #endif
@@ -453,6 +475,36 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
 
 end:
 
+    if (std::isnan(weight) || std::isinf(weight)) {
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
+        std::cout << "ERROR: event weight is NaN or inf" << std::endl;
+#endif
+        weight = 1.;
+    }
+
+    if (std::isnan(pdf_weight) || std::isinf(pdf_weight)) {
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
+        std::cout << "ERROR: event pdf weight is NaN or inf" << std::endl;
+#endif
+        pdf_weight = 1.;
+    }
+
+    if (std::isnan(pdf_weight_up) || std::isinf(pdf_weight_up)) {
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
+        std::cout << "ERROR: event pdf weight up is NaN or inf" << std::endl;
+#endif
+
+        pdf_weight_up = 1.;
+    }
+
+    if (std::isnan(pdf_weight_down) || std::isinf(pdf_weight_down)) {
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
+        std::cout << "ERROR: event pdf weight down is NaN or inf" << std::endl;
+#endif
+        pdf_weight_down = 1.;
+    }
+
+
     m_event_weight_sum += weight;
     m_event_weight_sum_pdf_nominal += weight * pdf_weight;
     m_event_weight_sum_pdf_up += weight * pdf_weight_up;
@@ -465,6 +517,14 @@ end:
         }
 
         for (size_t i = 0; i < scale_weights.size(); i++) {
+
+            if (std::isnan(scale_weights[i]) || std::isinf(scale_weights[i])) {
+#if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
+                std::cout << "ERROR: event scale weight " << i << " is NaN or inf" << std::endl;
+#endif
+                scale_weights[i] = 1.;
+            }
+
             m_event_weight_sum_scales[i] += weight * scale_weights[i];
         }
     }
