@@ -13,11 +13,19 @@ parser.add_argument('-s', '--suffix', help='Suffix to append at the end of the o
 
 args = parser.parse_args()
 
+# Moriond17: last pt bin is the same as the previous one, but with 100% error and should be ignored
+IGNORE_LAST_PT_BIN = True
 
 f = ROOT.TFile.Open(args.file)
 
 for key in f.GetListOfKeys():
     wp = key.GetName()
+
+    if not 'SF' in wp:
+        continue
+
+    if not '2D' in wp:
+        continue
 
     h = f.Get(wp)
 
@@ -38,6 +46,9 @@ for key in f.GetListOfKeys():
         else:
             pt_binning.append(h.GetYaxis().GetBinUpEdge(i))
 
+    if IGNORE_LAST_PT_BIN and len(pt_binning) > 2:
+        pt_binning.pop()
+
     eta = 'Eta' if eta_binning[0] < 0 else 'AbsEta'
     json_content = {'dimension': 2, 'variables': [eta, 'Pt'], 'binning': {'x': eta_binning, 'y': pt_binning}, 'data': [], 'error_type': 'absolute'}
     json_content_data = json_content['data']
@@ -48,7 +59,7 @@ for key in f.GetListOfKeys():
         for j in range(0, len(pt_binning) - 1):
             mean_pt = (pt_binning[j] + pt_binning[j + 1]) / 2.
             bin = h.FindBin(mean_eta, mean_pt)
-            error = math.fabs(h.GetBinError(bin) - h.GetBinContent(bin))
+            error = h.GetBinError(bin)
             pt_data = {'bin': [pt_binning[j], pt_binning[j + 1]], 'value': h.GetBinContent(bin), 'error_low': error, 'error_high': error}
 
             eta_data['values'].append(pt_data)

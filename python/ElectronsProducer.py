@@ -22,12 +22,17 @@ default_configuration = cms.PSet(
                 categories = cms.untracked.InputTag('electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Categories')
             ),
             scale_factors = cms.untracked.PSet(
-                id_veto = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_veto.json'),
-                id_loose = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_loose.json'),
-                id_medium = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_medium.json'),
-                id_tight = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_tight.json'),
+                id_veto_ichep16 = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_veto.json'),
+                id_loose_ichep16 = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_loose.json'),
+                id_medium_ichep16 = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_medium.json'),
+                id_tight_ichep16 = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_tight.json'),
+                reco_ichep16 = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_gsfTracking.json'),
 
-                gsf_tracking = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_gsfTracking.json'),
+                id_veto_moriond17 = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_veto_moriond17.json'),
+                id_loose_moriond17 = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_loose_moriond17.json'),
+                id_medium_moriond17 = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_medium_moriond17.json'),
+                id_tight_moriond17 = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_tight_moriond17.json'),
+                reco_moriond17 = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_reco_moriond17.json'),
 
                 hww_wp = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_Tight_Run2016_Run273726to276811_HWW_weighted.json')
                 )
