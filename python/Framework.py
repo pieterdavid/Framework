@@ -434,6 +434,10 @@ class Framework(object):
             print("")
             print("Applying electron regression...")
 
+        # Read corrections for database
+        from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
+        regressionWeights(self.process)
+
         self.process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
 
         # Rename the collection
