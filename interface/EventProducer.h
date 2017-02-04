@@ -24,6 +24,12 @@
 #include <LHAPDF/LHAPDF.h>
 #endif
 
+enum class INITIAL_STATE {
+    GG = 0,
+    QQ,
+    QG
+};
+
 class EventProducer: public Framework::Producer {
     public:
         EventProducer(const std::string& name, const ROOT::TreeGroup& tree, const edm::ParameterSet& config):
@@ -121,6 +127,20 @@ class EventProducer: public Framework::Producer {
         BRANCH(pdf_weight, float);
         BRANCH(pdf_weight_up, float);
         BRANCH(pdf_weight_down, float);
+
+        BRANCH(initial_state, uint8_t);
+
+        BRANCH(pdf_weight_gg, float);
+        BRANCH(pdf_weight_gg_up, float);
+        BRANCH(pdf_weight_gg_down, float);
+
+        BRANCH(pdf_weight_qq, float);
+        BRANCH(pdf_weight_qq_up, float);
+        BRANCH(pdf_weight_qq_down, float);
+
+        BRANCH(pdf_weight_qg, float);
+        BRANCH(pdf_weight_qg_up, float);
+        BRANCH(pdf_weight_qg_down, float);
 
         BRANCH(n_ME_partons, int);
         BRANCH(n_ME_partons_filtered, int);
