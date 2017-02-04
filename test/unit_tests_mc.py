@@ -5,7 +5,13 @@ from Configuration.StandardSequences.Eras import eras
 from cp3_llbb.Framework import Framework
 
 framework = Framework.Framework(False, eras.Run2_25ns, globalTag='80X_mcRun2_asymptotic_2016_miniAODv2_v1')
+framework.redoJEC()
 framework.smearJets()
+framework.applyMuonCorrection("kamuca")
+framework.applyElectronRegression()
+framework.applyElectronSmearing()
+framework.doSystematics(['jec', 'jer'])
+
 process = framework.create()
 
 process.source.fileNames = cms.untracked.vstring(
