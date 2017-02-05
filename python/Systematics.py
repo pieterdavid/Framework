@@ -167,9 +167,11 @@ class JECSystematics(JetsSystematics):
         return module
 
 class JERSystematics(JetsSystematics):
-    def __init__(self, name, framework, jetCollection, metCollection, genJetCollection):
+    def __init__(self, name, framework, jetCollection, metCollection, genJetCollection, resolutionFile=None, scaleFactorFile=None):
         super(JERSystematics, self).__init__(name, framework, jetCollection, metCollection)
         self.genJetCollection = genJetCollection
+        self.resolutionFile = resolutionFile
+        self.scaleFactorFile = scaleFactorFile
 
     def getJetSystematicsProducer_(self, shift):
 
@@ -186,6 +188,12 @@ class JERSystematics(JetsSystematics):
 
                     variation = cms.int32(shift)
                 )
+
+        if self.resolutionFile and self.scaleFactorFile:
+            del module.algo
+            del module.algopt
+            module.resolutionFile = cms.FileInPath(self.resolutionFile)
+            module.scaleFactorFile = cms.FileInPath(self.scaleFactorFile)
 
         return module
 

@@ -38,6 +38,7 @@ framework.removeProducer('fat_jets')
 
 # framework.redoJEC()
 # framework.smearJets()
+# framework.smearJets(resolutionFile='cp3_llbb/Framework/data/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt', scaleFactorFile='cp3_llbb/Framework/data/Spring16_25nsV10_MC_SF_AK4PFchs.txt')
 # framework.applyMuonCorrection("kamuca")
 # framework.applyElectronRegression()
 # framework.applyElectronSmearing()

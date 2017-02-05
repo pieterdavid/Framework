@@ -26,6 +26,9 @@ class Framework(object):
         self.__miniaod_muon_collection = 'slimmedMuons'
         self.__miniaod_electron_collection = 'slimmedElectrons'
 
+        self.__jer_resolution_file = None
+        self.__jer_scalefactor_file = None
+
         self.__electron_regression_done = False
         self.__electron_smearing_done = False
         self.__muon_correction_done = False
@@ -133,6 +136,10 @@ class Framework(object):
                         'metCollection': self.__miniaod_met_collection,
                         'genJetCollection': self.__miniaod_gen_jet_collection}
                     }
+
+            if self.__jer_resolution_file and self.__jer_scalefactor_file:
+                default_systematics_options['jer']['resolutionFile'] = self.__jer_resolution_file
+                default_systematics_options['jer']['scaleFactorFile'] = self.__jer_scalefactor_file
 
             systematics = {}
             for syst in self.__systematics:
@@ -323,7 +330,7 @@ class Framework(object):
 
         self.__jec_done = True
 
-    def smearJets(self):
+    def smearJets(self, resolutionFile=None, scaleFactorFile=None):
         """
         Smear the jets
         """
@@ -333,9 +340,14 @@ class Framework(object):
         if self.isData:
             return
 
+        useTxtFiles = resolutionFile and scaleFactorFile
+
         if self.verbose:
             print("")
             print("Smearing jets...")
+            if useTxtFiles:
+                print("  -> {}".format(resolutionFile))
+                print("  -> {}".format(scaleFactorFile))
 
         self.process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
                     src = cms.InputTag(self.__miniaod_jet_collection),
@@ -350,6 +362,14 @@ class Framework(object):
 
                     variation = cms.int32(0)
                 )
+
+        if useTxtFiles:
+            del self.process.slimmedJetsSmeared.algo
+            del self.process.slimmedJetsSmeared.algopt
+            self.process.slimmedJetsSmeared.resolutionFile = cms.FileInPath(resolutionFile)
+            self.process.slimmedJetsSmeared.scaleFactorFile = cms.FileInPath(scaleFactorFile)
+            self.__jer_resolution_file = resolutionFile
+            self.__jer_scalefactor_file = scaleFactorFile
 
         self.process.shiftedMETCorrModuleForSmearedJets = cms.EDProducer('ShiftedParticleMETcorrInputProducer',
                 srcOriginal = cms.InputTag(self.__miniaod_jet_collection),
