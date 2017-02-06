@@ -76,6 +76,18 @@ class EventProducer: public Framework::Producer {
         float m_event_weight_sum_pdf_down = 0;
         std::vector<float> m_event_weight_sum_scales;
 
+        float m_event_weight_sum_pdf_qq_nominal = 0;
+        float m_event_weight_sum_pdf_qq_up = 0;
+        float m_event_weight_sum_pdf_qq_down = 0;
+
+        float m_event_weight_sum_pdf_gg_nominal = 0;
+        float m_event_weight_sum_pdf_gg_up = 0;
+        float m_event_weight_sum_pdf_gg_down = 0;
+
+        float m_event_weight_sum_pdf_qg_nominal = 0;
+        float m_event_weight_sum_pdf_qg_up = 0;
+        float m_event_weight_sum_pdf_qg_down = 0;
+
         float m_event_weight_sum_hdamp_down = 0;
         float m_event_weight_sum_hdamp_up = 0;
 

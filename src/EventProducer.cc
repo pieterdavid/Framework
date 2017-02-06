@@ -294,6 +294,18 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
     pdf_weight_up = 1;
     pdf_weight_down = 1;
 
+    pdf_weight_gg = 1.;
+    pdf_weight_gg_up = 1.;
+    pdf_weight_gg_down = 1.;
+
+    pdf_weight_qq = 1.;
+    pdf_weight_qq_up = 1.;
+    pdf_weight_qq_down = 1.;
+
+    pdf_weight_qg = 1.;
+    pdf_weight_qg_up = 1.;
+    pdf_weight_qg_down = 1.;
+
     hdamp_weight_up = 1.;
     hdamp_weight_down = 1.;
 
@@ -509,18 +521,6 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         pdf_weight_up = mean + rms;
         pdf_weight_down = std::max(0.f, mean - rms); // Prevent negative weight
 
-        pdf_weight_gg = 1.;
-        pdf_weight_gg_up = 1.;
-        pdf_weight_gg_down = 1.;
-
-        pdf_weight_qq = 1.;
-        pdf_weight_qq_up = 1.;
-        pdf_weight_qq_down = 1.;
-
-        pdf_weight_qg = 1.;
-        pdf_weight_qg_up = 1.;
-        pdf_weight_qg_down = 1.;
-
         if (initial_state_ == INITIAL_STATE::GG) {
             pdf_weight_gg = mean;
             pdf_weight_gg_up = mean + rms;
@@ -576,6 +576,19 @@ end:
     m_event_weight_sum_pdf_nominal += weight * pdf_weight;
     m_event_weight_sum_pdf_up += weight * pdf_weight_up;
     m_event_weight_sum_pdf_down += weight * pdf_weight_down;
+
+    m_event_weight_sum_pdf_qq_nominal += weight * pdf_weight_qq;
+    m_event_weight_sum_pdf_qq_up += weight * pdf_weight_qq_up;
+    m_event_weight_sum_pdf_qq_down += weight * pdf_weight_qq_down;
+
+    m_event_weight_sum_pdf_gg_nominal += weight * pdf_weight_gg;
+    m_event_weight_sum_pdf_gg_up += weight * pdf_weight_gg_up;
+    m_event_weight_sum_pdf_gg_down += weight * pdf_weight_gg_down;
+
+    m_event_weight_sum_pdf_qg_nominal += weight * pdf_weight_qg;
+    m_event_weight_sum_pdf_qg_up += weight * pdf_weight_qg_up;
+    m_event_weight_sum_pdf_qg_down += weight * pdf_weight_qg_down;
+
     m_event_weight_sum_hdamp_up += weight * hdamp_weight_up;
     m_event_weight_sum_hdamp_down += weight * hdamp_weight_down;
 
@@ -604,6 +617,19 @@ void EventProducer::endJob(MetadataManager& metadata) {
     metadata.add("event_weight_sum_pdf_nominal", m_event_weight_sum_pdf_nominal);
     metadata.add("event_weight_sum_pdf_up", m_event_weight_sum_pdf_up);
     metadata.add("event_weight_sum_pdf_down", m_event_weight_sum_pdf_down);
+
+    metadata.add("event_weight_sum_pdf_qq_nominal", m_event_weight_sum_pdf_qq_nominal);
+    metadata.add("event_weight_sum_pdf_qq_up", m_event_weight_sum_pdf_qq_up);
+    metadata.add("event_weight_sum_pdf_qq_down", m_event_weight_sum_pdf_qq_down);
+
+    metadata.add("event_weight_sum_pdf_gg_nominal", m_event_weight_sum_pdf_gg_nominal);
+    metadata.add("event_weight_sum_pdf_gg_up", m_event_weight_sum_pdf_gg_up);
+    metadata.add("event_weight_sum_pdf_gg_down", m_event_weight_sum_pdf_gg_down);
+
+    metadata.add("event_weight_sum_pdf_qg_nominal", m_event_weight_sum_pdf_qg_nominal);
+    metadata.add("event_weight_sum_pdf_qg_up", m_event_weight_sum_pdf_qg_up);
+    metadata.add("event_weight_sum_pdf_qg_down", m_event_weight_sum_pdf_qg_down);
+
     metadata.add("event_weight_sum_hdamp_up", m_event_weight_sum_hdamp_up);
     metadata.add("event_weight_sum_hdamp_down", m_event_weight_sum_hdamp_down);
 
