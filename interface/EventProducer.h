@@ -76,6 +76,21 @@ class EventProducer: public Framework::Producer {
         float m_event_weight_sum_pdf_down = 0;
         std::vector<float> m_event_weight_sum_scales;
 
+        float m_event_weight_sum_pdf_qq_nominal = 0;
+        float m_event_weight_sum_pdf_qq_up = 0;
+        float m_event_weight_sum_pdf_qq_down = 0;
+
+        float m_event_weight_sum_pdf_gg_nominal = 0;
+        float m_event_weight_sum_pdf_gg_up = 0;
+        float m_event_weight_sum_pdf_gg_down = 0;
+
+        float m_event_weight_sum_pdf_qg_nominal = 0;
+        float m_event_weight_sum_pdf_qg_up = 0;
+        float m_event_weight_sum_pdf_qg_down = 0;
+
+        float m_event_weight_sum_hdamp_down = 0;
+        float m_event_weight_sum_hdamp_up = 0;
+
         std::shared_ptr<Framework::PUReweighter> m_pu_reweighter;
         std::shared_ptr<Framework::PUReweighter> m_pu_reweighter_up;
         std::shared_ptr<Framework::PUReweighter> m_pu_reweighter_down;
@@ -90,6 +105,9 @@ class EventProducer: public Framework::Producer {
 
         bool isLO = false;
         bool has_alphas_uncertainty = false;
+        bool has_hdamp_variation = false;
+        size_t hdamp_up_index = 0;
+        size_t hdamp_down_index = 0;
 
 #ifndef USE_LHE_WEIGHTS_FOR_LO
         std::vector<LHAPDF::PDF*> lhapdf_pdfs;
@@ -127,6 +145,8 @@ class EventProducer: public Framework::Producer {
         BRANCH(pdf_weight, float);
         BRANCH(pdf_weight_up, float);
         BRANCH(pdf_weight_down, float);
+        BRANCH(hdamp_weight_up, float);
+        BRANCH(hdamp_weight_down, float);
 
         BRANCH(initial_state, uint8_t);
 
