@@ -464,9 +464,45 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
             }
         }
 
+        INITIAL_STATE initial_state_;
+        if ((pdf_id.first == 0 || std::abs(pdf_id.first) == 21) && (pdf_id.second == 0 || pdf_id.second == 21))
+            initial_state_ = INITIAL_STATE::GG;
+        else if ((pdf_id.first == 0 || std::abs(pdf_id.first) == 21) || (pdf_id.second == 0 || pdf_id.second == 21))
+            initial_state_ = INITIAL_STATE::QG;
+        else
+            initial_state_ = INITIAL_STATE::QQ;
+
+        initial_state = static_cast<uint8_t>(initial_state_);
+
         pdf_weight = mean;
         pdf_weight_up = mean + rms;
         pdf_weight_down = std::max(0.f, mean - rms); // Prevent negative weight
+
+        pdf_weight_gg = 1.;
+        pdf_weight_gg_up = 1.;
+        pdf_weight_gg_down = 1.;
+
+        pdf_weight_qq = 1.;
+        pdf_weight_qq_up = 1.;
+        pdf_weight_qq_down = 1.;
+
+        pdf_weight_qg = 1.;
+        pdf_weight_qg_up = 1.;
+        pdf_weight_qg_down = 1.;
+
+        if (initial_state_ == INITIAL_STATE::GG) {
+            pdf_weight_gg = mean;
+            pdf_weight_gg_up = mean + rms;
+            pdf_weight_gg_down = std::max(0.f, mean - rms); // Prevent negative weight
+        } else if (initial_state_ == INITIAL_STATE::QQ) {
+            pdf_weight_qq = mean;
+            pdf_weight_qq_up = mean + rms;
+            pdf_weight_qq_down = std::max(0.f, mean - rms); // Prevent negative weight
+        } else {
+            pdf_weight_qg = mean;
+            pdf_weight_qg_up = mean + rms;
+            pdf_weight_qg_down = std::max(0.f, mean - rms); // Prevent negative weight
+        }
 
 #ifdef DEBUG_PDF
         std::cout << "Total PDF uncertainty: " << rms << std::endl;

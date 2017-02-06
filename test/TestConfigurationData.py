@@ -27,6 +27,7 @@ framework.addAnalyzer('test', cms.PSet(
         ))
 
 framework.applyElectronRegression()
+framework.applyElectronSmearing()
 
 framework.doSystematics(['jec', 'jer'])
     

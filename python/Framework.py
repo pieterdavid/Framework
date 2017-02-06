@@ -26,6 +26,13 @@ class Framework(object):
         self.__miniaod_muon_collection = 'slimmedMuons'
         self.__miniaod_electron_collection = 'slimmedElectrons'
 
+        self.__jer_resolution_file = None
+        self.__jer_scalefactor_file = None
+
+        self.__electron_regression_done = False
+        self.__electron_smearing_done = False
+        self.__muon_correction_done = False
+
         self.__kamuca_tag = 'DATA_80X_13TeV' if isData else 'MC_80X_13TeV'
         self.__rochester_input = 'cp3_llbb/Framework/data/RoccoR_13tev.txt'
 
@@ -129,6 +136,10 @@ class Framework(object):
                         'metCollection': self.__miniaod_met_collection,
                         'genJetCollection': self.__miniaod_gen_jet_collection}
                     }
+
+            if self.__jer_resolution_file and self.__jer_scalefactor_file:
+                default_systematics_options['jer']['resolutionFile'] = self.__jer_resolution_file
+                default_systematics_options['jer']['scaleFactorFile'] = self.__jer_scalefactor_file
 
             systematics = {}
             for syst in self.__systematics:
@@ -319,7 +330,7 @@ class Framework(object):
 
         self.__jec_done = True
 
-    def smearJets(self):
+    def smearJets(self, resolutionFile=None, scaleFactorFile=None):
         """
         Smear the jets
         """
@@ -329,9 +340,14 @@ class Framework(object):
         if self.isData:
             return
 
+        useTxtFiles = resolutionFile and scaleFactorFile
+
         if self.verbose:
             print("")
             print("Smearing jets...")
+            if useTxtFiles:
+                print("  -> {}".format(resolutionFile))
+                print("  -> {}".format(scaleFactorFile))
 
         self.process.slimmedJetsSmeared = cms.EDProducer('SmearedPATJetProducer',
                     src = cms.InputTag(self.__miniaod_jet_collection),
@@ -346,6 +362,14 @@ class Framework(object):
 
                     variation = cms.int32(0)
                 )
+
+        if useTxtFiles:
+            del self.process.slimmedJetsSmeared.algo
+            del self.process.slimmedJetsSmeared.algopt
+            self.process.slimmedJetsSmeared.resolutionFile = cms.FileInPath(resolutionFile)
+            self.process.slimmedJetsSmeared.scaleFactorFile = cms.FileInPath(scaleFactorFile)
+            self.__jer_resolution_file = resolutionFile
+            self.__jer_scalefactor_file = scaleFactorFile
 
         self.process.shiftedMETCorrModuleForSmearedJets = cms.EDProducer('ShiftedParticleMETcorrInputProducer',
                 srcOriginal = cms.InputTag(self.__miniaod_jet_collection),
@@ -430,6 +454,10 @@ class Framework(object):
             print("")
             print("Applying electron regression...")
 
+        # Read corrections for database
+        from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
+        regressionWeights(self.process)
+
         self.process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
 
         # Rename the collection
@@ -446,6 +474,56 @@ class Framework(object):
             print("New electrons collection: %r" % (self.__miniaod_electron_collection))
 
         self.__electron_regression_done = True
+
+    def applyElectronSmearing(self):
+        """
+        Apply electron smearing from
+            https://twiki.cern.ch/twiki/bin/view/CMS/EGMSmearer
+        """
+
+        self.ensureNotCreated()
+
+        if self.verbose:
+            print("")
+            print("Applying electron smearing...")
+
+        if not self.__electron_regression_done:
+            print("Warning: electron regression is not applied. You probably want to call `applyElectronRegression()` before calling `applyElectronSmearing`")
+
+        from EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi import calibratedPatElectrons, files
+
+        # FIXME: Add a preselection on electron to prevent a crash in the producer
+        # Remove when it's no longer needed (see twiki)
+        self.process.selectedElectrons = cms.EDFilter("PATElectronSelector",
+                src = cms.InputTag(self.__miniaod_electron_collection),
+                cut = cms.string("pt > 5 && abs(eta) < 2.5")
+                )
+
+        self.process.slimmedElectronsSmeared = calibratedPatElectrons.clone(
+                electrons = "selectedElectrons",
+                isMC = not self.isData,
+                correctionFile = files['Moriond2017_JEC']
+                )
+
+        self.process.load('Configuration.StandardSequences.Services_cff')
+        self.process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
+                slimmedElectronsSmeared = cms.PSet(
+                    initialSeed = cms.untracked.uint32(42),
+                    engineName = cms.untracked.string('TRandom3')
+                    )
+                )
+
+        # Look for producers using the default electron input
+        for producer in self.producers:
+            p = getattr(self.process.framework.producers, producer)
+            change_input_tags_and_strings(p, self.__miniaod_electron_collection, 'slimmedElectronsSmeared', 'producers.' + producer, '    ')
+
+        self.__miniaod_electron_collection = 'slimmedElectronsSmeared'
+
+        if self.verbose:
+            print("New electrons collection: %r" % (self.__miniaod_electron_collection))
+
+        self.__electron_smearing_done = True
 
     def doSystematics(self, systematics, **kwargs):
         """
