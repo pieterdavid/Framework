@@ -47,6 +47,7 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
     isLO = (pdf_set == 263000) || (pdf_set == 263400);
 
     std::string scale_variation_group = "scale_variation";
+    std::string hdamp_variation_group = "hdamp_variation";
 
     if (isLO) {
         pdf_set_str = m_lo_pdf_set_strs[pdf_set];
@@ -100,6 +101,7 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
 
             if (line.find("</weightgroup>") != std::string::npos) {
                 in_group = false;
+                currently_matching = false;
                 current_group_type = "";
 #if defined DEBUG_PDF or defined DEBUG_PDF_LIGHT
                     std::cout << "End of current group" << std::endl;
@@ -143,6 +145,16 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
                 current_scale_variation_index++;
 
                 continue;
+            } else if (current_group_type == hdamp_variation_group) {
+                has_hdamp_variation = true;
+
+                // Only valid index are 5019 and 5010
+                // See https://twiki.cern.ch/twiki/bin/view/CMS/TopSystematics#Matrix_element_Parton_Shower_ME
+                if (id == 5010) {
+                    hdamp_down_index = global_index - 1;
+                } else if (id == 5019) {
+                    hdamp_up_index = global_index - 1;
+                }
             }
 
             // PDF variations
@@ -176,8 +188,6 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
                 if (id_to_match == id) {
                     m_pdf_weights_matching.push_back(std::make_pair(id, global_index - 1));
                     id_to_match++;
-                } else if (currently_matching) {
-                    break;
                 }
 #ifdef USE_LHE_WEIGHTS_FOR_LO
             }
@@ -197,6 +207,12 @@ void EventProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& eventS
             std::cout << m.first << " -> " << m.second << std::endl;
         }
         std::cout << "Number of scales variation weights: " << m_scale_variations_matching.size() << std::endl;
+
+        if (has_hdamp_variation) {
+            std::cout << "This sample has hdamp scale variations" << std::endl;
+            std::cout << "  -> Up: " << hdamp_up_index << std::endl;
+            std::cout << "  -> Down: " << hdamp_down_index << std::endl;
+        }
 #endif
 
         if (!m_scale_variations_matching.empty() && m_scale_variations_matching.size() != 6) {
@@ -277,6 +293,9 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
     pdf_weight = 1;
     pdf_weight_up = 1;
     pdf_weight_down = 1;
+
+    hdamp_weight_up = 1.;
+    hdamp_weight_down = 1.;
 
     if (event_.isRealData() || m_scale_variations_matching.empty()) {
         // Push six 1 to the scale variation array
@@ -361,6 +380,18 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
                 weight = 1.;
             }
             scale_weights.push_back(weight);
+        }
+
+        // hdamp variation
+        if (has_hdamp_variation) {
+            hdamp_weight_up = lhe_info->weights()[hdamp_up_index].wgt / lhe_weight_nominal_weight;
+            hdamp_weight_down = lhe_info->weights()[hdamp_down_index].wgt / lhe_weight_nominal_weight;
+
+            if (! weight_is_valid(hdamp_weight_up))
+                hdamp_weight_up = 1.;
+
+            if (! weight_is_valid(hdamp_weight_down))
+                hdamp_weight_down = 1.;
         }
 
         // PDF variations
@@ -545,6 +576,8 @@ end:
     m_event_weight_sum_pdf_nominal += weight * pdf_weight;
     m_event_weight_sum_pdf_up += weight * pdf_weight_up;
     m_event_weight_sum_pdf_down += weight * pdf_weight_down;
+    m_event_weight_sum_hdamp_up += weight * hdamp_weight_up;
+    m_event_weight_sum_hdamp_down += weight * hdamp_weight_down;
 
     if (! event_.isRealData()) {
 
@@ -571,6 +604,8 @@ void EventProducer::endJob(MetadataManager& metadata) {
     metadata.add("event_weight_sum_pdf_nominal", m_event_weight_sum_pdf_nominal);
     metadata.add("event_weight_sum_pdf_up", m_event_weight_sum_pdf_up);
     metadata.add("event_weight_sum_pdf_down", m_event_weight_sum_pdf_down);
+    metadata.add("event_weight_sum_hdamp_up", m_event_weight_sum_hdamp_up);
+    metadata.add("event_weight_sum_hdamp_down", m_event_weight_sum_hdamp_down);
 
     for (size_t i = 0; i < m_event_weight_sum_scales.size(); i++) {
         std::string name = "event_weight_sum_scale_" + std::to_string(i);
