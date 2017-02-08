@@ -34,7 +34,7 @@ class Framework(object):
         self.__muon_correction_done = False
 
         self.__kamuca_tag = 'DATA_80X_13TeV' if isData else 'MC_80X_13TeV'
-        self.__rochester_input = 'cp3_llbb/Framework/data/RoccoR_13tev.txt'
+        self.__rochester_input = 'cp3_llbb/Framework/data/Rochester/2016.v3/config.txt'
 
         self.hltProcessName = kwargs['hltProcessName'] if 'hltProcessName' in kwargs else 'HLT'
         self.isData = isData

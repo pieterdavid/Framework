@@ -7,9 +7,6 @@
 #include <DataFormats/VertexReco/interface/Vertex.h>
 #include <DataFormats/PatCandidates/interface/Muon.h>
 
-#include <cp3_llbb/Framework/interface/rochcor2016.h>
-#include <KaMuCa/Calibration/interface/KalmanMuonCalibrator.h>
-
 #include <utility>
 
 class MuonsProducer: public LeptonsProducer<pat::Muon>, public ScaleFactors {

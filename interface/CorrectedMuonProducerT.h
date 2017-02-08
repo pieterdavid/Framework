@@ -22,10 +22,12 @@
 #include "FWCore/ParameterSet/interface/ConfigurationDescriptions.h"
 #include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
 
-#include <cp3_llbb/Framework/interface/rochcor2016.h>
+#include <cp3_llbb/Framework/interface/Rochester.h>
 #include <KaMuCa/Calibration/interface/KalmanMuonCalibrator.h>
 
 #include <memory>
+#include <random>
+#include <boost/filesystem.hpp>
 
 namespace cp3 {
 
@@ -56,36 +58,46 @@ namespace cp3 {
 
     class RochesterCorrector {
         public:
-            explicit RochesterCorrector(const edm::ParameterSet& cfg) {
+            explicit RochesterCorrector(const edm::ParameterSet& cfg):
+                random_generator(42), random_distribution(0, 1) {
                 auto tag = cfg.getParameter<edm::FileInPath>("input");
-                corrector.reset(new rochcor2016(tag.fullPath()));
+
+                // Constructor expect a path to the directory, but edm::FileInPath does not support folders
+                // Extract the path from the tag file
+
+                boost::filesystem::path p(tag.fullPath());
+                corrector.reset(new RoccoR(p.parent_path().native()));
             }
 
             template<typename T>
             T correct(const edm::Event& event, const T& muon) {
 
-                float qter = 0;
-
-                TLorentzVector muon_p4(muon.px(), muon.py(), muon.pz(), muon.energy());
+                float scale_factor = 1.;
 
                 if (event.isRealData()) {
-                    corrector->momcor_data(muon_p4, muon.charge(), 0, qter);
+                    scale_factor = corrector->kScaleDT(muon.charge(), muon.pt(), muon.eta(), muon.phi(), 0 /* set */, 0 /* param */);
                 } else {
-                    int ntrk = 0;
+                    int n_tracks = 0;
                     if (!muon.innerTrack().isNull())
-                        ntrk = muon.innerTrack()->hitPattern().trackerLayersWithMeasurement();
+                        n_tracks = muon.innerTrack()->hitPattern().trackerLayersWithMeasurement();
 
-                    corrector->momcor_mc(muon_p4, muon.charge(), ntrk, qter);
+                    auto gen_particle = muon.genParticle();
+                    if (gen_particle)
+                        scale_factor = corrector->kScaleFromGenMC(muon.charge(), muon.pt(), muon.eta(), muon.phi(), n_tracks, gen_particle->pt(), random_distribution(random_generator), 0 /* set */, 0 /* param */);
+                    else
+                        scale_factor = corrector->kScaleAndSmearMC(muon.charge(), muon.pt(), muon.eta(), muon.phi(), n_tracks, random_distribution(random_generator), random_distribution(random_generator), 0 /* set */, 0 /* param */);
                 }
 
                 T corrected_muon = muon;
-                corrected_muon.setP4(math::XYZTLorentzVector(muon_p4.Px(), muon_p4.Py(), muon_p4.Pz(), muon_p4.E()));
+                corrected_muon.setP4(muon.p4() * scale_factor);
 
                 return corrected_muon;
             }
 
         private:
-            std::unique_ptr<rochcor2016> corrector;
+            std::unique_ptr<RoccoR> corrector;
+            std::mt19937 random_generator;
+            std::uniform_real_distribution<double> random_distribution;
     };
 }
 
