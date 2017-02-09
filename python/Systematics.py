@@ -12,7 +12,7 @@ class Systematics(object):
         self.verbosity = True
 
     def getPrettyName(self, postfix):
-        return self.name.upper() + postfix.capitalize()
+        return self.name.upper() + postfix#.capitalize()
 
     def formatModuleName(self, collection, postfix):
         return collection + self.getPrettyName(postfix)
@@ -28,7 +28,7 @@ class JetsSystematics(Systematics):
         self.jetCollection = jetCollection
         self.metCollection = metCollection
 
-    def getJetSystematicsProducer_(self, shift):
+    def getJetSystematicsProducers_(self, shift):
         raise NotImplementedException()
 
     def addShiftedMETProducer_(self, newJetCollection, postfix):
@@ -64,6 +64,7 @@ class JetsSystematics(Systematics):
         
         cfg.prefix = self.formatModuleVariableName(cfg.prefix.value(), postfix) + '_'
         cfg.parameters.jets = cms.untracked.InputTag(inputCollection)
+        cfg.parameters.systematics = cms.untracked.bool(True)
        
         index = self.framework.getProducerIndex('jets')
         self.framework.addProducer(producerName, cfg, index + 1)
@@ -76,95 +77,157 @@ class JetsSystematics(Systematics):
         cfg.prefix = self.formatModuleVariableName(cfg.prefix.value(), postfix) + '_'
         cfg.parameters.met = cms.untracked.InputTag(inputCollection)
         cfg.parameters.slimmed = cms.untracked.bool(False)
+        cfg.parameters.systematics = cms.untracked.bool(True)
        
         index = self.framework.getProducerIndex('met')
         self.framework.addProducer(producerName, cfg, index + 1)
 
     def run(self):
-        upModule = self.getJetSystematicsProducer_(+1)
-        downModule = self.getJetSystematicsProducer_(-1)
+        upModules = self.getJetSystematicsProducers_(+1)
+        downModules = self.getJetSystematicsProducers_(-1)
 
-        setattr(self.process, self.formatModuleName(self.jetCollection, 'Up'), upModule)
-        setattr(self.process, self.formatModuleName(self.jetCollection, 'Down'), downModule)
+        for i in range(len(upModules)):
 
-        # Shifted MET
-        upMetModule = self.addShiftedMETProducer_(upModule.label(), 'Up')
-        downMetModule = self.addShiftedMETProducer_(downModule.label(), 'Down')
+            upModule, upModulePostfix = upModules[i]
+            downModule, downModulePostfix = downModules[i]
 
-        # Add Framework producers for these new jets collections
-        self.addJetsProducer(upModule.label(), 'Up')
-        self.addJetsProducer(downModule.label(), 'Down')
+            upModulePostfix += "Up"
+            downModulePostfix += "Down"
 
-        self.addMETProducer(upMetModule.label(), 'Up')
-        self.addMETProducer(downMetModule.label(), 'Down')
+            upModuleInputTag = None
+            downModuleInputTag = None
 
-        upJetProducer = self.formatModuleVariableName('jets', 'Up')
-        downJetProducer = self.formatModuleVariableName('jets', 'Down')
-        upMetProducer = self.formatModuleVariableName('met', 'Up')
-        downMetProducer = self.formatModuleVariableName('met', 'Down')
+            if type(upModule) is tuple:
+                assert(len(upModule[0].label()) > 0)
+                upModuleInputTag = cms.InputTag(upModule[0].label(), upModule[1])
+                downModuleInputTag = cms.InputTag(downModule[0].label(), downModule[1])
+            else:
+                setattr(self.process, self.formatModuleName(self.jetCollection, upModulePostfix), upModule)
+                setattr(self.process, self.formatModuleName(self.jetCollection, downModulePostfix), downModule)
+                upModuleInputTag = cms.InputTag(upModule.label())
+                downModuleInputTag = cms.InputTag(downModule.label())
 
-        if self.framework.verbose:
-            print("    Adding new CMSSW module %r as %r framework producer") % (upModule.label(), upJetProducer)
-            print("    Adding new CMSSW module %r as %r framework producer") % (downModule.label(), downJetProducer)
-            print("    Adding new CMSSW module %r as %r framework producer") % (upMetModule.label(), upMetProducer)
-            print("    Adding new CMSSW module %r as %r framework producer") % (downMetModule.label(), downMetProducer)
+            # Shifted MET
+            upMetModule = self.addShiftedMETProducer_(upModuleInputTag.value(), upModulePostfix)
+            downMetModule = self.addShiftedMETProducer_(downModuleInputTag.value(), downModulePostfix)
 
-        analyzers = []
-        for analyzer in self.framework.analyzers:
-            module = getattr(self.process.framework.analyzers, analyzer)
-            if module_has_string(module, 'jets') or module_has_string(module, 'met'):
-                analyzers += [(analyzer, module)]
+            # Add Framework producers for these new jets collections
+            self.addJetsProducer(upModuleInputTag.value(), upModulePostfix)
+            self.addJetsProducer(downModuleInputTag.value(), downModulePostfix)
 
-        for analyzer, cfg in analyzers:
-            upCfg = copy.deepcopy(cfg)
-            downCfg = copy.deepcopy(cfg)
+            self.addMETProducer(upMetModule.label(), upModulePostfix)
+            self.addMETProducer(downMetModule.label(), downModulePostfix)
 
-            upAnalyzer = self.formatModuleVariableName(analyzer, 'Up')
-            downAnalyzer = self.formatModuleVariableName(analyzer, 'Down')
-
-            if self.framework.verbose:
-                print "    Cloning %r analyzer to %r to run over new collections" % (analyzer, upAnalyzer)
-            padding = ' ' * 8
-            change_input_tags_and_strings(upCfg, 'jets', upJetProducer, analyzer, padding)
-            change_input_tags_and_strings(upCfg, 'met', upMetProducer, analyzer, padding)
+            upJetProducer = self.formatModuleVariableName('jets', upModulePostfix)
+            downJetProducer = self.formatModuleVariableName('jets', downModulePostfix)
+            upMetProducer = self.formatModuleVariableName('met', upModulePostfix)
+            downMetProducer = self.formatModuleVariableName('met', downModulePostfix)
 
             if self.framework.verbose:
-                print "    Cloning %r analyzer to %r to run over new collections" % (analyzer, downAnalyzer)
-            change_input_tags_and_strings(downCfg, 'jets', downJetProducer, analyzer, padding)
-            change_input_tags_and_strings(downCfg, 'met', downMetProducer, analyzer, padding)
+                print("    Adding new CMSSW module %r as %r framework producer") % (upModuleInputTag.value(), upJetProducer)
+                print("    Adding new CMSSW module %r as %r framework producer") % (downModuleInputTag.value(), downJetProducer)
+                print("    Adding new CMSSW module %r as %r framework producer") % (upMetModule.label(), upMetProducer)
+                print("    Adding new CMSSW module %r as %r framework producer") % (downMetModule.label(), downMetProducer)
 
-            upCfg.prefix = self.formatModuleVariableName(upCfg.prefix.value(), 'Up') + '_'
-            downCfg.prefix = self.formatModuleVariableName(downCfg.prefix.value(), 'Down') + '_'
+            analyzers = []
+            for analyzer in self.framework.analyzers:
+                module = getattr(self.process.framework.analyzers, analyzer)
+                if module_has_string(module, 'jets') or module_has_string(module, 'met'):
+                    analyzers += [(analyzer, module)]
 
-            index = self.framework.getAnalyzerIndex(analyzer)
-            self.framework.addAnalyzer(upAnalyzer, upCfg, index + 1)
-            self.framework.addAnalyzer(downAnalyzer, downCfg, index + 2)
+            for analyzer, cfg in analyzers:
+                upCfg = copy.deepcopy(cfg)
+                downCfg = copy.deepcopy(cfg)
+
+                upCfg.parameters.systematics = cms.untracked.bool(True)
+                downCfg.parameters.systematics = cms.untracked.bool(True)
+
+                upAnalyzer = self.formatModuleVariableName(analyzer, upModulePostfix)
+                downAnalyzer = self.formatModuleVariableName(analyzer, downModulePostfix)
+
+                if self.framework.verbose:
+                    print "    Cloning %r analyzer to %r to run over new collections" % (analyzer, upAnalyzer)
+                padding = ' ' * 8
+                change_input_tags_and_strings(upCfg, 'jets', upJetProducer, analyzer, padding)
+                change_input_tags_and_strings(upCfg, 'met', upMetProducer, analyzer, padding)
+
+                if self.framework.verbose:
+                    print "    Cloning %r analyzer to %r to run over new collections" % (analyzer, downAnalyzer)
+                change_input_tags_and_strings(downCfg, 'jets', downJetProducer, analyzer, padding)
+                change_input_tags_and_strings(downCfg, 'met', downMetProducer, analyzer, padding)
+
+                upCfg.prefix = self.formatModuleVariableName(upCfg.prefix.value(), upModulePostfix) + '_'
+                downCfg.prefix = self.formatModuleVariableName(downCfg.prefix.value(), downModulePostfix) + '_'
+
+                index = self.framework.getAnalyzerIndex(analyzer)
+                self.framework.addAnalyzer(upAnalyzer, upCfg, index + 1)
+                self.framework.addAnalyzer(downAnalyzer, downCfg, index + 2)
 
 
 class JECSystematics(JetsSystematics):
-    def __init__(self, name, framework, jetCollection, metCollection, uncertaintiesFile):
+    def __init__(self, name, framework, jetCollection, metCollection, uncertaintiesFile, splitBySources=False):
         super(JECSystematics, self).__init__(name, framework, jetCollection, metCollection)
         self.uncertaintiesFile = uncertaintiesFile
+        self.splitBySources = splitBySources
 
-    def getJetSystematicsProducer_(self, shift):
+        if self.splitBySources and not self.uncertaintiesFile:
+            raise Exception("You asked to split the JEC uncertainties, but you did not provide a text files")
 
-        module = cms.EDProducer('ShiftedPATJetProducer',
+    def getJetSystematicsProducers_(self, shift):
+
+        modules = []
+
+        # Total uncertainty
+        module = cms.EDProducer('ShiftedPATJetProducerWithSources',
+                    enabled = cms.bool(True),
                     src = cms.InputTag(self.jetCollection),
-                    addResidualJES = cms.bool(True),
-                    jetCorrLabelUpToL3 = cms.InputTag('ak4PFCHSL1FastL2L3Corrector'),
-                    jetCorrLabelUpToL3Res = cms.InputTag('ak4PFCHSL1FastL2L3ResidualCorrector'),
-                    shiftBy = cms.double(shift)
+                    shiftBy = cms.double(shift),
+                    splitBySources = cms.bool(self.splitBySources)
                 )
 
-        tag = 'Total' if self.uncertaintiesFile else 'Uncertainty'
-        module.jetCorrUncertaintyTag = cms.string(tag)
-
         if self.uncertaintiesFile:
-            module.jetCorrInputFileName = cms.FileInPath(self.uncertaintiesFile)
-        else:
-            module.jetCorrPayloadName = cms.string('AK4PFchs')
+            module.sources = cms.FileInPath(self.uncertaintiesFile)
 
-        return module
+        modules.append((module, ""))
+
+        if self.splitBySources:
+            sources = JECSystematics.getJECSources()
+            for source in sources:
+                modules.append(((module, source), source))
+
+        return modules
+
+    @staticmethod
+    def getJECSources():
+        return [
+                "AbsoluteFlavMap",
+                "AbsoluteMPFBias",
+                "AbsoluteScale",
+                "AbsoluteStat",
+                "FlavorQCD",
+                "Fragmentation",
+                "PileUpDataMC",
+                "PileUpPtBB",
+                "PileUpPtEC1",
+                "PileUpPtEC2",
+                "PileUpPtHF",
+                "PileUpPtRef",
+                "RelativeBal",
+                "RelativeFSR",
+                "RelativeJEREC1",
+                "RelativeJEREC2",
+                "RelativeJERHF",
+                "RelativePtBB",
+                "RelativePtEC1",
+                "RelativePtEC2",
+                "RelativePtHF",
+                "RelativeStatEC",
+                "RelativeStatFSR",
+                "RelativeStatHF",
+                "SinglePionECAL",
+                "SinglePionHCAL",
+                "TimePtEta"
+                ]
 
 class JERSystematics(JetsSystematics):
     def __init__(self, name, framework, jetCollection, metCollection, genJetCollection, resolutionFile=None, scaleFactorFile=None):
@@ -173,7 +236,7 @@ class JERSystematics(JetsSystematics):
         self.resolutionFile = resolutionFile
         self.scaleFactorFile = scaleFactorFile
 
-    def getJetSystematicsProducer_(self, shift):
+    def getJetSystematicsProducers_(self, shift):
 
         module = cms.EDProducer('SmearedPATJetProducer',
                     src = cms.InputTag(self.jetCollection),
@@ -195,7 +258,7 @@ class JERSystematics(JetsSystematics):
             module.resolutionFile = cms.FileInPath(self.resolutionFile)
             module.scaleFactorFile = cms.FileInPath(self.scaleFactorFile)
 
-        return module
+        return [(module, "")]
 
 
 handlers = {'jec': JECSystematics, 'jer': JERSystematics}

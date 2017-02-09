@@ -1,3 +1,5 @@
+<use name="CondFormats/JetMETObjects"/>
+<use name="JetMETCorrections/Objects"/>
 <use name="FWCore/Utilities"/>
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/Framework"/>

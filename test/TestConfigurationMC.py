@@ -45,6 +45,7 @@ framework.removeProducer('fat_jets')
 # framework.applyElectronSmearing()
 
 # framework.doSystematics(['jec', 'jer'])
+# framework.doSystematics(['jec'], jec={'uncertaintiesFile': 'cp3_llbb/HHAnalysis/data/Summer16_23Sep2016V4_MC_UncertaintySources_AK4PFchs.txt', 'splitBySources': True})
 
 # Change the pt cut for testing if it propagates correctly
 # framework.getProducer('jets').parameters.cut = 'pt > 50'
@@ -64,4 +65,4 @@ process.source.fileNames = cms.untracked.vstring(
         #'1:25002:4987798',
         #)
 
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(10000))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(2000))
