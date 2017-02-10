@@ -32,7 +32,8 @@ namespace Framework {
 
             Analyzer(const std::string& name, const ROOT::TreeGroup& tree_, const edm::ParameterSet& config):
                 m_name(name),
-                tree(tree_) {
+                tree(tree_),
+                m_systematics(config.getUntrackedParameter<bool>("systematics", false)) {
                 }
 
             virtual void analyze(const edm::Event&, const edm::EventSetup&, const ProducersManager&, const AnalyzersManager&, const CategoryManager&) = 0;
@@ -55,7 +56,12 @@ namespace Framework {
 
         protected:
             std::string m_name;
+
             ROOT::TreeGroup tree;
+
+            inline bool doingSystematics() const {
+                return m_systematics;
+            }
 
         private:
             bool hasRun() const {
@@ -67,6 +73,9 @@ namespace Framework {
             }
 
             bool m_run; //< A flag indicating if the analyzer has already been run for this event
+
+            // If true, this analyzer is producing systematics related quantities
+            bool m_systematics;
     };
 
 }
