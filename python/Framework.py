@@ -496,7 +496,7 @@ class Framework(object):
         # Remove when it's no longer needed (see twiki)
         self.process.selectedElectrons = cms.EDFilter("PATElectronSelector",
                 src = cms.InputTag(self.__miniaod_electron_collection),
-                cut = cms.string("pt > 5 && abs(eta) < 2.5")
+                cut = cms.string("pt > 5 && abs(superCluster.eta) < 2.5")
                 )
 
         self.process.slimmedElectronsSmeared = calibratedPatElectrons.clone(

@@ -88,6 +88,10 @@ namespace cp3 {
                         scale_factor = corrector->kScaleAndSmearMC(muon.charge(), muon.pt(), muon.eta(), muon.phi(), n_tracks, random_distribution(random_generator), random_distribution(random_generator), 0 /* set */, 0 /* param */);
                 }
 
+                if (std::isnan(scale_factor)) {
+                    scale_factor = 1.;
+                }
+
                 T corrected_muon = muon;
                 corrected_muon.setP4(muon.p4() * scale_factor);
 
