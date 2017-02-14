@@ -359,16 +359,19 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         if (isLO && !scalup_decision_taken) {
             scalup_decision_taken = true;
 
-            // Compute all PDF weights. If one is crazy, then switch to workaround mode
+            // Compute all PDF weights. If all of them are crazy, then switch to workaround mode
+            size_t n_invalid = 0;
             if (!m_pdf_weights_matching.empty()) {
                 for (auto& w: m_pdf_weights_matching) {
                     float weight = lhe_info->weights()[w.second].wgt / lhe_originalXWGTUP;
                     if (!weight_is_valid(weight)) {
-                        use_scalup_for_lo_weights = true;
-                        break;
+                        n_invalid++;
                     }
                 }
             }
+
+            if (n_invalid == m_pdf_weights_matching.size())
+                use_scalup_for_lo_weights = true;
 
 #ifdef DEBUG_PDF
             std::cout << "Workaround for LO LHE weights:";
