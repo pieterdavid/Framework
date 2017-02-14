@@ -27,13 +27,13 @@
 #include <TTree.h>
 
 // Uncomment to enable printout about memory usage
-// #define DEBUG_MEMORY_USAGE
+//#define DEBUG_MEMORY_USAGE
 
 // Uncomment to debug TTree::Fill
-// #define DEBUG_TREE_FILL
+//#define DEBUG_TREE_FILL
 
 // Uncomment to override CMSSW root error handling. Usefull to see all infos from ROOT
-// #define OVERRIDE_ROOT_ERROR_HANDLER
+//#define OVERRIDE_ROOT_ERROR_HANDLER
 
 #ifdef OVERRIDE_ROOT_ERROR_HANDLER
 #include <TError.h>
@@ -77,14 +77,14 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
         m_output->cd();
 
         m_raw_tree = new TTree("t", "t");
-        m_flush_size = 15728640;
+        m_flush_size = iConfig.getUntrackedParameter<unsigned long long>("treeFlushSize", 15 * 1024 * 1024);
         m_raw_tree->SetAutoFlush(0);
 
         // From CMSSW:
         // "Turn off autosaving because it is such a memory hog and we are not using
         // this check-pointing feature anyway."
         m_raw_tree->SetAutoSave(std::numeric_limits<Long64_t>::max());
-        m_raw_tree->SetMaxVirtualSize(150 * 1024 * 1024);
+        m_raw_tree->SetMaxVirtualSize(iConfig.getUntrackedParameter<unsigned long long>("treeMaxVirtualSize", 150 * 1024 * 1024));
         m_wrapper.reset(new ROOT::TreeWrapper(m_raw_tree));
 
         m_categories.reset(new CategoryManager(*m_wrapper));
@@ -267,6 +267,12 @@ void ExTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 #endif
             m_raw_tree->FlushBaskets();
             m_filled_size = 0;
+
+            if (! m_baskets_optimized) {
+                m_baskets_optimized = true;
+                m_raw_tree->OptimizeBaskets(m_raw_tree->GetTotBytes(), 1 ,"");
+            }
+
 #ifdef DEBUG_MEMORY_USAGE
     std::cout << "[Framework - >>produce after flushing] RSS: " << Tools::process_mem_usage() << std::endl;
 #endif
