@@ -490,7 +490,8 @@ class Framework(object):
         if not self.__electron_regression_done:
             print("Warning: electron regression is not applied. You probably want to call `applyElectronRegression()` before calling `applyElectronSmearing`")
 
-        from EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi import calibratedPatElectrons, files
+        from EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi import calibratedPatElectrons
+        from EgammaAnalysis.ElectronTools.calibrationTablesRun2 import files
 
         # FIXME: Add a preselection on electron to prevent a crash in the producer
         # Remove when it's no longer needed (see twiki)
@@ -502,7 +503,7 @@ class Framework(object):
         self.process.slimmedElectronsSmeared = calibratedPatElectrons.clone(
                 electrons = "selectedElectrons",
                 isMC = not self.isData,
-                correctionFile = files['Moriond2017_JEC']
+                correctionFile = files['Moriond17_23Jan']
                 )
 
         self.process.load('Configuration.StandardSequences.Services_cff')
