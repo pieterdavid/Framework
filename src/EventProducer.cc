@@ -251,6 +251,19 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
 
     pu_weight = 1;
 
+    // Moriond17 reminiaod validation flags
+    if (event_.isRealData()) {
+        edm::Handle<bool> dupECALClusters_handle;
+        edm::Handle<DetIdCollection> hitsNotReplaced_handle;
+
+        if (event_.getByToken(m_dupECALClusters_token, dupECALClusters_handle)) {
+            event_.getByToken(m_hitsNotReplaced_token, hitsNotReplaced_handle);
+
+            dupECALClusters = *dupECALClusters_handle;
+            hitsNotReplacedEmpty = hitsNotReplaced_handle->empty();
+        }
+    }
+
     edm::Handle<std::vector<PileupSummaryInfo>> pu_infos;
     if (event_.getByToken(m_pu_info_token, pu_infos)) {
         for (const auto& pu_info: *pu_infos) {

@@ -9,6 +9,8 @@
 #include <SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h>
 #include <SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h>
 
+#include <DataFormats/DetId/interface/DetIdCollection.h>
+
 #include <map>
 
 // Uncomment to debug PDF uncertainties
@@ -53,6 +55,9 @@ class EventProducer: public Framework::Producer {
             m_gen_info_token = collector.consumes<GenEventInfoProduct>(config.getUntrackedParameter<edm::InputTag>("gen_info", edm::InputTag("generator")));
             m_lhe_info_token = collector.consumes<LHEEventProduct>(config.getUntrackedParameter<edm::InputTag>("lhe_info", edm::InputTag("externalLHEProducer")));
 
+            m_dupECALClusters_token = collector.consumes<bool>(edm::InputTag("particleFlowEGammaGSFixed", "dupECALClusters"));
+            m_hitsNotReplaced_token = collector.consumes<DetIdCollection>(edm::InputTag("ecalMultiAndGSGlobalRecHitEB", "hitsNotReplaced"));
+
             // Purposely ignore return value
             collector.consumes<LHERunInfoProduct, edm::InRun>(edm::InputTag("externalLHEProducer"));
         }
@@ -69,6 +74,10 @@ class EventProducer: public Framework::Producer {
         edm::EDGetTokenT<std::vector<PileupSummaryInfo>> m_pu_info_token;
         edm::EDGetTokenT<GenEventInfoProduct> m_gen_info_token;
         edm::EDGetTokenT<LHEEventProduct> m_lhe_info_token;
+
+        // Moriond17 reminiaod validation flags
+        edm::EDGetTokenT<bool> m_dupECALClusters_token;
+        edm::EDGetTokenT<DetIdCollection> m_hitsNotReplaced_token;
 
         float m_event_weight_sum = 0;
         float m_event_weight_sum_pdf_nominal = 0;
@@ -170,6 +179,10 @@ class EventProducer: public Framework::Producer {
         TRANSIENT_BRANCH(lhe_weights, std::vector<std::pair<std::string, float>>);
 
         BRANCH(scale_weights, std::vector<float>);
+
+        // Moriond17 reminiaod validation flags
+        BRANCH(dupECALClusters, bool);
+        BRANCH(hitsNotReplacedEmpty, bool);
 };
 
 #endif

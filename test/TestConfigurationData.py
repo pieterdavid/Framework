@@ -4,7 +4,7 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 from cp3_llbb.Framework import Framework
 
-framework = Framework.Framework(True, eras.Run2_25ns, globalTag='80X_dataRun2_2016SeptRepro_v6', processName='RECO')
+framework = Framework.Framework(True, eras.Run2_25ns, globalTag='80X_dataRun2_2016SeptRepro_v7', processName='RECO')
 
 framework.addAnalyzer('dilepton', cms.PSet(
         type = cms.string('dilepton_analyzer'),
@@ -34,7 +34,7 @@ framework.doSystematics(['jec', 'jer'])
 process = framework.create()
 
 process.source.fileNames = cms.untracked.vstring(
-        '/store/data/Run2016F/DoubleMuon/MINIAOD/23Sep2016-v1/50000/040EDEBA-0490-E611-A424-008CFA110C68.root'
+        '/store/data/Run2016G/DoubleMuon/MINIAOD/03Feb2017-v1/100000/007796A5-78EB-E611-8EFA-A4BF01011FD0.root'
         )
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))
