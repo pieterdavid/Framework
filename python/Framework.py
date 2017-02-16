@@ -99,7 +99,6 @@ class Framework(object):
         process.source = cms.Source("PoolSource")
 
         self.configureFramework_()
-        self.addFakeMuonFilter()
 
     def create(self):
         """
@@ -634,14 +633,3 @@ class Framework(object):
             # MET Filters
             from cp3_llbb.Framework import METFilter
             self.process.framework.filters.met = copy.deepcopy(METFilter.default_configuration)
-
-    def addFakeMuonFilter(self):
-        if not self.isData:
-            return
-
-        self.process.load('RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff')
-
-        self.process.badGlobalMuonTagger.verbose = cms.untracked.bool(False)
-        self.process.cloneGlobalMuonTagger.verbose = cms.untracked.bool(False)
-
-        self.path.insert(0, self.process.noBadGlobalMuons)
