@@ -41,6 +41,9 @@ git cms-merge-topic rafaellopesdesa:EgammaAnalysis80_EGMSmearer_Moriond17_23Jan
 # https://twiki.cern.ch/twiki/bin/view/CMS/EGMRegression#TrainingBoundary
 git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy
 
+# MET filters
+git cms-merge-topic cms-met:METRecipe_8020 -u
+
 scram b -j 4
 
 cd ${CMSSW_BASE}/src/EgammaAnalysis/ElectronTools/data

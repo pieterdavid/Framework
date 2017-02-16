@@ -5,6 +5,7 @@
 
 git cms-merge-topic rafaellopesdesa:EgammaAnalysis80_EGMSmearer_Moriond17_23Jan
 git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy
+git cms-merge-topic cms-met:METRecipe_8020 -u
 
 git clone -o upstream https://github.com/bachtis/analysis.git -b KaMuCa_V4 KaMuCa 
 pushd KaMuCa
