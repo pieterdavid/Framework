@@ -11,7 +11,7 @@ framework.redoJEC()
 process = framework.create()
 
 process.source.fileNames = cms.untracked.vstring(
-        'file:///afs/cern.ch/user/s/sbrochet/public/CP3/DoubleMuon_Run2016B_PromptReco-v2_reduced.root'
+        'file://DoubleMuon_Run2016B_PromptReco-v2_reduced.root'
         )
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(10))
