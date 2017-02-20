@@ -9,7 +9,7 @@ Common framework for all cp3-llbb analyses
 
 ## CMSSW release
 
-**CMSSW 8.0.25**
+**CMSSW 8.0.26 patch 2**
 
 ## First time setup instructions
 
@@ -18,8 +18,8 @@ source /nfs/soft/grid/ui_sl6/setup/grid-env.sh
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 
 export SCRAM_ARCH=slc6_amd64_gcc530
-cmsrel CMSSW_8_0_25
-cd CMSSW_8_0_25/src
+cmsrel CMSSW_8_0_26_patch2
+cd CMSSW_8_0_26_patch2/src
 cmsenv
 
 git cms-init
@@ -28,45 +28,29 @@ git cms-init
 git clone -o upstream git@github.com:blinkseb/TreeWrapper.git cp3_llbb/TreeWrapper
 git clone -b CMSSW_8_0_6p -o upstream git@github.com:cp3-llbb/Framework.git cp3_llbb/Framework
 
-# Stuff not yet in central CMSSW:
-# 8010+ electron ID WPs
-git cms-merge-topic ikrav:egm_id_80X_v2
 # KalmanMuonCalibrator
 git clone -o upstream https://github.com/bachtis/analysis.git -b KaMuCa_V4 KaMuCa 
 pushd KaMuCa
 git checkout 2ad38daae37a41a9c07f482e95f2455e3eb915b0
 popd
 
-# Fake-muon filter
-git cms-merge-topic gpetruc:badMuonFilters_80X_v2
-
 # Electron smearing
-git cms-merge-topic shervin86:Moriond2017_JEC_energyScales
+git cms-merge-topic rafaellopesdesa:EgammaAnalysis80_EGMSmearer_Moriond17_23Jan
 
-# Electron regression
-# https://twiki.cern.ch/twiki/bin/view/CMS/EGMRegression
-git cms-merge-topic rafaellopesdesa:Regression80XEgammaAnalysis_v2
-
-# Fix outside training boundary bug
+# Fix outside training boundary bug for EGM regression
 # https://twiki.cern.ch/twiki/bin/view/CMS/EGMRegression#TrainingBoundary
-# Cherry-pick the commits to avoid bumping CMSSW version to 8.0.26
-git remote add rafaellopesdesa https://github.com/rafaellopesdesa/cmssw.git
-git fetch rafaellopesdesa RegressionCheckNegEnergy
-git cherry-pick 67da8f10d8fa125197734ccea701035dd1020bd7
-git cherry-pick 3aafeff0371a1d1eb3db9d95ef50c1a66da25690
-git remote remove rafaellopesdesa
+git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy
+
+# MET filters
+git cms-merge-topic cms-met:METRecipe_8020 -u
 
 scram b -j 4
 
-# Add the area containing the MVA weights (from cms-data, to appear in “external”).
-# Note: the “external” area appears after “scram build” is run at least once, as above
-cd ${CMSSW_BASE}/external/${SCRAM_ARCH}
-git clone https://github.com/ikrav/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data
-cd data/RecoEgamma/ElectronIdentification/data
-git checkout egm_id_80X_v1
-
 cd ${CMSSW_BASE}/src/EgammaAnalysis/ElectronTools/data
 git clone https://github.com/ECALELFS/ScalesSmearings.git
+cd ScalesSmearings
+git checkout Moriond17_23Jan_v1
+rm -rf .git
 
 cd ${CMSSW_BASE}/src/cp3_llbb/Framework
 source first_setup.sh
