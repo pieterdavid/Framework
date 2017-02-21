@@ -63,7 +63,7 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
             mva_id_categories.push_back((*mva_id_categories_handle)[electronRef]);
         }
 
-        Parameters p {{BinningVariable::Eta, electron.eta()}, {BinningVariable::Pt, electron.pt()}};
+        Parameters p {{BinningVariable::Eta, electron.superCluster()->eta()}, {BinningVariable::Pt, electron.pt()}};
         ScaleFactors::store_scale_factors(p, event.isRealData());
     }
     Identifiable::clean();
