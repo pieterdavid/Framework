@@ -19,8 +19,9 @@ f = ROOT.TFile.Open(args.file)
 
 for key in f.GetListOfKeys():
     wp = key.GetName()
-    if 'eta' not in wp:
+    if 'ratio_eff_eta3_dr030e030_corr' not in wp:
         continue
+
     h = f.Get(wp)
 
     # Get binning
