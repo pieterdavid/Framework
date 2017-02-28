@@ -15,8 +15,7 @@ namespace Framework {
         if (condition) {
             return tree[branch_name].write<T>();
         } else {
-            static T foo;
-            return foo;
+            return tree[branch_name].transient_write<T>();
         }
     }
 }
