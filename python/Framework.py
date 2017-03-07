@@ -20,6 +20,7 @@ class Framework(object):
 
         # Default configuration
         self.__miniaod_jet_collection = 'slimmedJets'
+        self.__miniaod_unsmeared_jet_collection = 'slimmedJets'
         self.__miniaod_fat_jet_collection = 'slimmedJetsAK8'
         self.__miniaod_gen_jet_collection = 'slimmedGenJets'
         self.__miniaod_met_collection = 'slimmedMETs'
@@ -131,7 +132,7 @@ class Framework(object):
                     'jec': {'jetCollection': self.__miniaod_jet_collection,
                         'metCollection': self.__miniaod_met_collection,
                         'uncertaintiesFile': None},
-                    'jer': {'jetCollection': self.__miniaod_jet_collection,
+                    'jer': {'jetCollection': self.__miniaod_unsmeared_jet_collection,
                         'metCollection': self.__miniaod_met_collection,
                         'genJetCollection': self.__miniaod_gen_jet_collection}
                     }
@@ -319,6 +320,7 @@ class Framework(object):
 
         # Change the default collections to the newly created
         self.__miniaod_jet_collection = jet_collection
+        self.__miniaod_unsmeared_jet_collection = jet_collection
         self.__miniaod_fat_jet_collection = fat_jet_collection
         self.__miniaod_met_collection = met_collection
 
