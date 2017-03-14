@@ -9,54 +9,106 @@ class CmdLine(object):
         - 'runOnData': 1 if running on data, 0 otherwise
         - 'hltProcessName': the process name used when running the HLT
 
-    Used mainly by GridIn and crab to override user configuration of the framework with correct values
-    for a given dataset.
+    Can be customized from a config file (or better, subclass) using
+    changeDefaults(option=value, ...) and override(option=value, ...),
+    depending on whether the given value should be used is none is passed
+    on the command line, or if it should be used regardless of that.
+    Options can be added using options.register.
+    The registerOptions method (called from the constructor) can be
+    overridden by subclasses, e.g.
+    >>> from cp3_llbb.Framework.CmdLine import CmdLine
+    >>> class MyCmdLine(CmdLine):
+    >>>     def __init__(self):
+    >>>         super(MyCmdLine, self).__init__()
+    >>>     def registerOptions(self):
+    >>>         super(MyCmdLine, self).registerOptions()
+    >>>         self.options.register(...) ## see FWCore.ParameterSet.VarParsing
+    >>>         self.changeDefaults(option=value, ...)
+    >>>         self.override(option=value, ...)
+    >>>
+    >>> options = MyCmdLine()
+    >>> isData = options.runOnData ## triggers parsing of options
+
+    Note: parsing of the arguments happens as soon as an option is accessed,
+    so no more changes can be made after that.
     """
+    def __init__(self, override=None):
+        self._overridden = override if override is not None else dict()
+        self.options = VarParsing()
+        self._parsed = False
+        self.registerOptions()
 
-    def __init__(self, required=[]):
-        options = VarParsing()
+    def override(self, **kwargs):
+        """ Override value for given keys
 
-        options.register('runOnData',
+        (these take precedence over command line values) """
+        self._overridden.update(kwargs)
+
+    def changeDefaults(self, **kwargs):
+        """ Change default values for given keys
+
+        (these are only used if nothing is specified on the command line) """
+        for k,v in kwargs.iteritems():
+            if ( not self._parsed ) or ( not self.options._beenSet.get(k, False) ):
+                self.options.setDefault(k, v)
+
+    def registerOptions(self):
+        """ register options (called at the end of construction - can be overridden) """
+        if self._parsed:
+            raise AssertionError("Cannot register options after parsing")
+
+        self.options.register('runOnData',
                 -1,
                 VarParsing.multiplicity.singleton,
                 VarParsing.varType.int,
                 'If running over MC (0) or data (1)')
 
-        options.register('globalTag',
+        self.options.register('globalTag',
                 '',
                 VarParsing.multiplicity.singleton,
                 VarParsing.varType.string,
                 'The globaltag to use')
 
-        options.register('era',
-                '',
+        self.options.register('era',
+                '2016',
                 VarParsing.multiplicity.singleton,
                 VarParsing.varType.string,
                 'Era of the dataset')
 
-        options.register('process',
+        self.options.register('process',
                 '',
                 VarParsing.multiplicity.singleton,
                 VarParsing.varType.string,
                 'Process name of the MiniAOD production.')
 
-        options.register('hltProcessName',
-                '',
+        self.options.register('hltProcessName',
+                'HLT',
                 VarParsing.multiplicity.singleton,
                 VarParsing.varType.string,
                 'The HLT processName to use')
 
-        options.parseArguments()
-
-        # Sanity checks
-        if options.era:
-            assert options.era == '25ns' or options.era == '50ns' or options.era == '2016'
-
-        self.options = options
+    def _ensureParsed(self):
+        if not self._parsed:
+            self._parsed = True
+            self.options.parseArguments()
 
     def __getattr__(self, name):
         """
         Forward call to the options object
         """
+        self._ensureParsed()
+        if name in self._overridden:
+            return self._overridden[name]
+        else:
+            return getattr(self.options, name)
 
-        return getattr(self.options, name)
+    @property
+    def runOnData(self):
+        self._ensureParsed()
+        return ( self.options.runOnData == 1 )
+    @property
+    def era(self):
+        self._ensureParsed()
+        assert self.options.era in ("25ns", "50ns", "2016")
+        from Configuration.StandardSequences.Eras import eras
+        return getattr(eras, "Run2_{}".format(self.options.era))
