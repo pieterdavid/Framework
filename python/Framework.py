@@ -55,14 +55,14 @@ class Framework(object):
             raise Exception("No global tag specified. Use the 'globalTag' command line argument to set one.\n\tcmsRun <configuration> globalTag=<global_tag>")
 
         if self.era is None:
-            raise Exception("No era specified. Use the 'era' command line argument to set one.\n\tcmsRun <configuration> era=[25ns|50ns]")
+            raise Exception("No era specified. Use the 'era' command line argument to set one.\n\tcmsRun <configuration> era=[25ns|50ns|2016]")
 
         if self.verbose:
             print("")
             print("CP3 llbb framework:")
             print("    - Running over %s" % ("data" if self.isData else "simulation"))
             print("    - global tag: %s" % self.globalTag)
-            print("    - era: %s" % ("25ns" if self.era == eras.Run2_25ns else "50ns"))
+            print("    - era: %s" % {eras.Run2_25ns:"25ns", eras.Run2_50ns:"50ns", eras.Run2_2016:"2016"}[self.era])
             print("")
 
         # Create CMSSW process and configure it with sane default values
@@ -568,11 +568,8 @@ class Framework(object):
             self.globalTag = options.globalTag
 
         if options.era:
-            assert options.era == '25ns' or options.era == '50ns'
-            if options.era == '25ns':
-                self.era = eras.Run2_25ns
-            else:
-                self.era = eras.Run2_50ns
+            assert options.era == '25ns' or options.era == '50ns' or options.era == '2016'
+            self.era = getattr(eras, "Run2_{}".format(options.era))
 
         if options.process:
             self.processName = options.process
