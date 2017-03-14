@@ -4,7 +4,7 @@ class CmdLine(object):
     """
     Parse the command line for options. Supported options are:
         - 'globalTag': the global tag to use
-        - 'era': either '25ns' or '50ns'
+        - 'era': '25ns' or '50ns' (for 2015 data) or '2016'
         - 'process': The process name used in the MiniAOD generation
         - 'runOnData': 1 if running on data, 0 otherwise
         - 'hltProcessName': the process name used when running the HLT
@@ -50,7 +50,7 @@ class CmdLine(object):
 
         # Sanity checks
         if options.era:
-            assert options.era == '25ns' or options.era == '50ns'
+            assert options.era == '25ns' or options.era == '50ns' or options.era == '2016'
 
         self.options = options
 
