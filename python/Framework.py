@@ -11,7 +11,7 @@ import cp3_llbb.Framework.Systematics as Systematics
 
 class Framework(object):
 
-    def __init__(self, isData, era, **kwargs):
+    def __init__(self, options, verbose=True):
         self.__created = False
         self.__systematics = []
         self.__systematicsOptions = {}
@@ -34,22 +34,20 @@ class Framework(object):
         self.__electron_smearing_done = False
         self.__muon_correction_done = False
 
-        self.__kamuca_tag = 'DATA_80X_13TeV' if isData else 'MC_80X_13TeV'
+        self.__kamuca_tag = 'DATA_80X_13TeV' if options.runOnData else 'MC_80X_13TeV'
         self.__rochester_input = 'cp3_llbb/Framework/data/Rochester/2016.v3/config.txt'
 
-        self.hltProcessName = kwargs['hltProcessName'] if 'hltProcessName' in kwargs else 'HLT'
-        self.isData = isData
-        self.era = era
-        self.processName = kwargs['processName'] if 'processName' in kwargs else 'PAT'
-        self.globalTag = kwargs['globalTag'] if 'globalTag' in kwargs else None
-        self.verbose = kwargs['verbose'] if 'verbose' in kwargs else True
-        self.output_filename = 'output_data.root' if isData else 'output_mc.root'
+        self.hltProcessName = options.hltProcessName
+        self.isData = options.runOnData
+        self.era = options.era
+        self.processName = options.process
+        self.globalTag = options.globalTag
+        self.verbose = verbose
+        self.output_filename = 'output_data.root' if options.runOnData else 'output_mc.root'
         self.producers = []
         self.analyzers = []
 
         Tools.verbosity = self.verbose
-
-        self.parseCommandLine_()
 
         if self.globalTag is None:
             raise Exception("No global tag specified. Use the 'globalTag' command line argument to set one.\n\tcmsRun <configuration> globalTag=<global_tag>")
@@ -67,7 +65,7 @@ class Framework(object):
 
         # Create CMSSW process and configure it with sane default values
 
-        process = cms.Process("ETM", era)
+        process = cms.Process("ETM", self.era)
         self.process = process
         self.path = cms.Path()
 
@@ -548,31 +546,6 @@ class Framework(object):
     def ensureNotCreated(self):
         if self.__created:
             raise RuntimeError("The framework configuration is frozen. Framework.create() must be the last function called.")
-
-    def parseCommandLine_(self):
-        self.ensureNotCreated()
-
-        from cp3_llbb.Framework.CmdLine import CmdLine
-
-        options = CmdLine()
-
-        if options.hltProcessName:
-            self.hltProcessName = options.hltProcessName
-
-        if options.runOnData != -1:
-            runOnData = options.runOnData == 1
-            if self.isData != runOnData:
-                raise Exception("Inconsistency between the command line argument 'runOnData' and the first argument of the Framework constructor.")
-
-        if options.globalTag:
-            self.globalTag = options.globalTag
-
-        if options.era:
-            assert options.era == '25ns' or options.era == '50ns' or options.era == '2016'
-            self.era = getattr(eras, "Run2_{}".format(options.era))
-
-        if options.process:
-            self.processName = options.process
 
     def configureElectronId_(self):
 
