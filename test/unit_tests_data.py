@@ -3,8 +3,12 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 from cp3_llbb.Framework import Framework
+from cp3_llbb.Framework.CmdLine import CmdLine
 
-framework = Framework.Framework(True, eras.Run2_25ns, globalTag='80X_dataRun2_Prompt_ICHEP16JEC_v0', processName='RECO')
+options = CmdLine()
+options.changeDefaults(runOnData=1, era="25ns", globalTag='80X_dataRun2_Prompt_ICHEP16JEC_v0', process="RECO")
+
+framework = Framework.Framework(options)
 
 framework.redoJEC()
 

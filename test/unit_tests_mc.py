@@ -3,8 +3,12 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 from cp3_llbb.Framework import Framework
+from cp3_llbb.Framework.CmdLine import CmdLine
 
-framework = Framework.Framework(False, eras.Run2_25ns, globalTag='80X_mcRun2_asymptotic_2016_miniAODv2_v1')
+options = CmdLine()
+options.changeDefaults(runOnData=0, era="25ns", globalTag='80X_mcRun2_asymptotic_2016_miniAODv2_v1')
+
+framework = Framework.Framework(options)
 framework.redoJEC()
 framework.smearJets()
 framework.applyMuonCorrection("kamuca")
