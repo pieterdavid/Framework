@@ -78,9 +78,9 @@ cmsRun TestConfigurationMC.py
 
 # Jenkins
 
-When opening a new Pull Request, an automated tool, [Jenkins](https://jenkins-ci.org/), takes care of launching a full build. It allows to see directly if your code can be merged without breaking everything. We have a dedicated Jenkins instance running at CERN, accessible via https://jenkins.cern.ch/cp3-llbb/ ; Only members of the ``cp3-llbb`` CERN e-group can access this page.
+When opening a new Pull Request, an automated tool, [Jenkins](https://jenkins-ci.org/), takes care of launching a full build. It allows to see directly if your code can be merged without breaking everything. We have a dedicated Jenkins instance running at CERN, accessible via https://jenkins-cp3-llbb.web.cern.ch/ ; Only members of the ``cp3-llbb`` CERN e-group can access this page.
 
-Jenkins runs every 5 minutes to check if there's something new. If a new Pull Request is detected, or if an already opened Pull Request is updated, an automatic build is launched. Only one build can be executed at the same time: every other builds are queued. A build typically takes about 1 hour.
+As soon as a new Pull Request is opened, or if an already opened Pull Request is updated, an automatic build is launched. Only one build can be executed at the same time: every other builds are queued. A build typically takes about 1 hour.
 
 Once a build is started, the Pull Request status on GitHub is updated. Once done, the status will either be green (the code compiles) or red (something is wrong). You can click on the ``Details`` link to access the Jenkins job report and the compilation log. For more information, see https://github.com/blog/1935-see-results-from-all-pull-request-status-checks
 
@@ -95,21 +95,18 @@ Since the build is automatized, Jenkins needs to know how-to setup the CMSSW env
  - ``CMSSW.release``: This file must contains only a string representing the CMSSW version to use to setup the framework. Be careful not to add a line break at the end of the line.
  - `` CMSSW.arch``: The ``SCRAM_ARCH`` of the CMSSW release.
  - ``bootstrap_jenkins.sh``: This file is a bash script executed by Jenkins just before building the framework, but after the CMSSW env is setup. You **must** use this file to install all the dependencies of the framework.
+ - ``jenkins_postbuild.sh``: This file is executed by Jenkins after the compilation.
 
-**Do not forget to update these files when changes are done to the release or the dependencies, otherwise the build will fails.**
+**Do not forget to update these files when changes are done to the release or the dependencies, otherwise the build will fail.**
 
 ## Technical details
 
- - Jenkins instance: https://jenkins.cern.ch/info/cp3-llbb
- - Jenkins instance informations: https://jenkins.cern.ch/info/cp3-llbb
- - CERN forge: https://cernforge.cern.ch/jenkins/details/cp3-llbb (only accessible by the Administrator, Sébastien B.)
-
-The builds are done on a custom VM hosted on CERN OpenStack servers, because Jenkins instance does not have access to either AFS or CVMFS. The VM instance is accessible only from CERN network:
-
- - Hostname: cp3-llbb-buildbot
- - SSH access only via key pair. Only accessible by the Administrator, Sébastien B.
+ - Jenkins instance: https://jenkins-cp3-llbb.web.cern.ch/
+ - [OpenShift](https://www.openshift.com/) instance: https://openshift.cern.ch/console/project/jenkins-cp3-llbb/overview (access is restricted to administrators. If you want / need access, please ask Christophe D. or Sébastien B.). This is the platform hosting our Jenkins instance inside an isolated container (for more information, look for Docker on Google).
 
 A github bot also exists: https://github.com/cp3-llbb-bot ; it's a generic github user, member of the cp3-llbb organization. It needs push authorization to a repository to properly update the PR status. Password for this user can be found on the protected CP3 [wiki](https://cp3.irmp.ucl.ac.be/projects/cp3admin/wiki/UsersPage/Private/Physics/Exp/llbb)
+
+**Note**: Sometimes, the container responsible for the build get stuck in creating phase and you'll need to kill it and retrigger a new build. To do that, connect to the OpenShift instance, and select on the left menu `Applications` → `Pods`. Click on the build instance in the list, and on the new page, select `Delete` in the `Actions` menu (top right). It may takes some time before the container is killed. If it's still stuck in deleting after a few minutes, you'll have to open a new ticket [here](https://cern.service-now.com/service-portal/service-element.do?name=PaaS-Web-App).
 
 ## Troubleshooting
 
