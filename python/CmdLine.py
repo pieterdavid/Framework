@@ -9,34 +9,39 @@ class CmdLine(object):
         - 'runOnData': 1 if running on data, 0 otherwise
         - 'hltProcessName': the process name used when running the HLT
 
-    Can be customized from a config file (or better, subclass) using
-    changeDefaults(option=value, ...) and override(option=value, ...),
-    depending on whether the given value should be used is none is passed
-    on the command line, or if it should be used regardless of that.
+    Can be customized from a config file (or better, subclass) by passing
+    an override and/or a new default options dictionary to the constructor,
+    or by calling override(option=value, ...) and
+    changeDefaults(option=value, ...) directly, depending on depending on
+    whether the given value should be used is none is passed on the command
+    line, or if it should be used regardless of that.
     Options can be added using options.register.
     The registerOptions method (called from the constructor) can be
     overridden by subclasses, e.g.
     >>> from cp3_llbb.Framework.CmdLine import CmdLine
     >>> class MyCmdLine(CmdLine):
-    >>>     def __init__(self):
-    >>>         super(MyCmdLine, self).__init__()
+    >>>     def __init__(self, override=None, defaults=None):
+    >>>         super(MyCmdLine, self).__init__(override=override, defaults=defaults)
     >>>     def registerOptions(self):
     >>>         super(MyCmdLine, self).registerOptions()
     >>>         self.options.register(...) ## see FWCore.ParameterSet.VarParsing
+    >>>         ## optional (if it makes sense to do this at the class level)
     >>>         self.changeDefaults(option=value, ...)
     >>>         self.override(option=value, ...)
     >>>
-    >>> options = MyCmdLine()
+    >>> options = MyCmdLine(defaults=dict(era="2016"))
     >>> isData = options.runOnData ## triggers parsing of options
 
     Note: parsing of the arguments happens as soon as an option is accessed,
     so no more changes can be made after that.
     """
-    def __init__(self, override=None):
+    def __init__(self, override=None, defaults=None):
         self._overridden = override if override is not None else dict()
         self.options = VarParsing()
         self._parsed = False
         self.registerOptions()
+        if defaults is not None:
+            self.changeDefaults(**defaults)
 
     def override(self, **kwargs):
         """ Override value for given keys
