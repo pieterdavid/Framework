@@ -5,8 +5,7 @@ from Configuration.StandardSequences.Eras import eras
 from cp3_llbb.Framework import Framework
 from cp3_llbb.Framework.CmdLine import CmdLine
 
-options = CmdLine()
-options.changeDefaults(runOnData=1, era="25ns", globalTag='80X_dataRun2_2016SeptRepro_v7', process='RECO')
+options = CmdLine(defaults=dict(runOnData=1, era="25ns", globalTag='80X_dataRun2_2016SeptRepro_v7', process='RECO'))
 
 framework = Framework.Framework(options)
 
