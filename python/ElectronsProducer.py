@@ -15,7 +15,8 @@ default_configuration = cms.PSet(
                 'egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight',
                 'egmGsfElectronIDs:cutBasedElectronHLTPreselection-Summer16-V1',
                 'egmGsfElectronIDs:mvaEleID-Spring16-GeneralPurpose-V1-wp90',
-                'egmGsfElectronIDs:mvaEleID-Spring16-GeneralPurpose-V1-wp80'
+                'egmGsfElectronIDs:mvaEleID-Spring16-GeneralPurpose-V1-wp80',
+                'egmGsfElectronIDs:mvaEleID-Spring16-HZZ-V1-wpLoose'
                 ),
             mva_id = cms.untracked.PSet(
                 values = cms.untracked.InputTag('electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values'),
