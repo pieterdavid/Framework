@@ -9,7 +9,7 @@ Common framework for all cp3-llbb analyses
 
 ## CMSSW release
 
-**CMSSW 8.0.26 patch 2**
+**CMSSW 8.0.30**
 
 ## First time setup instructions
 
@@ -18,8 +18,8 @@ source /nfs/soft/grid/ui_sl6/setup/grid-env.sh
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 
 export SCRAM_ARCH=slc6_amd64_gcc530
-cmsrel CMSSW_8_0_26_patch2
-cd CMSSW_8_0_26_patch2/src
+cmsrel CMSSW_8_0_30
+cd CMSSW_8_0_30/src
 cmsenv
 
 git cms-init
