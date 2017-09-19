@@ -5,3 +5,7 @@ For HWW Scale-Factors:
  - https://twiki.cern.ch/twiki/bin/view/CMS/HWW2016TriggerAndIdIsoScaleFactorsResults
  - https://github.com/latinos/LatinoAnalysis/blob/master/Gardener/python/data/idiso/ICHEP2016fullLumi/electrons_firstPart.txt
  - https://github.com/latinos/LatinoAnalysis/blob/master/Gardener/python/data/idiso/ICHEP2016fullLumi/electrons.txt
+
+For Full2016 HWW Scale-Factors:
+ - https://github.com/latinos/LatinoAnalysis/blob/master/Gardener/python/variables/LeptonSel_cfg.py#L171
+ - https://github.com/latinos/LatinoAnalysis/tree/master/Gardener/python/data/idiso/Full2016
