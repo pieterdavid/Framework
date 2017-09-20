@@ -9,7 +9,7 @@ git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy
 ## -> 8_0_26patch2 version
 git remote add cms-met https://github.com/cms-met/cmssw
 git fetch cms-met METRecipe_8020
-git cms-merge-topic cms-met:83c1f5d9bfcbc669a0621cdd3c01893f47b268be -u
+git cms-merge-topic cms-met:523c4e2a810331bfc6ced76a64b5872ffe61fc6a -u
 
 git clone -o upstream https://github.com/bachtis/analysis.git -b KaMuCa_V4 KaMuCa 
 pushd KaMuCa
