@@ -42,7 +42,8 @@ git cms-merge-topic rafaellopesdesa:EgammaAnalysis80_EGMSmearer_Moriond17_23Jan
 git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy
 
 # MET filters
-git cms-merge-topic cms-met:METRecipe_8020 -u
+git fetch cms-met METRecipe_8020_for80Xintegration
+git cms-merge-topic cms-met:92f73cd3d16a9529585865a365de271e0535b68d -u
 
 scram b -j 4
 
