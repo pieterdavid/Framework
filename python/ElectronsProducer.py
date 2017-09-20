@@ -29,7 +29,9 @@ default_configuration = cms.PSet(
                 id_tight_moriond17 = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_tight_moriond17.json'),
                 reco_moriond17 = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_EGamma_SF2D_reco_moriond17.json'),
 
-                hww_wp = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_Tight_Run2016_Run273726to276811_HWW_weighted.json')
+                hww_wp = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_Tight_Run2016_Run273726to276811_HWW_weighted.json'),
+                hww_mva80_wp = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_mva_80p_Iso2016_HWW_Full2016.json'),
+                hww_mva90_wp = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_mva_90p_Iso2016_HWW_Full2016.json'),
                 )
             ),
         )
