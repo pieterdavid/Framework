@@ -5,11 +5,9 @@
 
 git cms-merge-topic rafaellopesdesa:EgammaAnalysis80_EGMSmearer_Moriond17_23Jan
 git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy
-##git cms-merge-topic cms-met:METRecipe_8020 -u
-## -> 8_0_26patch2 version
 git remote add cms-met https://github.com/cms-met/cmssw
-git fetch cms-met METRecipe_8020
-git cms-merge-topic cms-met:83c1f5d9bfcbc669a0621cdd3c01893f47b268be -u
+git fetch cms-met METRecipe_8020_for80Xintegration
+git cms-merge-topic cms-met:92f73cd3d16a9529585865a365de271e0535b68d -u
 
 git clone -o upstream https://github.com/bachtis/analysis.git -b KaMuCa_V4 KaMuCa 
 pushd KaMuCa

@@ -9,7 +9,7 @@ Common framework for all cp3-llbb analyses
 
 ## CMSSW release
 
-**CMSSW 8.0.26 patch 2**
+**CMSSW 8.0.30**
 
 ## First time setup instructions
 
@@ -18,8 +18,8 @@ source /nfs/soft/grid/ui_sl6/setup/grid-env.sh
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 
 export SCRAM_ARCH=slc6_amd64_gcc530
-cmsrel CMSSW_8_0_26_patch2
-cd CMSSW_8_0_26_patch2/src
+cmsrel CMSSW_8_0_30
+cd CMSSW_8_0_30/src
 cmsenv
 
 git cms-init
@@ -42,7 +42,9 @@ git cms-merge-topic rafaellopesdesa:EgammaAnalysis80_EGMSmearer_Moriond17_23Jan
 git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy
 
 # MET filters
-git cms-merge-topic cms-met:METRecipe_8020 -u
+git remote add cms-met https://github.com/cms-met/cmssw
+git fetch cms-met METRecipe_8020_for80Xintegration
+git cms-merge-topic cms-met:92f73cd3d16a9529585865a365de271e0535b68d -u
 
 scram b -j 4
 
