@@ -34,12 +34,16 @@ pushd KaMuCa
 git checkout 2ad38daae37a41a9c07f482e95f2455e3eb915b0
 popd
 
-# Electron smearing
-git cms-merge-topic rafaellopesdesa:EgammaAnalysis80_EGMSmearer_Moriond17_23Jan
+# Electron smearing consistent with regression
+git remote add cms-egamma https://github.com/cms-egamma/cmssw
+git fetch cms-egamma EGM_gain_v1
+git cms-merge-topic cms-egamma:f2ae5ef247d2544bdccd0460586b468eb35631c5 -u
 
 # Fix outside training boundary bug for EGM regression
 # https://twiki.cern.ch/twiki/bin/view/CMS/EGMRegression#TrainingBoundary
-git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy
+git remote add rafaellopesdesa https://github.com/rafaellopesdesa/cmssw
+git fetch rafaellopesdesa RegressionCheckNegEnergy
+git cms-merge-topic rafaellopesdesa:3aafeff0371a1d1eb3db9d95ef50c1a66da25690 -u
 
 # MET filters
 git remote add cms-met https://github.com/cms-met/cmssw
@@ -51,7 +55,7 @@ scram b -j 4
 cd ${CMSSW_BASE}/src/EgammaAnalysis/ElectronTools/data
 git clone https://github.com/ECALELFS/ScalesSmearings.git
 cd ScalesSmearings
-git checkout Moriond17_23Jan_v1
+git checkout fe4ce4355ef88e4fc0efaa6bad06c25e333fdb86 # corresponds to HEAD of branch Moriond17_gainSwitch_unc
 rm -rf .git
 
 cd ${CMSSW_BASE}/src/cp3_llbb/Framework
