@@ -3,6 +3,8 @@
 # CMSSW env is already configured
 # Current working dir is $CMSSW_BASE/src
 
+git cms-init
+
 git remote add cms-egamma https://github.com/cms-egamma/cmssw.git
 git fetch cms-egamma EGM_gain_v1
 git cms-merge-topic cms-egamma:f2ae5ef247d2544bdccd0460586b468eb35631c5
