@@ -3,8 +3,12 @@
 # CMSSW env is already configured
 # Current working dir is $CMSSW_BASE/src
 
-git cms-merge-topic rafaellopesdesa:EgammaAnalysis80_EGMSmearer_Moriond17_23Jan
-git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy
+git remote add cms-egamma https://github.com/cms-egamma/cmssw
+git fetch cms-egamma EGM_gain_v1
+git cms-merge-topic cms-egamma:f2ae5ef247d2544bdccd0460586b468eb35631c5 -u
+git remote add rafaellopesdesa https://github.com/rafaellopesdesa/cmssw
+git fetch rafaellopesdesa RegressionCheckNegEnergy
+git cms-merge-topic rafaellopesdesa:3aafeff0371a1d1eb3db9d95ef50c1a66da25690 -u
 git remote add cms-met https://github.com/cms-met/cmssw
 git fetch cms-met METRecipe_8020_for80Xintegration
 git cms-merge-topic cms-met:92f73cd3d16a9529585865a365de271e0535b68d -u
