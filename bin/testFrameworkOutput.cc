@@ -151,7 +151,7 @@ TEST_CASE("Check if trees are equals", "[diff]") {
             std::cout << "  " << b << std::endl;
         }
     }
-    REQUIRE(test_tree->GetNbranches() == n_branches);
+    CHECK(test_tree->GetNbranches() == n_branches);
 
     size_t entries = ref_tree->GetEntries();
     REQUIRE(test_tree->GetEntries() == entries);
@@ -164,13 +164,15 @@ TEST_CASE("Check if trees are equals", "[diff]") {
             ref_branch->GetEntry(entry);
 
             TBranch* test_branch = test_tree->GetBranch(ref_branch->GetName());
-            REQUIRE(test_branch);
+            CHECK(test_branch);
+            if ( test_branch ) {
 
-            test_branch->GetEntry(entry);
+              test_branch->GetEntry(entry);
 
-            REQUIRE(test_branch->GetListOfBranches()->GetEntries() == ref_branch->GetListOfBranches()->GetEntries());
+              REQUIRE(test_branch->GetListOfBranches()->GetEntries() == ref_branch->GetListOfBranches()->GetEntries());
 
-            REQUIRE(diffBranches(entry, ref_branch, test_branch));
+              REQUIRE(diffBranches(entry, ref_branch, test_branch));
+            }
         }
     }
 }
