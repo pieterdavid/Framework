@@ -8,7 +8,8 @@ from cp3_llbb.Framework.CmdLine import CmdLine
 options = CmdLine(defaults=dict(runOnData=0, era="25ns", globalTag='80X_mcRun2_asymptotic_2016_miniAODv2_v1'))
 
 framework = Framework.Framework(options)
-framework.redoJEC()
+from cp3_llbb.Framework.JetsProducer import discriminators_deepFlavour
+framework.redoJEC(addBtagDiscriminators=discriminators_deepFlavour)
 framework.smearJets()
 framework.applyMuonCorrection("kamuca")
 framework.applyElectronRegression()

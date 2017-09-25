@@ -9,7 +9,8 @@ options = CmdLine(defaults=dict(runOnData=1, era="25ns", globalTag='80X_dataRun2
 
 framework = Framework.Framework(options)
 
-framework.redoJEC()
+from cp3_llbb.Framework.JetsProducer import discriminators_deepFlavour
+framework.redoJEC(addBtagDiscriminators=discriminators_deepFlavour)
 
 process = framework.create()
 

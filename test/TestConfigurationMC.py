@@ -36,10 +36,12 @@ framework.addAnalyzer('test', cms.PSet(
 
 framework.removeProducer('fat_jets')
 
+
 # Load JEC from the specified database instead of the GT. Will also affect the JEC systematics
 # framework.useJECDatabase('Fall15_25nsV2_MC.db')
 
-# framework.redoJEC()
+from cp3_llbb.Framework.JetsProducer import discriminators_deepFlavour
+framework.redoJEC(addBtagDiscriminators=discriminators_deepFlavour)
 # framework.smearJets()
 # framework.smearJets(resolutionFile='cp3_llbb/Framework/data/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt', scaleFactorFile='cp3_llbb/Framework/data/Spring16_25nsV10_MC_SF_AK4PFchs.txt')
 # framework.applyMuonCorrection("kamuca")
