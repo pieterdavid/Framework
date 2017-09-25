@@ -8,7 +8,8 @@ from cp3_llbb.Framework.CmdLine import CmdLine
 options = CmdLine(defaults=dict(runOnData=0, era="25ns", globalTag='80X_mcRun2_asymptotic_2016_miniAODv2_v1'))
 
 framework = Framework.Framework(options)
-framework.redoJEC(JECDatabase='Spring16_25nsV1_MC.db')
+from cp3_llbb.Framework.JetsProducer import discriminators_deepFlavour
+framework.redoJEC(JECDatabase='Spring16_25nsV1_MC.db', addBtagDiscriminators=discriminators_deepFlavour)
 process = framework.create()
 
 process.source.fileNames = cms.untracked.vstring(

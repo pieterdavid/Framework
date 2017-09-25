@@ -88,7 +88,6 @@ class Framework(object):
         process.load('Configuration.StandardSequences.MagneticField_38T_cff')
         process.load('FWCore.MessageLogger.MessageLogger_cfi')
 
-
         process.GlobalTag.globaltag = self.globalTag
 
         process.MessageLogger.cerr.FwkReport.reportEvery = 1000
@@ -279,10 +278,12 @@ class Framework(object):
 
         load_jec_from_db(self.process, database, jet_algos)
 
-
-    def redoJEC(self, JECDatabase=None):
+    def redoJEC(self, JECDatabase=None, addBtagDiscriminators=None):
         """
-        Redo the Jet Energy Corrections for the default AK4 jet collection
+        Redo the Jet Energy Corrections for the default AK4 jet collection,
+        and optionally add some b-tags (which implies redoing the JEC, since
+        b-tagging needs to be run on uncalibrated jets).
+
         FIXME: Some love is needed for AK8 jets
         """
 
@@ -293,18 +294,18 @@ class Framework(object):
 
         if self.verbose:
             print("")
-            print("Redoing Jet Energy Corrections")
+            print("Redoing Jet Energy Corrections{}".format("" if addBtagDiscriminators is None else ", and adding b-tag classifiers {}".format(", ".join(addBtagDiscriminators))))
 
         if JECDatabase:
             # Read the JEC from a database
             self.useJECDatabase(JECDatabase)
 
         from cp3_llbb.Framework.Tools import recorrect_jets, recorrect_met
-        jet_collection = recorrect_jets(self.process, self.isData, 'AK4PFchs', self.__miniaod_jet_collection)
+        jet_collection = recorrect_jets(self.process, self.isData, 'AK4PFchs', self.__miniaod_jet_collection, addBtagDiscriminators=addBtagDiscriminators)
         met_collection = recorrect_met(self.process, self.isData, self.__miniaod_met_collection, jet_collection)
 
         # Fat jets
-        fat_jet_collection = recorrect_jets(self.process, self.isData, 'AK8PFchs', self.__miniaod_fat_jet_collection)
+        fat_jet_collection = recorrect_jets(self.process, self.isData, 'AK8PFchs', self.__miniaod_fat_jet_collection, addBtagDiscriminators=addBtagDiscriminators)
 
         # Look for producers using the default jet and met collections
         for producer in self.producers:

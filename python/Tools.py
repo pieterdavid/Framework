@@ -127,7 +127,7 @@ def module_has_string(module, string):
 
     return False
 
-def recorrect_jets(process, isData, jetAlgo, jetCollection):
+def recorrect_jets(process, isData, jetAlgo, jetCollection, addBtagDiscriminators=None):
     """
     Create a new jets collection with new JECs applied
 
@@ -136,6 +136,7 @@ def recorrect_jets(process, isData, jetAlgo, jetCollection):
     isData      True if running over data, False otherwise
     jetAlgo     The jet algorithm used to produce jetCollection (like AK4PFchs, or AK8PF)
     jetCollection   The name of the input jet collection
+    addBtagDiscrimiantors   (optional) b-tag discriminators to add to the jets
 
     Returns:
     The name of the new collection
@@ -153,10 +154,14 @@ def recorrect_jets(process, isData, jetAlgo, jetCollection):
             process,
             jetSource = cms.InputTag(jetCollection),
             labelName = '%sNewJEC' % jetAlgo,
-            jetCorrections = (jetAlgo, cms.vstring(levels), 'None')
+            jetCorrections = (jetAlgo, cms.vstring(levels), 'None'),
+            btagDiscriminators = addBtagDiscriminators
             )
 
-    return 'updatedPatJets%sNewJEC' % jetAlgo
+    if addBtagDiscriminators is None:
+        return 'updatedPatJets%sNewJEC' % jetAlgo
+    else:
+        return 'selectedUpdatedPatJets%sNewJEC' % jetAlgo
 
 def recorrect_met(process, isData, metCollection, jetCollection):
     """
