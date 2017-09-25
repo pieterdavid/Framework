@@ -1,5 +1,10 @@
 import FWCore.ParameterSet.Config as cms
 
+discriminators_deepFlavour = list("{algo}:prob{tagCat}".format(algo=algo, tagCat=tagCat)
+        for algo in ("pfDeepCSVJetTags",)# "pfDeepCMVAJetTags" seems more difficult on miniAOD in CMSSW_8_0_30
+        for tagCat in ("b", "bb", "c", "cc", "udsg")
+        )
+
 default_configuration = cms.PSet(
         type = cms.string('jets'),
         prefix = cms.string('jet_'),
@@ -7,7 +12,7 @@ default_configuration = cms.PSet(
         parameters = cms.PSet(
             jets = cms.untracked.InputTag('slimmedJets'),
             cut = cms.untracked.string("pt > 10"),
-            btags = cms.untracked.vstring('pfCombinedInclusiveSecondaryVertexV2BJetTags', 'pfCombinedMVABJetTags', 'pfCombinedMVAV2BJetTags', 'pfDeepCSVJetTags', 'pfDeepCMVAJetTags'),
+            btags = cms.untracked.vstring('pfCombinedInclusiveSecondaryVertexV2BJetTags', 'pfCombinedMVABJetTags', 'pfCombinedMVAV2BJetTags', *discriminators_deepFlavour),
             scale_factors = cms.untracked.PSet(
                 csvv2_loose = cms.untracked.PSet(
                     algorithm = cms.untracked.string('csvv2'),

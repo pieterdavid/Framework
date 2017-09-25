@@ -18,7 +18,9 @@ class FatJetsProducer: public CandidatesProducer<pat::Jet>, public BTaggingScale
 
                 // Create branches
                 for (const std::string& btag: btags) {
-                    m_btag_discriminators.emplace(btag, &CandidatesProducer<pat::Jet>::tree[btag].write<std::vector<float>>());
+                    std::string branchName{btag};
+                    std::replace(std::begin(branchName), std::end(branchName), ':', '_');
+                    m_btag_discriminators.emplace(btag, &CandidatesProducer<pat::Jet>::tree[branchName].write<std::vector<float>>());
                 }
             }
 
