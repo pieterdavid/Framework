@@ -1,7 +1,13 @@
 #!/bin/bash
 
+first_failure_status=0
+first_failure_message=""
 # Pass in name and status
-function die { echo $1: status $2 ;  exit $2; }
+function die {
+  first_failure_message=$1
+  first_failure_status=$2
+  echo "${first_failure_message}: status ${first_failure_status}"
+}
 
 . download_dependencies.sh
 
@@ -16,3 +22,7 @@ F2=${LOCAL_TEST_DIR}/unit_tests_data.py
 F3=${LOCAL_TEST_DIR}/unit_tests_mc_with_db.py
 (cmsRun $F3 ) || die "Failure using $F3" $?
 (cp3llbbTestFrameworkOutput ${LOCAL_TEST_DIR}/unit_tests_mc_with_db_ref.root output_mc.root) || die "Output file does not match reference file" $?
+
+if [ ${first_failure_status} -ne 0 ]; then
+  exit $first_failure_status
+fi
