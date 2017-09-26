@@ -32,6 +32,8 @@ framework.addAnalyzer('test', cms.PSet(
 framework.applyElectronRegression()
 framework.applyElectronSmearing()
 
+from cp3_llbb.Framework.JetsProducer import discriminators_deepFlavour
+framework.redoJEC(addBtagDiscriminators=discriminators_deepFlavour)
 framework.doSystematics(['jec', 'jer'])
     
 process = framework.create()
