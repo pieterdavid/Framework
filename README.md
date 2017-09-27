@@ -14,59 +14,20 @@ Common framework for all cp3-llbb analyses
 ## First time setup instructions
 
 ```bash
+## the following two lines can be replaced by a call to the cms_env alias (see below)
 source /nfs/soft/grid/ui_sl6/setup/grid-env.sh
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 
-export SCRAM_ARCH=slc6_amd64_gcc530
-cmsrel CMSSW_8_0_30
-cd CMSSW_8_0_30/src
-cmsenv
-
-git cms-init
-
-# CP3-llbb framework itself
-git clone -o upstream git@github.com:blinkseb/TreeWrapper.git cp3_llbb/TreeWrapper
-git clone -b CMSSW_8_0_6p -o upstream git@github.com:cp3-llbb/Framework.git cp3_llbb/Framework
-
-# KalmanMuonCalibrator
-git clone -o upstream https://github.com/bachtis/analysis.git -b KaMuCa_V4 KaMuCa 
-pushd KaMuCa
-git checkout 2ad38daae37a41a9c07f482e95f2455e3eb915b0
-popd
-
-# Electron smearing consistent with regression
-git remote add cms-egamma https://github.com/cms-egamma/cmssw
-git fetch cms-egamma EGM_gain_v1
-git cms-merge-topic cms-egamma:f2ae5ef247d2544bdccd0460586b468eb35631c5 -u
-
-# Fix outside training boundary bug for EGM regression
-# https://twiki.cern.ch/twiki/bin/view/CMS/EGMRegression#TrainingBoundary
-git remote add rafaellopesdesa https://github.com/rafaellopesdesa/cmssw
-git fetch rafaellopesdesa RegressionCheckNegEnergy
-git cms-merge-topic rafaellopesdesa:3aafeff0371a1d1eb3db9d95ef50c1a66da25690 -u
-
-# MET filters
-git remote add cms-met https://github.com/cms-met/cmssw
-git fetch cms-met METRecipe_8020_for80Xintegration
-git cms-merge-topic cms-met:92f73cd3d16a9529585865a365de271e0535b68d -u
-
-scram b -j 4
-
-cd ${CMSSW_BASE}/src/EgammaAnalysis/ElectronTools/data
-git clone https://github.com/ECALELFS/ScalesSmearings.git
-cd ScalesSmearings
-git checkout fe4ce4355ef88e4fc0efaa6bad06c25e333fdb86 # corresponds to HEAD of branch Moriond17_gainSwitch_unc
-rm -rf .git
-
-cd ${CMSSW_BASE}/src/cp3_llbb/Framework
-source first_setup.sh
-cd ${CMSSW_BASE}/src
+wget https://raw.githubusercontent.com/cp3-llbb/Framework/CMSSW_8_0_6p/setup_project_with_framework.sh
+source setup_project_with_framework.sh
 ```
+
+The script will set up a CMSSW release area, apply the recipes in [``bootstrap_jenkins.sh``](https://github.com/cp3-llbb/Framework/blob/CMSSW_8_0_6p/bootstrap_jenkins.sh) and [``jenkins_postbuild.sh``](https://github.com/cp3-llbb/Framework/blob/CMSSW_8_0_6p/jenkins_postbuild.sh), perform an initial build, and add your and your colleagues' forks on GitHub as remotes for your ``Framework`` clone.
 
 If you are using ingrid, here's a useful alias to put in your ``bashrc`` file:
 
 ```bash
-alias cms_env="module purge; module load grid/grid_environment_sl6; module load crab/crab3; module load cms/cmssw;"
+alias cms_env="module purge; module load grid/grid_environment_sl6; module load crab/crab3; module load cms/cmssw; module load slurm/slurm_utils;"
 ```
 
 Then, just do ``cms_env`` to load all the CMSSW environment.
