@@ -22,7 +22,7 @@ wget https://raw.githubusercontent.com/cp3-llbb/Framework/CMSSW_8_0_6p/setup_pro
 source setup_project_with_framework.sh
 ```
 
-[This script](https://github.com/cp3-llbb/Framework/blob/CMSSW_8_0_6p/setup_project_with_framework.sh) will set up a CMSSW release area, apply the recipes in [``bootstrap_jenkins.sh``](https://github.com/cp3-llbb/Framework/blob/CMSSW_8_0_6p/bootstrap_jenkins.sh) and [``jenkins_postbuild.sh``](https://github.com/cp3-llbb/Framework/blob/CMSSW_8_0_6p/jenkins_postbuild.sh), perform an initial build, and add your and your colleagues' forks on GitHub as remotes for your ``Framework`` clone.
+[This script](setup_project_with_framework.sh) will set up a CMSSW release area, apply the recipes in [``bootstrap_jenkins.sh``](bootstrap_jenkins.sh) and [``jenkins_postbuild.sh``](jenkins_postbuild.sh), perform an initial build, and add your and your colleagues' forks on GitHub as remotes for your ``Framework`` clone.
 
 If you are using ingrid, here's a useful alias to put in your ``bashrc`` file:
 
