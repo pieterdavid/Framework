@@ -23,6 +23,7 @@ source setup_project_with_framework.sh
 ```
 
 [This script](setup_project_with_framework.sh) will set up a CMSSW release area, apply the recipes in [``bootstrap_jenkins.sh``](bootstrap_jenkins.sh) and [``jenkins_postbuild.sh``](jenkins_postbuild.sh), perform an initial build, and add your and your colleagues' forks on GitHub as remotes for your ``Framework`` clone.
+Through the options `--branch NAME` and `--pr ID`, a project area for a different version can also be set created.
 
 If you are using ingrid, here's a useful alias to put in your ``bashrc`` file:
 
