@@ -28,19 +28,12 @@ class deptracker(object):
         self.fallback = fallback
     @staticmethod
     def _parse_names(arg):
-        from itertools import imap
         names = tuple()
         if isinstance(arg, str):
             names = (arg,)
         elif hasattr(arg, "__iter__"):
             names = arg
-        return tuple(imap(deptracker._varName, names))
-    @staticmethod
-    def _varName(name):
-        return "__{}_done".format(name)
-    @staticmethod
-    def _actionName(varName):
-        return varName[2:-5]
+        return tuple(names)
 
     def checkInit(self, obj):
         """ ensure that the tracker dictionary is there, and our keys are present """
@@ -68,13 +61,13 @@ class deptracker(object):
                 if deco.fallback:
                     return deco.fallback(*args, **kwargs)
                 raise RuntimeError("Method {0} called after performing {1}".format(func.__name__
-                    , ", ".join(deptracker._actionName(step) for step in deco.before if deco.isDone(self, step))
+                    , ", ".join(step for step in deco.before if deco.isDone(self, step))
                     ))
             if any(not deco.isDone(self, step) for step in deco.after):
                 if deco.fallback:
                     return deco.fallback(*args, **kwargs)
                 raise RuntimeError("Method {0} called before performing {1}".format(func.__name__
-                    , ", ".join(deptracker._actionName(step) for step in deco.after if not deco.isDone(self, step))
+                    , ", ".join(step for step in deco.after if not deco.isDone(self, step))
                     ))
 
             ret = func(*args, **kwargs)
