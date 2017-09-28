@@ -56,19 +56,21 @@ class deptracker(object):
         @wraps(func)
         def func_wrapper(*args, **kwargs):
             self = args[0]
+            unchecked = kwargs.pop("skipDepsCheck", set())
             deco.checkInit(self)
-            if any(deco.isDone(self, step) for step in deco.before):
-                if deco.fallback:
-                    return deco.fallback(*args, **kwargs)
-                raise RuntimeError("Method {0} called after performing {1}".format(func.__name__
-                    , ", ".join(step for step in deco.before if deco.isDone(self, step))
-                    ))
-            if any(not deco.isDone(self, step) for step in deco.after):
-                if deco.fallback:
-                    return deco.fallback(*args, **kwargs)
-                raise RuntimeError("Method {0} called before performing {1}".format(func.__name__
-                    , ", ".join(step for step in deco.after if not deco.isDone(self, step))
-                    ))
+            if not unchecked:
+                if any(deco.isDone(self, step) and step not in unchecked for step in deco.before):
+                    if deco.fallback:
+                        return deco.fallback(*args, **kwargs)
+                    raise RuntimeError("Method {0} called after performing {1}".format(func.__name__
+                        , ", ".join(step for step in deco.before if deco.isDone(self, step))
+                        ))
+                if any(( not deco.isDone(self, step) ) and step not in unchecked for step in deco.after):
+                    if deco.fallback:
+                        return deco.fallback(*args, **kwargs)
+                    raise RuntimeError("Method {0} called before performing {1}".format(func.__name__
+                        , ", ".join(step for step in deco.after if not deco.isDone(self, step))
+                        ))
 
             ret = func(*args, **kwargs)
 

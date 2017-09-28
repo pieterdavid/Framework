@@ -4,6 +4,8 @@ import FWCore.ParameterSet.Config as cms
 
 from cp3_llbb.Framework.Tools import change_input_tags_and_strings, module_has_string
 
+framework_skipDepChecks = ("correction",)
+
 class Systematics(object):
     def __init__(self, name, framework):
         self.name = name
@@ -66,8 +68,8 @@ class JetsSystematics(Systematics):
         cfg.parameters.jets = cms.untracked.InputTag(inputCollection)
         cfg.parameters.systematics = cms.untracked.bool(True)
        
-        index = self.framework.getProducerIndex('jets')
-        self.framework.addProducer(producerName, cfg, index + 1)
+        index = self.framework.getProducerIndex('jets', skipDepsCheck=framework_skipDepChecks)
+        self.framework.addProducer(producerName, cfg, index + 1, skipDepsCheck=framework_skipDepChecks)
 
     def addMETProducer(self, inputCollection, postfix):
         producerName = self.formatModuleVariableName('met', postfix)
@@ -79,8 +81,8 @@ class JetsSystematics(Systematics):
         cfg.parameters.slimmed = cms.untracked.bool(False)
         cfg.parameters.systematics = cms.untracked.bool(True)
        
-        index = self.framework.getProducerIndex('met')
-        self.framework.addProducer(producerName, cfg, index + 1)
+        index = self.framework.getProducerIndex('met', skipDepsCheck=framework_skipDepChecks)
+        self.framework.addProducer(producerName, cfg, index + 1, skipDepsCheck=framework_skipDepChecks)
 
     def run(self):
         upModules = self.getJetSystematicsProducers_(+1)
@@ -159,9 +161,9 @@ class JetsSystematics(Systematics):
                 upCfg.prefix = self.formatModuleVariableName(upCfg.prefix.value(), upModulePostfix) + '_'
                 downCfg.prefix = self.formatModuleVariableName(downCfg.prefix.value(), downModulePostfix) + '_'
 
-                index = self.framework.getAnalyzerIndex(analyzer)
-                self.framework.addAnalyzer(upAnalyzer, upCfg, index + 1)
-                self.framework.addAnalyzer(downAnalyzer, downCfg, index + 2)
+                index = self.framework.getAnalyzerIndex(analyzer, skipDepsCheck=framework_skipDepChecks)
+                self.framework.addAnalyzer(upAnalyzer, upCfg, index + 1, skipDepsCheck=framework_skipDepChecks)
+                self.framework.addAnalyzer(downAnalyzer, downCfg, index + 2, skipDepsCheck=framework_skipDepChecks)
 
 
 class JECSystematics(JetsSystematics):
