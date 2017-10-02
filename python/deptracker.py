@@ -21,11 +21,10 @@ class deptracker(object):
 
     This is implemented using a "__trackers" dictionary that is added to the object's attributes.
     """
-    def __init__(self, before=None, after=None, performs=None, fallback=None):
+    def __init__(self, before=None, after=None, performs=None):
         self.before   = deptracker._parse_names(before  )
         self.after    = deptracker._parse_names(after   )
         self.performs = deptracker._parse_names(performs)
-        self.fallback = fallback
     @staticmethod
     def _parse_names(arg):
         names = tuple()
@@ -60,14 +59,10 @@ class deptracker(object):
             deco.checkInit(self)
             if not unchecked:
                 if any(deco.isDone(self, step) and step not in unchecked for step in deco.before):
-                    if deco.fallback:
-                        return deco.fallback(*args, **kwargs)
                     raise RuntimeError("Method {0} called after performing {1}".format(func.__name__
                         , ", ".join(step for step in deco.before if deco.isDone(self, step))
                         ))
                 if any(( not deco.isDone(self, step) ) and step not in unchecked for step in deco.after):
-                    if deco.fallback:
-                        return deco.fallback(*args, **kwargs)
                     raise RuntimeError("Method {0} called before performing {1}".format(func.__name__
                         , ", ".join(step for step in deco.after if not deco.isDone(self, step))
                         ))

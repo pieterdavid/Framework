@@ -92,7 +92,7 @@ class Framework(object):
 
         self._configureFramework()
 
-    @dep(before="create", performs="create", fallback=lambda self : self.process)
+    @dep(before="create", performs="create")
     def create(self):
         """
         Terminate the process configuration and return the final CMSSW process
