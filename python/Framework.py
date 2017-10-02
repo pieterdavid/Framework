@@ -5,6 +5,7 @@ from FWCore.ParameterSet.SequenceTypes import _SequenceCollection
 
 from Configuration.StandardSequences.Eras import eras
 
+from cp3_llbb.Framework.deptracker import deptracker as dep
 from cp3_llbb.Framework.Tools import change_process_name, change_input_tags_and_strings, StdStreamSilenter
 from cp3_llbb.Framework import Tools
 import cp3_llbb.Framework.Systematics as Systematics
@@ -12,11 +13,8 @@ import cp3_llbb.Framework.Systematics as Systematics
 class Framework(object):
 
     def __init__(self, options, verbose=True):
-        self.__created = False
         self.__systematics = []
         self.__systematicsOptions = {}
-        self.__jec_done = False
-        self.__jer_done = False
 
         # Default configuration
         self.__miniaod_jet_collection = 'slimmedJets'
@@ -29,10 +27,6 @@ class Framework(object):
 
         self.__jer_resolution_file = None
         self.__jer_scalefactor_file = None
-
-        self.__electron_regression_done = False
-        self.__electron_smearing_done = False
-        self.__muon_correction_done = False
 
         self.__kamuca_tag = 'DATA_80X_13TeV' if options.runOnData else 'MC_80X_13TeV'
         self.__rochester_input = 'cp3_llbb/Framework/data/Rochester/2016.v3/config.txt'
@@ -96,15 +90,13 @@ class Framework(object):
         process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
         process.source = cms.Source("PoolSource")
 
-        self.configureFramework_()
+        self._configureFramework()
 
+    @dep(before="create", performs="create")
     def create(self):
         """
         Terminate the process configuration and return the final CMSSW process
         """
-
-        if self.__created:
-            return self.process
 
         self.configureElectronId_()
 
@@ -163,15 +155,13 @@ class Framework(object):
         self.process.framework.analyzers_scheduling = cms.untracked.vstring(self.analyzers)
         self.process.framework.producers_scheduling = cms.untracked.vstring(self.producers)
 
-        self.__created = True
         return self.process
 
+    @dep(before=("create", "correction"))
     def addAnalyzer(self, name, configuration, index=None):
         """
         Add an analyzer in the framework configuration with a given name and configuration
         """
-
-        self.ensureNotCreated()
 
         if name in self.analyzers:
             raise Exception('An analyzer named %r is already added to the configuration' % name)
@@ -181,12 +171,11 @@ class Framework(object):
         self.analyzers.insert(index, name)
         setattr(self.process.framework.analyzers, name, configuration)
 
+    @dep(before=("create", "correction"))
     def addProducer(self, name, configuration, index=None):
         """
         Add a producer in the framework configuration with a given name and configuration
         """
-
-        self.ensureNotCreated()
 
         if name in self.producers:
             raise Exception('A producer named %r is already added to the configuration' % name)
@@ -196,12 +185,11 @@ class Framework(object):
         self.producers.insert(index, name)
         setattr(self.process.framework.producers, name, configuration)
 
+    @dep(before=("create", "correction"))
     def getProducer(self, name):
         """
         Return a producer
         """
-
-        self.ensureNotCreated()
 
         if not name in self.producers:
             raise Exception('No producer named %r found in the configuration' % name)
@@ -209,12 +197,11 @@ class Framework(object):
         producer = getattr(self.process.framework.producers, name)
         return producer
 
+    @dep(before=("create", "correction"))
     def removeAnalyzer(self, name):
         """
         Remove an analyzer from the framework configuration
         """
-
-        self.ensureNotCreated()
 
         if not name in self.analyzers:
             raise Exception('Analyzer %r is not present in the framework configuration' % name)
@@ -222,12 +209,11 @@ class Framework(object):
         self.analyzers.remove(name)
         delattr(self.process.framework.analyzers, name)
 
+    @dep(before=("create", "correction"))
     def removeProducer(self, name):
         """
         Remove a producer from the framework configuration
         """
-
-        self.ensureNotCreated()
 
         if not name in self.producers:
             raise Exception('Producer %r is not present in the framework configuration' % name)
@@ -235,36 +221,33 @@ class Framework(object):
         self.producers.remove(name)
         delattr(self.process.framework.producers, name)
 
+    @dep(before=("create", "correction"))
     def getAnalyzerIndex(self, name):
         """
         Return the current index of an analyzer
         """
-
-        self.ensureNotCreated()
 
         if not name in self.analyzers:
             raise Exception('Analyzer %r is not present in the framework configuration' % name)
 
         return self.analyzers.index(name)
 
+    @dep(before=("create", "correction"))
     def getProducerIndex(self, name):
         """
         Return the current index of a producer
         """
-
-        self.ensureNotCreated()
 
         if not name in self.producers:
             raise Exception('Producer %r is not present in the framework configuration' % name)
 
         return self.producers.index(name)
 
+    @dep(before=("create", "correction"))
     def useJECDatabase(self, database):
         """
         JEC factors will be retrieved from the database instead of the Global Tag
         """
-
-        self.ensureNotCreated()
 
         # Read the JEC from a database
         from cp3_llbb.Framework.Tools import load_jec_from_db
@@ -278,6 +261,7 @@ class Framework(object):
 
         load_jec_from_db(self.process, database, jet_algos)
 
+    @dep(before=("create", "jec", "jer"), performs=("correction", "jec"))
     def redoJEC(self, JECDatabase=None, addBtagDiscriminators=None):
         """
         Redo the Jet Energy Corrections for the default AK4 jet collection,
@@ -286,11 +270,6 @@ class Framework(object):
 
         FIXME: Some love is needed for AK8 jets
         """
-
-        self.ensureNotCreated()
-
-        if self.__jer_done:
-            raise Exception("You must smear the jets after doing the Jet Energy Corrections. Please call 'redoJEC' before 'smearJets'")
 
         if self.verbose:
             print("")
@@ -328,14 +307,11 @@ class Framework(object):
 
         print("")
 
-        self.__jec_done = True
-
+    @dep(before=("create", "jer"), performs=("correction", "jer"))
     def smearJets(self, resolutionFile=None, scaleFactorFile=None):
         """
         Smear the jets
         """
-
-        self.ensureNotCreated()
 
         if self.isData:
             return
@@ -396,8 +372,7 @@ class Framework(object):
         if self.verbose:
             print("New jets and MET collections: %r and %r" % (self.__miniaod_jet_collection, self.__miniaod_met_collection))
 
-        self.__jer_done = True
-
+    @dep(before=("create", "muonScale"), performs=("correction", "muonScale"))
     def applyMuonCorrection(self, type):
         """
         Apply correction to muon
@@ -410,8 +385,6 @@ class Framework(object):
 
         if not type in supported:
             raise Exception("Unsupported muon correction. Can only be one of %s" % supported)
-
-        self.ensureNotCreated()
 
         if self.verbose:
             print("")
@@ -440,15 +413,12 @@ class Framework(object):
         if self.verbose:
             print("New muons collection: %r" % (self.__miniaod_muon_collection))
 
-        self.__muon_correction_done = True
-
+    @dep(before=("create", "electronRegression"), performs=("correction", "electronRegression"))
     def applyElectronRegression(self):
         """
         Apply electron regression from
             https://twiki.cern.ch/twiki/bin/view/CMS/EGMRegression
         """
-
-        self.ensureNotCreated()
 
         if self.verbose:
             print("")
@@ -473,22 +443,16 @@ class Framework(object):
         if self.verbose:
             print("New electrons collection: %r" % (self.__miniaod_electron_collection))
 
-        self.__electron_regression_done = True
-
+    @dep(before=("create", "electronSmearing"), after="electronRegression", performs=("electronSmearing", "correction"))
     def applyElectronSmearing(self):
         """
         Apply electron smearing from
             https://twiki.cern.ch/twiki/bin/view/CMS/EGMSmearer
         """
 
-        self.ensureNotCreated()
-
         if self.verbose:
             print("")
             print("Applying electron smearing...")
-
-        if not self.__electron_regression_done:
-            print("Warning: electron regression is not applied. You probably want to call `applyElectronRegression()` before calling `applyElectronSmearing`")
 
         from EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi import calibratedPatElectrons
         from EgammaAnalysis.ElectronTools.calibrationTablesRun2 import files
@@ -524,14 +488,11 @@ class Framework(object):
         if self.verbose:
             print("New electrons collection: %r" % (self.__miniaod_electron_collection))
 
-        self.__electron_smearing_done = True
-
+    @dep(before="create")
     def doSystematics(self, systematics, **kwargs):
         """
         Enable systematics
         """
-
-        self.ensureNotCreated()
 
         if self.isData:
             return
@@ -544,13 +505,8 @@ class Framework(object):
     # Private methods
     #
 
-    def ensureNotCreated(self):
-        if self.__created:
-            raise RuntimeError("The framework configuration is frozen. Framework.create() must be the last function called.")
-
+    @dep(before="create")
     def configureElectronId_(self):
-
-        self.ensureNotCreated()
 
         with StdStreamSilenter():
             from PhysicsTools.SelectorUtils.tools.vid_id_tools import DataFormat, switchOnVIDElectronIdProducer, setupAllVIDIdsInModule, setupVIDElectronSelection
@@ -571,9 +527,7 @@ class Framework(object):
 
             self.process.electronMVAValueMapProducer.srcMiniAOD = self.__miniaod_electron_collection
 
-    def configureFramework_(self):
-
-        self.ensureNotCreated()
+    def _configureFramework(self):
 
         from cp3_llbb.Framework import EventProducer
         from cp3_llbb.Framework import GenParticlesProducer
