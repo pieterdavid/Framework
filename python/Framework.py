@@ -90,7 +90,7 @@ class Framework(object):
         process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
         process.source = cms.Source("PoolSource")
 
-        self.configureFramework_()
+        self._configureFramework()
 
     @dep(before="create", performs="create", fallback=lambda self : self.process)
     def create(self):
@@ -527,8 +527,7 @@ class Framework(object):
 
             self.process.electronMVAValueMapProducer.srcMiniAOD = self.__miniaod_electron_collection
 
-    @dep(before="configure", performs="configure")
-    def configureFramework_(self):
+    def _configureFramework(self):
 
         from cp3_llbb.Framework import EventProducer
         from cp3_llbb.Framework import GenParticlesProducer
