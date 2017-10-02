@@ -413,7 +413,7 @@ class Framework(object):
         if self.verbose:
             print("New muons collection: %r" % (self.__miniaod_muon_collection))
 
-    @dep(before=("create", "eleReg"), performs=("correction", "eleReg"))
+    @dep(before=("create", "electronRegression"), performs=("correction", "electronRegression"))
     def applyElectronRegression(self):
         """
         Apply electron regression from
@@ -443,7 +443,7 @@ class Framework(object):
         if self.verbose:
             print("New electrons collection: %r" % (self.__miniaod_electron_collection))
 
-    @dep(before=("create", "eleSmear"), after="eleReg", performs=("eleSmear", "correction"))
+    @dep(before=("create", "electronSmearing"), after="electronRegression", performs=("electronSmearing", "correction"))
     def applyElectronSmearing(self):
         """
         Apply electron smearing from

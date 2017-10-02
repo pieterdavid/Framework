@@ -8,15 +8,15 @@ class deptracker(object):
     Basic dependency tracking for member methods of an object, using a decorator class
 
     The member methods can e.g. be decorated as follows:
-    >>> @deptracker(before=("create", "eleSmear"), after="eleReg", performs=("eleSmear", "correction"))
+    >>> @deptracker(before=("create", "electronSmearing"), after="electronRegression", performs=("electronSmearing", "correction"))
     >>> def applyElectronSmearing(self):
     >>>     ...
 
     which will, when calling this method, check that no member method with `@deptracker(..., performs=("create"))`
-    nor `@deptracker(..., performs=("eleSmear"))` has been called yet, and
-    that a method with `@deptracker(..., performs=("eleReg", ...))` has been called.
-    Furthermore, this will mark "eleSmear" and "correction" as "done", such that no other method
-    with either of these in "before" can be called after (for "eleSmear": including this method;
+    nor `@deptracker(..., performs=("electronSmearing"))` has been called yet, and
+    that a method with `@deptracker(..., performs=("electronRegression", ...))` has been called.
+    Furthermore, this will mark "electronSmearing" and "correction" as "done", such that no other method
+    with either of these in "before" can be called after (for "electronSmearing": including this method;
     putting the same tag in "before" and "after" ensures that a method is called no more than once).
 
     This is implemented using a "__trackers" dictionary that is added to the object's attributes.
