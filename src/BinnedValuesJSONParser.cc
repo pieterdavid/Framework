@@ -1,6 +1,10 @@
+#include <boost/property_tree/json_parser.hpp>
+
 #include <cp3_llbb/Framework/interface/BinnedValuesJSONParser.h>
 
-#include <boost/property_tree/json_parser.hpp>
+#ifndef STANDALONE_SCALEFACTORS
+#include <FWCore/Utilities/interface/EDMException.h>
+#endif
 
 void BinnedValuesJSONParser::parse_file(const std::string& file) {
 
@@ -11,7 +15,12 @@ void BinnedValuesJSONParser::parse_file(const std::string& file) {
 
     std::vector<std::string> variables = get_string_array(ptree.get_child("variables"));
     if (variables.size() != dimension) {
-        throw edm::Exception(edm::errors::LogicError, "Invalid number of variables. Expected " + std::to_string(dimension) + ", got " + std::to_string(variables.size()));
+        std::string message{"Invalid number of variables. Expected " + std::to_string(dimension) + ", got " + std::to_string(variables.size())};
+#ifdef STANDALONE_SCALEFACTORS
+        throw std::logic_error(message);
+#else
+        throw edm::Exception(edm::errors::LogicError, message);
+#endif
     }
 
     std::vector<float> binning_x = get_array(ptree.get_child("binning.x"));
@@ -37,8 +46,14 @@ void BinnedValuesJSONParser::parse_file(const std::string& file) {
             m_values.formula_variable_index = 1;
         else if (variable == "z")
             m_values.formula_variable_index = 2;
-        else
-            throw edm::Exception(edm::errors::LogicError, "Unsupported variable: " + variable);
+        else {
+            std::string message{"Unsupported variable: " + variable};
+#ifdef STANDALONE_SCALEFACTORS
+            throw std::logic_error(message);
+#else
+            throw edm::Exception(edm::errors::LogicError, message);
+#endif
+        }
     }
 
     m_values.maximum = ptree.get("maximum", std::numeric_limits<float>::max());

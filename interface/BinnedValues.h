@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <sstream>
 
 #include <TFormula.h>
 

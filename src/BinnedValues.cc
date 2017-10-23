@@ -1,6 +1,8 @@
 #include <cp3_llbb/Framework/interface/BinnedValues.h>
 
+#ifndef STANDALONE_SCALEFACTORS
 #include <FWCore/Utilities/interface/EDMException.h>
+#endif
 
 Parameters::Parameters(Parameters&& rhs) {
     m_values = std::move(rhs.m_values);
@@ -49,9 +51,14 @@ std::vector<float> Parameters::toArray(const std::vector<BinningVariable>& binni
     for (const auto& bin: binning) {
         const auto& it = m_values.find(bin);
         if (it == m_values.cend()) {
-            throw edm::Exception(edm::errors::NotFound, "Parametrisation depends on '" + 
+            std::string message{"Parametrisation depends on '" +
                     BinnedValues::variable_to_string_mapping.left.at(bin) +
-                    "' but no value for this parameter has been specified. Please call the appropriate 'set' function of the Parameters object");
+                    "' but no value for this parameter has been specified. Please call the appropriate 'set' function of the Parameters object"};
+#ifdef STANDALONE_SCALEFACTORS
+            throw std::invalid_argument(message);
+#else
+            throw edm::Exception(edm::errors::NotFound, message);
+#endif
         }
 
         values.push_back(it->second);
