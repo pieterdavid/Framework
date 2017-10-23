@@ -1,11 +1,6 @@
 #pragma once
 
 #include <FWCore/ParameterSet/interface/ParameterSet.h>
-#include <FWCore/Framework/interface/Event.h>
-#include <FWCore/Framework/interface/EventSetup.h>
-#include <FWCore/Framework/interface/ConsumesCollector.h>
-#include <FWCore/Utilities/interface/InputTag.h>
-#include <DataFormats/Common/interface/ValueMap.h>
 
 #include <cp3_llbb/Framework/interface/Histogram.h>
 #include <cp3_llbb/Framework/interface/BinnedValues.h>
