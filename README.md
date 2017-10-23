@@ -78,4 +78,4 @@ A github bot also exists: https://github.com/cp3-llbb-bot ; it's a generic githu
 
 ## Troubleshooting
 
-  - If a build/test fails because of unexpected connection glitch, you can re-trigger jenkins by commenting `test this please` to the pull request
+  - If a build/test fails because of unexpected connection glitch, you can re-trigger jenkins by commenting `please test` to the pull request
