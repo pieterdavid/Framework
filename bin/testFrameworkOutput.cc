@@ -65,7 +65,7 @@ bool diffBranches(size_t entry, TBranch* ref, TBranch* test) {
 	    TBranch* test_subbranch = (TBranch*) test->GetListOfBranches()->UncheckedAt(n);
 	    REQUIRE(test_subbranch);
 
-	    REQUIRE(diffBranches(entry, ref_subbranch, test_subbranch));
+	    CHECK(diffBranches(entry, ref_subbranch, test_subbranch));
 	}
 
 	return true;
@@ -76,7 +76,7 @@ bool diffBranches(size_t entry, TBranch* ref, TBranch* test) {
     ref->GetEntry(entry);
     test->GetEntry(entry);
 
-    REQUIRE(test->GetListOfLeaves()->GetEntries() == ref->GetListOfLeaves()->GetEntries());
+    CHECK(test->GetListOfLeaves()->GetEntries() == ref->GetListOfLeaves()->GetEntries());
 
     TBasket* ref_basket = ref->fCurrentBasket;
     REQUIRE(ref_basket);
@@ -93,7 +93,7 @@ bool diffBranches(size_t entry, TBranch* ref, TBranch* test) {
     std::string ref_sha = sha256(ref_buffer->Buffer() + ref_basket->GetKeylen(), ref_buffer->Length() - ref_basket->GetKeylen());
     std::string test_sha = sha256(test_buffer->Buffer() + test_basket->GetKeylen(), test_buffer->Length() - test_basket->GetKeylen());
 
-    REQUIRE(ref_sha == test_sha);
+    CHECK(ref_sha == test_sha);
 
     return true;
 }
@@ -171,7 +171,7 @@ TEST_CASE("Check if trees are equals", "[diff]") {
 
               REQUIRE(test_branch->GetListOfBranches()->GetEntries() == ref_branch->GetListOfBranches()->GetEntries());
 
-              REQUIRE(diffBranches(entry, ref_branch, test_branch));
+              CHECK(diffBranches(entry, ref_branch, test_branch));
             }
         }
     }
