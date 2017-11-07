@@ -58,6 +58,7 @@ inline void print_bytes(char const * buffer, std::size_t count, std::size_t byte
 bool diffBranches(size_t entry, TBranch* ref, TBranch* test) {
 
     if (ref->GetListOfBranches()->GetEntries() > 0) {
+        bool identical = true;
 	for (size_t n = 0; n < (size_t) ref->GetListOfBranches()->GetEntries(); n++) {
 	    TBranch* ref_subbranch = (TBranch*) ref->GetListOfBranches()->UncheckedAt(n);
 	    REQUIRE(ref_subbranch);
@@ -65,10 +66,11 @@ bool diffBranches(size_t entry, TBranch* ref, TBranch* test) {
 	    TBranch* test_subbranch = (TBranch*) test->GetListOfBranches()->UncheckedAt(n);
 	    REQUIRE(test_subbranch);
 
-	    CHECK(diffBranches(entry, ref_subbranch, test_subbranch));
+            bool i_id = diffBranches(entry, ref_subbranch, test_subbranch); CHECK(i_id);
+            identical = identical && i_id;
 	}
 
-	return true;
+	return identical;
     }
 
     INFO("[Event " << entry << "] Checking branches " << ref->GetName() << " of type " << ref->GetClassName());
@@ -76,7 +78,7 @@ bool diffBranches(size_t entry, TBranch* ref, TBranch* test) {
     ref->GetEntry(entry);
     test->GetEntry(entry);
 
-    CHECK(test->GetListOfLeaves()->GetEntries() == ref->GetListOfLeaves()->GetEntries());
+    bool same_nLeaves = ( test->GetListOfLeaves()->GetEntries() == ref->GetListOfLeaves()->GetEntries() ); CHECK(same_nLeaves);
 
     TBasket* ref_basket = ref->fCurrentBasket;
     REQUIRE(ref_basket);
@@ -93,9 +95,9 @@ bool diffBranches(size_t entry, TBranch* ref, TBranch* test) {
     std::string ref_sha = sha256(ref_buffer->Buffer() + ref_basket->GetKeylen(), ref_buffer->Length() - ref_basket->GetKeylen());
     std::string test_sha = sha256(test_buffer->Buffer() + test_basket->GetKeylen(), test_buffer->Length() - test_basket->GetKeylen());
 
-    CHECK(ref_sha == test_sha);
+    bool same_hash = ( ref_sha == test_sha ); CHECK(same_hash);
 
-    return true;
+    return ( same_nLeaves && same_hash );
 }
 
 TEST_CASE("Check if trees are equals", "[diff]") {
@@ -118,6 +120,7 @@ TEST_CASE("Check if trees are equals", "[diff]") {
     if ((size_t) test_tree->GetNbranches() != n_branches) {
         std::set<std::string> ref_branches;
         TObjArray* branches = ref_tree->GetListOfBranches();
+
         TIter next(branches);
         TBranch* branch;
         while ((branch = (TBranch*) next())) {
@@ -160,20 +163,27 @@ TEST_CASE("Check if trees are equals", "[diff]") {
         TObjArray* branches = ref_tree->GetListOfBranches();
         TIter next(branches);
         TBranch* ref_branch;
+        bool all_branches_identical = true;
         while ((ref_branch = (TBranch*) next())) {
             ref_branch->GetEntry(entry);
 
             TBranch* test_branch = test_tree->GetBranch(ref_branch->GetName());
             CHECK(test_branch);
-            if ( test_branch ) {
-
+            if ( ! test_branch ) {
+              all_branches_identical = false;
+            } else {
               test_branch->GetEntry(entry);
 
-              REQUIRE(test_branch->GetListOfBranches()->GetEntries() == ref_branch->GetListOfBranches()->GetEntries());
+              bool same_nBranches = (test_branch->GetListOfBranches()->GetEntries() == ref_branch->GetListOfBranches()->GetEntries()); CHECK(same_nBranches);
 
-              CHECK(diffBranches(entry, ref_branch, test_branch));
+              bool same_diff = diffBranches(entry, ref_branch, test_branch);
+
+              if ( ! ( same_nBranches && same_diff ) ) {
+                all_branches_identical = false;
+              }
             }
         }
+        REQUIRE(all_branches_identical);
     }
 }
 
