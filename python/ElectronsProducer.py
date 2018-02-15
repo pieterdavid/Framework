@@ -32,6 +32,9 @@ default_configuration = cms.PSet(
                 hww_wp = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_Tight_Run2016_Run273726to276811_HWW_weighted.json'),
                 hww_mva80_wp = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_mva_80p_Iso2016_HWW_Full2016.json'),
                 hww_mva90_wp = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_mva_90p_Iso2016_HWW_Full2016.json'),
+
+                hww_highEta_corr = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electrons_highEtaCorrection.json'),
+                hww_lowPt_corr = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electrons_lowPtCorrection.json')
                 )
             ),
         )
