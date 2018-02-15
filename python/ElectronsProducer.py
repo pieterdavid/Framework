@@ -33,6 +33,8 @@ default_configuration = cms.PSet(
                 hww_mva80_wp = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_mva_80p_Iso2016_HWW_Full2016.json'),
                 hww_mva90_wp = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electron_mva_90p_Iso2016_HWW_Full2016.json'),
 
+                # The following scale factors are corrections for events at high eta and low pT, coming from:
+                # https://github.com/latinos/LatinoAnalysis/blob/c62fa0d2fd603eed0001621eb9335afc6ca4cbcd/Gardener/python/variables/LeptonEtaPtCorrFactors.py#L132
                 hww_highEta_corr = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electrons_highEtaCorrection.json'),
                 hww_lowPt_corr = cms.untracked.FileInPath('cp3_llbb/Framework/data/ScaleFactors/Electrons_lowPtCorrection.json')
                 )
