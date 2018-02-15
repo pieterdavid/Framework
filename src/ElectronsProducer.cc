@@ -57,7 +57,7 @@ void ElectronsProducer::produce(edm::Event& event, const edm::EventSetup& eventS
         hcalPFClusterIso.push_back(electron.hcalPFClusterIso());
         trackIso.push_back(electron.trackIso());
         // see https://github.com/latinos/LatinoTrees/blob/cc89e18d1a956f633cf59a7143f24491716d1047/DataFormats/src/SkimEvent.cc#L5831
-        expectedMissingInnerHits.push_back(electron.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_OUTER_HITS));
+        expectedMissingInnerHits.push_back(electron.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS));
 
         // MVA id
         if (! m_mva_id_values_map_token.isUninitialized()) {
