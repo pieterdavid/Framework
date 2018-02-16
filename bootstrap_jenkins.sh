@@ -19,7 +19,7 @@ function cms-merge-commit()
 # CMSSW env is already configured
 # Current working dir is $CMSSW_BASE/src
 
-git cms-init
+git cms-init --upstream-only
 
 echo "---> Merging recipes..."
 cms-merge-commit cms-egamma EGM_gain_v1 f2ae5ef247d2544bdccd0460586b468eb35631c5
