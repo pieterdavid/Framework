@@ -73,7 +73,8 @@ ExTreeMaker::ExTreeMaker(const edm::ParameterSet& iConfig):
 #endif
 
         // Use default values from CMSSW to optimize TTree output
-        m_output.reset(TFile::Open(m_output_filename.c_str(), "recreate"));
+        m_output.reset(TFile::Open(m_output_filename.c_str(), "recreate", "",
+              iConfig.getUntrackedParameter<int32_t>("compressionSettings", 1))); // see ROOT::CompressionSettings
         m_output->cd();
 
         m_raw_tree = new TTree("t", "t");
