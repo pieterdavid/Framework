@@ -43,6 +43,9 @@ cmsRun TestConfigurationMC.py
 # When willing to commit things
   * Remember to *branch before committing anything*: ```git checkout -b my-new-branch```
   * The ```first_setup.sh``` script took care of adding ```origin``` as your own repo, so to push just do the usual ```git push origin my-new-branch```
+  * If you change anything to the output trees (new or modified branches, new recipes etc.), the automatic tests (see below) will fail, because they compare the outputs to reference files.
+    You can do this by running the [`test/generate_reference_trees.sh`](test/generate_reference_trees.sh) script after committing your other changes.
+    It will also print a summary of all differences in the output files. If these are as expected, you can make a new commit with the updated reference files.
 
 # Jenkins
 
