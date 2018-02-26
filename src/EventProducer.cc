@@ -273,10 +273,11 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
             npu = pu_info.getPU_NumInteractions();
             true_interactions = pu_info.getTrueNumInteractions();
 
-            if (m_pu_reweighter.get())
+            if (m_pu_reweighter.get()) {
                 pu_weight = m_pu_reweighter->getWeight(true_interactions);
                 pu_weight_up = m_pu_reweighter_up->getWeight(true_interactions);
                 pu_weight_down = m_pu_reweighter_down->getWeight(true_interactions);
+            }
         }
     }
 
