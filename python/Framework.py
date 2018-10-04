@@ -539,8 +539,11 @@ class Framework(object):
         from cp3_llbb.Framework import ElectronsProducer
         from cp3_llbb.Framework import VerticesProducer
 
+        self.process.TFileService = cms.Service("TFileService",
+                fileName=cms.string(self.output_filename),
+                )
+
         self.process.framework = cms.EDProducer("ExTreeMaker",
-                output = cms.string(self.output_filename),
                 filters = cms.PSet(),
                 producers = cms.PSet(),
                 analyzers = cms.PSet()
