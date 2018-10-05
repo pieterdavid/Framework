@@ -18,6 +18,16 @@ framework.doSystematics(['jec', 'jer'])
 
 process = framework.create()
 
+import os
+v1,v2,v3 = tuple(int(tok) for tok in os.getenv("CMSSW_VERSION").split("_")[1:4])
+if v1 > 9 or ( v1 == 8 and v2 == 0 and v3 > 30 ) or ( v1 == 9 and v2 >= 3 ):
+    ## Don't use the deterministic seed yet
+    ## for agreement between >=CMSSW_8_0_31 and <=CMSSW_8_0_30 (see PR#20241)
+    ## and between >=CMSSW_9_3_0 and earlier CMSSW_9_X (see PR#20240)
+    framework.process.slimmedJetsSmeared.useDeterministicSeed = cms.bool(False)
+    framework.process.selectedUpdatedPatJetsAK4PFchsNewJECJERUp.useDeterministicSeed = cms.bool(False)
+    framework.process.selectedUpdatedPatJetsAK4PFchsNewJECJERDown.useDeterministicSeed = cms.bool(False)
+
 process.source.fileNames = cms.untracked.vstring(
         'file://TTTo2L2Nu_13TeV-powheg_RunIISpring16MiniAODv2_reduced.root'
         )
