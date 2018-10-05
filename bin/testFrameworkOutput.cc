@@ -55,6 +55,93 @@ inline void print_bytes(char const * buffer, std::size_t count, std::size_t byte
     out.flags(flags); // Restore original flags.
 }
 
+namespace {
+  template<typename T>
+  struct areEqualFloat_ {
+    bool operator() (const T& a, const T& b, const std::string&) const { return a == b; } // trivial case
+  };
+  template<> struct areEqualFloat_<float> {
+    bool operator() (const float& a, const float& b, const std::string& msg) const
+    {
+      if ( a != b ) {
+        const auto reldiff = .5*std::abs(a-b)/(a+b);
+        if ( reldiff > std::numeric_limits<float>::epsilon() ) {
+          return false;
+        } else { // within precision: print a warning
+          std::cout << "Warning: " << msg << " " << a << " vs " << b
+            << " rel.diff=" << reldiff << ", epsilon=" << std::numeric_limits<float>::epsilon() << std::endl;
+        }
+      }
+      return true;
+    }
+  };
+  template<typename T> // vector types
+  struct areEqualFloat_<std::vector<T>> {
+    bool operator() (const std::vector<T>& a, const std::vector<T>& b, const std::string& msg) const
+    {
+      if ( a.size() != b.size() ) {
+        std::cout << "Error: " << msg << " sizes differ: " << a.size() << " vs " << b.size() << std::endl;
+        return false;
+      }
+      const areEqualFloat_<T> elmComp;
+      for ( std::size_t i{0}; i != a.size(); ++i ) {
+        if ( ! elmComp(a[i], b[i], msg+"["+std::to_string(i)+"]") ) return false;
+      }
+      return true;
+    }
+  };
+
+  template<typename T> // helper method from value void-pointers
+  bool areEqualFloat(void* aPtr, void* bPtr, const std::string& msg)
+  {
+    const areEqualFloat_<T> comp;
+    return comp(*reinterpret_cast<const T*>(aPtr), *reinterpret_cast<const T*>(bPtr), msg);
+  }
+
+  /**
+   * Compare all the entries, return true only if they are identical (within precision, for floating point numbers)
+   */
+  bool compareBranchValuesFloat(TBranch* ref, TBranch* test, size_t entry)
+  {
+    // std::cout << "Entry " << entry << ": different hash for branch " << ref->GetClassName() << " " << ref->GetName() << ", trying detailed comparison of the leaves" << std::endl;
+    bool areEqual = true;
+    const auto& refLvs = *(ref->GetListOfLeaves());
+    const auto& testLvs = *(test->GetListOfLeaves());
+    auto rlIt = refLvs.begin(); auto tlIt = testLvs.begin();
+    for ( ; rlIt != refLvs.end() && tlIt != testLvs.end(); ++rlIt, ++tlIt ) {
+      const auto rlI = dynamic_cast<const TLeaf*>(*rlIt);
+      const auto tlI = dynamic_cast<const TLeaf*>(*tlIt);
+      if ( std::string(rlI->GetName()) != std::string(tlI->GetName()) ) {
+        std::cout << "Error: Leaves have different names: " << rlI->GetName() << " vs " << tlI->GetName() << std::endl;
+        areEqual = false;
+        continue;
+      }
+      if ( std::string(rlI->GetTypeName()) != std::string(tlI->GetTypeName()) ) {
+        std::cout << "Error: Leaves have different typenames: " << rlI->GetTypeName() << " vs " << tlI->GetTypeName() << std::endl;
+        areEqual = false;
+        continue;
+      }
+      if ( rlI->GetLeafCount() || tlI->GetLeafCount() ) {
+        std::cout << "NotImplemented: Variable-length array leaves" << std::endl;
+        areEqual = false;
+      }
+      const std::string msg = std::string("leaf ")+rlI->GetTypeName()+" "+rlI->GetName();
+      if ( std::string(rlI->GetTypeName()) == "float" ) {
+        const areEqualFloat_<float> comp;
+        areEqual = areEqual && comp(rlI->GetValue(), tlI->GetValue(), msg);
+      } else if ( std::string(rlI->GetTypeName()) == "vector<float>" ) {
+        areEqual = areEqual && areEqualFloat<std::vector<float>>(rlI->GetValuePointer(), tlI->GetValuePointer(), msg);
+      } else if ( std::string(rlI->GetTypeName()) == "vector<vector<float> >" ) {
+        areEqual = areEqual && areEqualFloat<std::vector<std::vector<float>>>(rlI->GetValuePointer(), tlI->GetValuePointer(), msg);
+      } else {
+        std::cout << "NotImplemented: type " << rlI->GetTypeName() << std::endl;
+        areEqual = false;
+      }
+    }
+    return areEqual;
+  }
+}
+
 bool diffBranches(size_t entry, TBranch* ref, TBranch* test) {
 
     if (ref->GetListOfBranches()->GetEntries() > 0) {
@@ -95,7 +182,7 @@ bool diffBranches(size_t entry, TBranch* ref, TBranch* test) {
     std::string ref_sha = sha256(ref_buffer->Buffer() + ref_basket->GetKeylen(), ref_buffer->Length() - ref_basket->GetKeylen());
     std::string test_sha = sha256(test_buffer->Buffer() + test_basket->GetKeylen(), test_buffer->Length() - test_basket->GetKeylen());
 
-    bool same_hash = ( ref_sha == test_sha ); CHECK(same_hash);
+    bool same_hash = ( ref_sha == test_sha ) || compareBranchValuesFloat(ref, test, entry);
 
     return ( same_nLeaves && same_hash );
 }
