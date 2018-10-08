@@ -67,6 +67,9 @@ class Framework(object):
         if self.path._seq is None:
             self.path.__dict__["_seq"] = _SequenceCollection()
 
+        self.process.genInfoEventWeights = cms.EDProducer("GenInfoEventWeightsProducer")
+        self.path += self.process.genInfoEventWeights
+
         process.options = cms.untracked.PSet(
                 wantSummary = cms.untracked.bool(True),
                 allowUnscheduled = cms.untracked.bool(True)
@@ -85,7 +88,7 @@ class Framework(object):
         process.GlobalTag.globaltag = self.globalTag
 
         process.MessageLogger.cerr.FwkReport.reportEvery = 1000
-        process.MessageLogger.suppressWarning = cms.untracked.vstring('framework')
+        process.MessageLogger.suppressWarning = cms.untracked.vstring('genInfoEventWeights')
 
         process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
         process.source = cms.Source("PoolSource")
