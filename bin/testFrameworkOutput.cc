@@ -275,19 +275,34 @@ TEST_CASE("Check if trees are equals", "[diff]") {
     }
 
     bool all_params_equal = true;
+    if ( ref_file->GetListOfKeys()->GetSize() != test_file->GetListOfKeys()->GetSize() ) {
+      std::cout << "Different number of keys: " << ref_file->GetListOfKeys()->GetSize() << " (ref) versus " << test_file->GetListOfKeys()->GetSize() << " (test)" << std::endl;
+    }
     for ( const auto* iky : *(ref_file->GetListOfKeys()) ) {
       const auto& ky = *dynamic_cast<const TKey*>(iky);
       if ( std::string("TParameter<float>") == ky.GetClassName() ) {
         using floatparam = TParameter<float>;
         const float a = dynamic_cast<const floatparam*>(ref_file->Get(ky.GetName()))->GetVal();
-        const float b = dynamic_cast<const floatparam*>(test_file->Get(ky.GetName()))->GetVal();
-        if ( a != b ) {
-          const auto reldiff = .5*std::abs(a-b)/(a+b);
-          if ( reldiff < std::numeric_limits<float>::epsilon() ) {
-            std::cout << "Warning: parameter " << ky.GetName() << " " << a << " vs " << b
-              << " rel.diff=" << reldiff << ", epsilon=" << std::numeric_limits<float>::epsilon() << std::endl;
-          } else {
+        const auto bObj = test_file->Get(ky.GetName());
+        if ( ! bObj ) {
+          std::cout << "Error: key " << ky.GetName() << " not found in test file" << std::endl;
+          all_params_equal = false;
+        } else {
+          const auto* bParam = dynamic_cast<const floatparam*>(bObj);
+          if ( ! bParam ) {
+            std::cout << "Error: object " << ky.GetName() << " in test file is not of type TParameter<float>" << std::endl;
             all_params_equal = false;
+          } else {
+            const float b = bParam->GetVal();
+            if ( a != b ) {
+              const auto reldiff = .5*std::abs(a-b)/(a+b);
+              if ( reldiff < std::numeric_limits<float>::epsilon() ) {
+                std::cout << "Warning: parameter " << ky.GetName() << " " << a << " vs " << b
+                  << " rel.diff=" << reldiff << ", epsilon=" << std::numeric_limits<float>::epsilon() << std::endl;
+              } else {
+                all_params_equal = false;
+              }
+            }
           }
         }
       }
