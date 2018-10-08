@@ -14,6 +14,7 @@
 
 #include <TBufferFile.h>
 #include <TLeaf.h>
+#include <TParameter.h>
 
 #include <openssl/sha.h>
 
@@ -272,6 +273,26 @@ TEST_CASE("Check if trees are equals", "[diff]") {
         }
         REQUIRE(all_branches_identical);
     }
+
+    bool all_params_equal = true;
+    for ( const auto* iky : *(ref_file->GetListOfKeys()) ) {
+      const auto& ky = *dynamic_cast<const TKey*>(iky);
+      if ( std::string("TParameter<float>") == ky.GetClassName() ) {
+        using floatparam = TParameter<float>;
+        const float a = dynamic_cast<const floatparam*>(ref_file->Get(ky.GetName()))->GetVal();
+        const float b = dynamic_cast<const floatparam*>(test_file->Get(ky.GetName()))->GetVal();
+        if ( a != b ) {
+          const auto reldiff = .5*std::abs(a-b)/(a+b);
+          if ( reldiff < std::numeric_limits<float>::epsilon() ) {
+            std::cout << "Warning: parameter " << ky.GetName() << " " << a << " vs " << b
+              << " rel.diff=" << reldiff << ", epsilon=" << std::numeric_limits<float>::epsilon() << std::endl;
+          } else {
+            all_params_equal = false;
+          }
+        }
+      }
+    }
+    REQUIRE(all_params_equal);
 }
 
 int main(int argc, char* const argv[]) {
