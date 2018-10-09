@@ -346,8 +346,6 @@ void ExTreeMaker::endJob() {
 
     std::cout << std::endl << "Job done in " << std::chrono::duration_cast<ms>(end_time - m_start_time).count() / 1000. << "s" << std::endl;
 
-    m_raw_tree->AutoSave("FlushBaskets Overwrite");
-
     m_categories->print_summary();
 
 #ifdef DEBUG_MEMORY_USAGE
