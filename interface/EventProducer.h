@@ -30,7 +30,7 @@ class EventProducer: public Framework::Producer {
             m_rho_token = collector.consumes<double>(config.getUntrackedParameter<edm::InputTag>("rho", edm::InputTag("fixedGridRhoFastjetAll")));
             m_pu_info_token = collector.consumes<std::vector<PileupSummaryInfo>>(config.getUntrackedParameter<edm::InputTag>("pu_summary", edm::InputTag("addPileupInfo")));
 
-            m_genInfoWeightsToken = collector.consumes<GenInfoAndWeights>(config.getUntrackedParameter<edm::InputTag>("genInfoWeights", edm::InputTag("genInfoEventWeights")));
+            m_genInfoWeightsToken = collector.consumes<Framework::GenInfoAndWeights>(config.getUntrackedParameter<edm::InputTag>("genInfoWeights", edm::InputTag("genInfoEventWeights")));
 
             m_dupECALClusters_token = collector.consumes<bool>(edm::InputTag("particleFlowEGammaGSFixed", "dupECALClusters"));
             m_hitsNotReplaced_token = collector.consumes<DetIdCollection>(edm::InputTag("ecalMultiAndGSGlobalRecHitEB", "hitsNotReplaced"));
@@ -44,7 +44,7 @@ class EventProducer: public Framework::Producer {
         edm::EDGetTokenT<double> m_rho_token;
         edm::EDGetTokenT<std::vector<PileupSummaryInfo>> m_pu_info_token;
 
-        edm::EDGetTokenT<GenInfoAndWeights> m_genInfoWeightsToken;
+        edm::EDGetTokenT<Framework::GenInfoAndWeights> m_genInfoWeightsToken;
 
         // Moriond17 reminiaod validation flags
         edm::EDGetTokenT<bool> m_dupECALClusters_token;

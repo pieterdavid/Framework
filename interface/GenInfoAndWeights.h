@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+namespace Framework {
 struct GenInfoAndWeights {
   float weight = 1.;
   float pt_hat, ht;
@@ -31,3 +32,4 @@ struct GenInfoAndWeights {
   std::vector<std::pair<std::string,float>> lhe_weights;
   std::vector<float> scale_weights;
 };
+}

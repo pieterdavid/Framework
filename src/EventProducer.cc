@@ -43,7 +43,7 @@ void EventProducer::produce(edm::Event& event_, const edm::EventSetup& eventSetu
         }
     }
 
-    edm::Handle<GenInfoAndWeights> genInfoWeights;
+    edm::Handle<Framework::GenInfoAndWeights> genInfoWeights;
     event_.getByToken(m_genInfoWeightsToken, genInfoWeights);
     auto w = *genInfoWeights;
     weight = w.weight;

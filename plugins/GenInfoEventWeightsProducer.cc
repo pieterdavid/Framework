@@ -104,7 +104,7 @@ GenInfoEventWeightsProducer::GenInfoEventWeightsProducer(const edm::ParameterSet
   // Purposely ignore return value
   consumesCollector().consumes<LHERunInfoProduct, edm::InRun>(edm::InputTag("externalLHEProducer"));
 
-  produces<GenInfoAndWeights>();
+  produces<Framework::GenInfoAndWeights>();
 }
 
 GenInfoEventWeightsProducer::~GenInfoEventWeightsProducer() {}
@@ -349,7 +349,7 @@ void GenInfoEventWeightsProducer::beginRun(const edm::Run& iRun, const edm::Even
 
 void GenInfoEventWeightsProducer::produce(edm::Event& event, const edm::EventSetup&)
 {
-  auto weightsProd = std::make_unique<GenInfoAndWeights>();
+  auto weightsProd = std::make_unique<Framework::GenInfoAndWeights>();
   auto& w = *weightsProd;
   w.pdf_set = m_pdf_set;
 
