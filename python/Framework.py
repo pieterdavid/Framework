@@ -160,6 +160,16 @@ class Framework(object):
 
         return self.process
 
+    @dep(before=("create"))
+    def addPreFilter(self, module):
+        """
+        Add a filter before the main framework module
+
+        The config argument should be a valid module, e.g. a `cms.EDFilter("TriggerResultsFilter", ...)`
+        that is added to the process.
+        """
+        self.path += module
+
     @dep(before=("create", "correction"))
     def addAnalyzer(self, name, configuration, index=None):
         """
