@@ -5,6 +5,15 @@
 #include <vector>
 
 namespace Framework {
+/**
+ * A struct for generator info (weights etc.)
+ *
+ * To pass these on from GenInfoEventWeightsProducer (which is run for every event)
+ * to EventProducer (where the TTree is filled), which may be behind a filter.
+ *
+ * @see EventProducer
+ * @see GenInfoEventWeightsProducer
+ */
 struct GenInfoAndWeights {
   float weight = 1.;
   float pt_hat, ht;

@@ -28,6 +28,16 @@ enum class INITIAL_STATE {
     QG
 };
 
+/**
+ * Retrieve generator-level information (initial state, scales etc.)
+ *
+ * A Framework::GenInfoAndWeights product is filled (for storage by EventProducer),
+ * and sums of the weights * are kept and saved (through an MetadataManager, at endJob).
+ * For correct weight sums (cross-sections, systematics etc.), this module should be run
+ * on every event, before applying filters or selections.
+ *
+ * @see EventProducer
+ */
 class GenInfoEventWeightsProducer : public edm::EDProducer {
 public:
   explicit GenInfoEventWeightsProducer(const edm::ParameterSet&);
