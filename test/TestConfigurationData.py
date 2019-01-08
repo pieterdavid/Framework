@@ -5,7 +5,7 @@ from Configuration.StandardSequences.Eras import eras
 from cp3_llbb.Framework import Framework
 from cp3_llbb.Framework.CmdLine import CmdLine
 
-options = CmdLine(defaults=dict(runOnData=1, era="25ns", globalTag='80X_dataRun2_2016SeptRepro_v7', process='RECO'))
+options = CmdLine(defaults=dict(runOnData=1, era="2017", globalTag='94X_dataRun2_ReReco_EOY17_v6', process='RECO'))
 
 framework = Framework.Framework(options)
 
@@ -39,7 +39,7 @@ framework.doSystematics(['jec', 'jer'])
 process = framework.create()
 
 process.source.fileNames = cms.untracked.vstring(
-        '/store/data/Run2016G/DoubleMuon/MINIAOD/03Feb2017-v1/100000/007796A5-78EB-E611-8EFA-A4BF01011FD0.root'
+        '/store/data/Run2017C/DoubleMuon/MINIAOD/31Mar2018-v1/00000/1E30A24E-8E39-E811-8AD3-8CDCD4A99E08.root'
         )
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))
