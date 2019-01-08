@@ -1,4 +1,3 @@
-print('dafuck')
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
@@ -7,7 +6,7 @@ from cp3_llbb.Framework.CmdLine import CmdLine
 
 options = CmdLine(defaults=dict(runOnData=0, era="25ns", globalTag='94X_mc2017_realistic_v14'))
 # Up-to-date tags can be found at https://twiki.cern.ch/twiki/bin/view/CMS/PdmV#Analysis_Recipe (e.g. https://twiki.cern.ch/twiki/bin/view/CMS/PdmV2017Analysis for 2017 data/mc)
-print('cantunderstand')
+
 framework = Framework.Framework(options)
 
 framework.addAnalyzer('dilepton', cms.PSet(
