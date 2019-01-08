@@ -4,7 +4,7 @@ from Configuration.StandardSequences.Eras import eras
 from cp3_llbb.Framework import Framework
 from cp3_llbb.Framework.CmdLine import CmdLine
 
-options = CmdLine(defaults=dict(runOnData=0, era="25ns", globalTag='94X_mc2017_realistic_v14'))
+options = CmdLine(defaults=dict(runOnData=0, era="2017", globalTag='94X_mc2017_realistic_v14'))
 # Up-to-date tags can be found at https://twiki.cern.ch/twiki/bin/view/CMS/PdmV#Analysis_Recipe (e.g. https://twiki.cern.ch/twiki/bin/view/CMS/PdmV2017Analysis for 2017 data/mc)
 
 framework = Framework.Framework(options)
@@ -60,7 +60,7 @@ process = framework.create()
 process.source.fileNames = cms.untracked.vstring(
         # '/store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-herwigpp_30M/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/043B3BC8-8BB7-E611-8CCE-0090FAA573E0.root'
        # '/store/mc/RunIIFall17MiniAODv2/TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/00ED79D3-CFC1-E611-B748-3417EBE64483.root'
-        '/cms/store/mc/RunIIFall17MiniAODv2/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/110000/'
+        '/store/mc/RunIIFall17MiniAODv2/TTTo2L2Nu_widthx1p15_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/110000/42928F17-F6B2-E811-B466-FA163E6E1BE8.root'
         )
 
 # Only run on a specific event. Useful for debugging
