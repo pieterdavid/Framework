@@ -52,7 +52,7 @@ class Framework(object):
             print("CP3 llbb framework:")
             print("    - Running over %s" % ("data" if self.isData else "simulation"))
             print("    - global tag: %s" % self.globalTag)
-            print("    - era: %s" % {eras.Run2_25ns:"25ns", eras.Run2_50ns:"50ns", eras.Run2_2016:"2016"}[self.era])
+            print("    - era: %s" % {eras.Run2_25ns:"25ns", eras.Run2_50ns:"50ns", eras.Run2_2016:"2016", eras.Run2_2017:"2017", eras.Run2_2018:"2018"}[self.era])
             print("")
 
         # Create CMSSW process and configure it with sane default values
@@ -435,9 +435,9 @@ class Framework(object):
         if self.era == eras.Run2_2016:
             setupEgammaPostRecoSeq(self.process, runEnergyCorrections=False, era='2016-Legacy')
         elif self.era == eras.Run2_2017:
-            setupEgammaPostRecoSeq(process, runEnergyCorrections=True,  era='2017-Nov17ReReco')
+            setupEgammaPostRecoSeq(self.process, runEnergyCorrections=True,  era='2017-Nov17ReReco')
         elif self.era == eras.Run2_2018:
-            setupEgammaPostRecoSeq(process, runEnergyCorrections=False, era='2018-Prompt')
+            setupEgammaPostRecoSeq(self.process, runEnergyCorrections=False, era='2018-Prompt')
         else:
             raise RuntimeError("Electron post-reco is not supported for this era")
         self.path.associate(self.process.egammaScaleSmearTask)
