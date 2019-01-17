@@ -22,7 +22,8 @@ function cms-merge-commit()
 git cms-init --upstream-only
 
 echo "---> Merging recipes..."
-git cms-merge-topic UAEDF-tomc:eleCutBasedId_94X_V2
+git cms-merge-topic cms-egamma:EgammaID_1023 ## for Photon ID Fall17 V2 (will be included in 10_2_10)
+git cms-merge-topic cms-egamma:EgammaPostRecoTools
 ## add recipes here
 
 echo "---> Running git cms-checkdeps"
