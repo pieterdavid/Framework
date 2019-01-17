@@ -277,19 +277,19 @@ class Framework(object):
             self.useJECDatabase(JECDatabase)
 
         from cp3_llbb.Framework.Tools import recorrect_jets, recorrect_met
-        jet_collection, prodNames_jet = recorrect_jets(self.process, self.isData, 'AK4PFchs', self.__miniaod_jet_collection, addBtagDiscriminators=addBtagDiscriminators)
-        met_collection, prodNames_met = recorrect_met(self.process, self.isData, self.__miniaod_met_collection, jet_collection)
+        jet_collection = recorrect_jets(self.process, self.isData, 'AK4PFchs', self.__miniaod_jet_collection, addBtagDiscriminators=addBtagDiscriminators)
+        met_collection = recorrect_met(self.process, self.isData, self.__miniaod_met_collection, jet_collection)
+        from PhysicsTools.PatAlgos.tools.helpers import getPatAlgosToolsTask
+        self.path.associate(getPatAlgosToolsTask(self.process))
 
         # Fat jets
-        fat_jet_collection, prodNames_fatjet = recorrect_jets(self.process, self.isData, 'AK8PFchs', self.__miniaod_fat_jet_collection, addBtagDiscriminators=addBtagDiscriminators)
-
-        self.path.associate(cms.Task(*(getattr(self.process, name) for name in chain(prodNames_jet, prodNames_met, prodNames_fatjet))))
+        ## fat_jet_collection = recorrect_jets(self.process, self.isData, 'AK8PFchs', self.__miniaod_fat_jet_collection, addBtagDiscriminators=addBtagDiscriminators) ## FIXME disable for now
 
         # Look for producers using the default jet and met collections
         for producer in self.producers:
             p = getattr(self.process.framework.producers, producer)
             change_input_tags_and_strings(p, self.__miniaod_jet_collection, jet_collection, 'producers.' + producer, '    ')
-            change_input_tags_and_strings(p, self.__miniaod_fat_jet_collection, fat_jet_collection, 'producers.' + producer, '    ')
+            ## change_input_tags_and_strings(p, self.__miniaod_fat_jet_collection, fat_jet_collection, 'producers.' + producer, '    ')
             change_input_tags_and_strings(p, self.__miniaod_met_collection, met_collection, 'producers.' + producer, '    ')
 
             if p.type == 'met':
@@ -298,11 +298,12 @@ class Framework(object):
         # Change the default collections to the newly created
         self.__miniaod_jet_collection = jet_collection
         self.__miniaod_unsmeared_jet_collection = jet_collection
-        self.__miniaod_fat_jet_collection = fat_jet_collection
+        ## self.__miniaod_fat_jet_collection = fat_jet_collection
         self.__miniaod_met_collection = met_collection
 
         if self.verbose:
-            print("New jets and MET collections: %r, %r and %r" % (jet_collection, fat_jet_collection, met_collection))
+            ## print("New jets and MET collections: %r, %r and %r" % (jet_collection, fat_jet_collection, met_collection))
+            print("New jets and MET collections: %r, and %r" % (jet_collection, met_collection))
 
         print("")
 
@@ -424,86 +425,22 @@ class Framework(object):
         if self.verbose:
             print("New muons collection: %r" % (self.__miniaod_muon_collection))
 
-    @dep(before=("create", "electronRegression"), performs=("correction", "electronRegression"))
-    def applyElectronRegression(self):
+    @dep(before=("create", "electronPostReco"), performs=("correction", "electronPostReco"))
+    def applyElectronPostReco(self):
         """
-        Apply electron regression from
-            https://twiki.cern.ch/twiki/bin/view/CMS/EGMRegression
+        Apply electron post-reco (scale&smearings), see
+        https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaMiniAODV2
         """
-
-        if self.verbose:
-            print("")
-            print("Applying electron regression...")
-
-        # Read corrections for database
-        from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
-        regressionWeights(self.process)
-
-        self.process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
-
-        # Rename the collection
-        self.process.slimmedElectronsWithRegression = self.process.slimmedElectrons.clone()
-        self.path.associate(cms.Task(self.process.slimmedElectronsWithRegression))
-
-        # Look for producers using the default electron input
-        for producer in self.producers:
-            p = getattr(self.process.framework.producers, producer)
-            change_input_tags_and_strings(p, self.__miniaod_electron_collection, 'slimmedElectronsWithRegression', 'producers.' + producer, '    ')
-
-        self.__miniaod_electron_collection = 'slimmedElectronsWithRegression'
-
-        if self.verbose:
-            print("New electrons collection: %r" % (self.__miniaod_electron_collection))
-
-    @dep(before=("create", "electronSmearing"), after="electronRegression", performs=("electronSmearing", "correction"))
-    def applyElectronSmearing(self, tag):
-        """
-        Apply electron smearing from
-            https://twiki.cern.ch/twiki/bin/view/CMS/EGMSmearer
-
-        Parameters:
-            tag: correction file to use (from EgammaAnalysis.ElectronTools.calibrationTablesRun2.files)
-        """
-
-        if self.verbose:
-            print("")
-            print("Applying electron smearing...")
-
-        from EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi import calibratedPatElectrons
-        from EgammaAnalysis.ElectronTools.calibrationTablesRun2 import files
-
-        # FIXME: Add a preselection on electron to prevent a crash in the producer
-        # Remove when it's no longer needed (see twiki)
-        self.process.selectedElectrons = cms.EDFilter("PATElectronSelector",
-                src = cms.InputTag(self.__miniaod_electron_collection),
-                cut = cms.string("pt > 5 && abs(superCluster.eta) < 2.5")
-                )
-
-        self.process.slimmedElectronsSmeared = calibratedPatElectrons.clone(
-                electrons = "selectedElectrons",
-                isMC = not self.isData,
-                correctionFile = files[tag]
-                )
-
-        self.process.load('Configuration.StandardSequences.Services_cff')
-        self.process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
-                slimmedElectronsSmeared = cms.PSet(
-                    initialSeed = cms.untracked.uint32(42),
-                    engineName = cms.untracked.string('TRandom3')
-                    )
-                )
-
-        self.path.associate(cms.Task(self.process.selectedElectrons, self.process.slimmedElectronsSmeared, self.process.RandomNumberGeneratorService))
-
-        # Look for producers using the default electron input
-        for producer in self.producers:
-            p = getattr(self.process.framework.producers, producer)
-            change_input_tags_and_strings(p, self.__miniaod_electron_collection, 'slimmedElectronsSmeared', 'producers.' + producer, '    ')
-
-        self.__miniaod_electron_collection = 'slimmedElectronsSmeared'
-
-        if self.verbose:
-            print("New electrons collection: %r" % (self.__miniaod_electron_collection))
+        from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+        if self.era == eras.Run2_2016:
+            setupEgammaPostRecoSeq(self.process, runEnergyCorrections=False, era='2016-Legacy')
+        elif self.era == eras.Run2_2017:
+            setupEgammaPostRecoSeq(process, runEnergyCorrections=True,  era='2017-Nov17ReReco')
+        elif self.era == eras.Run2_2018:
+            setupEgammaPostRecoSeq(process, runEnergyCorrections=False, era='2018-Prompt')
+        else:
+            raise RuntimeError("Electron post-reco is not supported for this era")
+        self.path.associate(self.process.egammaScaleSmearTask)
 
     @dep(before="create")
     def doSystematics(self, systematics, **kwargs):
@@ -533,16 +470,18 @@ class Framework(object):
             self.process.egmGsfElectronIDs.physicsObjectSrc = self.__miniaod_electron_collection
 
             id_modules = [
+                    'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff',
+                    'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_HZZ_V1_cff',
                     'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
-                    'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V1_cff',
-                    'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V1_cff'
+                    'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V2_cff',
+                    'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V2_cff'
                     ]
 
             for mod in id_modules:
                 setupAllVIDIdsInModule(self.process, mod, setupVIDElectronSelection)
 
-            self.path.associate(cms.Task(self.process.electronMVAValueMapProducer))
-            self.path.associate(cms.Task(self.process.egmGsfElectronIDs))
+            from RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cff import egmGsfElectronIDTask
+            self.path.associate(egmGsfElectronIDTask)
 
             self.process.electronMVAValueMapProducer.srcMiniAOD = self.__miniaod_electron_collection
 
@@ -552,7 +491,7 @@ class Framework(object):
         from cp3_llbb.Framework import GenParticlesProducer
         from cp3_llbb.Framework import HLTProducer
         from cp3_llbb.Framework import JetsProducer
-        from cp3_llbb.Framework import FatJetsProducer
+        ## from cp3_llbb.Framework import FatJetsProducer
         from cp3_llbb.Framework import METProducer
         from cp3_llbb.Framework import MuonsProducer
         from cp3_llbb.Framework import ElectronsProducer
@@ -568,7 +507,7 @@ class Framework(object):
         self.addProducer('event', copy.deepcopy(EventProducer.default_configuration))
         self.addProducer('hlt', copy.deepcopy(HLTProducer.default_configuration))
         self.addProducer('jets', copy.deepcopy(JetsProducer.default_configuration))
-        self.addProducer('fat_jets', copy.deepcopy(FatJetsProducer.default_configuration))
+        ## self.addProducer('fat_jets', copy.deepcopy(FatJetsProducer.default_configuration))
         self.addProducer('met', copy.deepcopy(METProducer.default_configuration))
         self.addProducer('muons', copy.deepcopy(MuonsProducer.default_configuration))
         self.addProducer('electrons', copy.deepcopy(ElectronsProducer.default_configuration))
