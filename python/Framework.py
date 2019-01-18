@@ -286,14 +286,19 @@ class Framework(object):
         ## fat_jet_collection = recorrect_jets(self.process, self.isData, 'AK8PFchs', self.__miniaod_fat_jet_collection, addBtagDiscriminators=addBtagDiscriminators) ## FIXME disable for now
 
         # Look for producers using the default jet and met collections
-        for producer in self.producers:
-            p = getattr(self.process.framework.producers, producer)
-            change_input_tags_and_strings(p, self.__miniaod_jet_collection, jet_collection, 'producers.' + producer, '    ')
-            ## change_input_tags_and_strings(p, self.__miniaod_fat_jet_collection, fat_jet_collection, 'producers.' + producer, '    ')
-            change_input_tags_and_strings(p, self.__miniaod_met_collection, met_collection, 'producers.' + producer, '    ')
-
-            if p.type == 'met':
-                p.parameters.slimmed = cms.untracked.bool(False)
+        repls = [ (self.__miniaod_jet_collection, jet_collection),
+                  ##(self.__miniaod_fat_jet_collection, fat_jet_collection),
+                  (self.__miniaod_met_collection, met_collection) ]
+        for produName in self.producers:
+            producer = getattr(self.process.framework.producers, produName)
+            for tgFrom, tgTo in repls:
+                change_input_tags_and_strings(producer, tgFrom, tgTo, "producers.{0}".format(produName), "    ")
+            if producer.type == 'met':
+                producer.parameters.slimmed = cms.untracked.bool(False)
+        for anaName in self.analyzers:
+            analyzer = getattr(self.process.framework.analyzers, anaName)
+            for tgFrom, tgTo in repls:
+                change_input_tags_and_strings(analyzer, tgFrom, tgTo, "analyzers.{0}".format(anaName), "    ")
 
         # Change the default collections to the newly created
         self.__miniaod_jet_collection = jet_collection
