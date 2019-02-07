@@ -196,9 +196,6 @@ TEST_CASE("Check if trees are equals", "[diff]") {
     REQUIRE(test_file.get());
 
     TTree* ref_tree = (TTree*) ref_file->Get("framework/t");
-    if ( ! ref_tree ) {
-      ref_tree = (TTree*) ref_file->Get("t");
-    }
     REQUIRE(ref_tree);
 
     TTree* test_tree = (TTree*) test_file->Get("framework/t");
