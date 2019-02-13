@@ -165,7 +165,7 @@ def recorrect_jets(process, isData, jetAlgo, jetCollection, addBtagDiscriminator
     else:
         return 'selectedUpdatedPatJets{}'.format(label)
 
-def recorrect_met(process, isData, metCollection, jetCollection):
+def recorrect_met(process, isData, metCollection, jetCollection, fixEE2017=False):
     """
     Create a new MET collection, propagating new JEC from jetCollection
 
@@ -186,7 +186,8 @@ def recorrect_met(process, isData, metCollection, jetCollection):
                 ))
 
     from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-    runMetCorAndUncFromMiniAOD(process, isData=isData, jetCollUnskimmed=jetCollection, postfix="NewJEC")
+    runMetCorAndUncFromMiniAOD(process, isData=isData, jetCollUnskimmed=jetCollection, postfix="NewJEC",
+            fixEE2017=fixEE2017, fixEE2017Params={'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139})
     return 'slimmedMETsNewJEC'
 
 def check_tag_(db_file, tag):

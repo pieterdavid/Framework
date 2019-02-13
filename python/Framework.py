@@ -110,6 +110,33 @@ class Framework(object):
                 print("Changing hlt process name from %r to %r..." % ('HLT', self.hltProcessName))
             change_process_name(self.process.framework, 'HLT', self.hltProcessName)
 
+        ## ECAL endcap noise filter for 2017 and 2018
+        ## https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#How_to_run_ecal_BadCalibReducedM
+        if self.era in (eras.Run2_2017, eras.Run2_2017):
+            self.process.load('RecoMET.METFilters.ecalBadCalibFilter_cfi')
+
+            baddetEcallist = cms.vuint32(
+                    [872439604,872422825,872420274,872423218,
+                     872423215,872416066,872435036,872439336,
+                     872420273,872436907,872420147,872439731,
+                     872436657,872420397,872439732,872439339,
+                     872439603,872422436,872439861,872437051,
+                     872437052,872420649,872422436,872421950,
+                     872437185,872422564,872421566,872421695,
+                     872421955,872421567,872437184,872421951,
+                     872421694,872437056,872437057,872437313])
+
+            self.process.ecalBadCalibReducedMINIAODFilter = cms.EDFilter(
+                    "EcalBadCalibFilter",
+                    EcalRecHitSource = cms.InputTag("reducedEgamma:reducedEERecHits"),
+                    ecalMinEt = cms.double(50.),
+                    baddetEcal = baddetEcallist,
+                    taggingMode = cms.bool(True),
+                    debug = cms.bool(False)
+                    )
+
+            self.path += self.process.ecalBadCalibReducedMINIAODFilter
+
         if len(self.__systematics) > 0:
             if self.verbose:
                 print("")
@@ -278,7 +305,7 @@ class Framework(object):
 
         from cp3_llbb.Framework.Tools import recorrect_jets, recorrect_met
         jet_collection = recorrect_jets(self.process, self.isData, 'AK4PFchs', self.__miniaod_jet_collection, addBtagDiscriminators=addBtagDiscriminators)
-        met_collection = recorrect_met(self.process, self.isData, self.__miniaod_met_collection, jet_collection)
+        met_collection = recorrect_met(self.process, self.isData, self.__miniaod_met_collection, jet_collection, fixEE2017=(self.era == eras.Run2_2017))
         from PhysicsTools.PatAlgos.tools.helpers import getPatAlgosToolsTask
         self.path.associate(getPatAlgosToolsTask(self.process))
 
@@ -478,6 +505,8 @@ class Framework(object):
                     'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff',
                     'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_HZZ_V1_cff',
                     'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
+                    'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V1_cff',
+                    'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V1_cff',
                     'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V2_cff',
                     'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V2_cff'
                     ]
