@@ -67,6 +67,6 @@ export PYTHONPATH="${bk_pythonpath}"
 
 echo "--> Updating environment"
 scram setup "${toolfile}"
-cmsenv
+eval `scram runtime -sh` ## cmsenv
 
 echo "--> requests is installed. The package can normally be installed with 'scram b' now"
