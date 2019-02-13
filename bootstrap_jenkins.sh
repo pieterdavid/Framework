@@ -35,5 +35,5 @@ git clone -o upstream https://github.com/blinkseb/TreeWrapper.git cp3_llbb/TreeW
 if ! python -c 'import requests' 2>/dev/null ; then
   pushd "cp3_llbb/Framework" &> /dev/null
   source "$(dirname $0)/install_requests.sh"
-  popd &> /dev/null
+  popd
 fi
