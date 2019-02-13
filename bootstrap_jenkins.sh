@@ -32,7 +32,7 @@ git cms-checkdeps -a
 echo "---> Adding TreeWrapper"
 git clone -o upstream https://github.com/blinkseb/TreeWrapper.git cp3_llbb/TreeWrapper
 
-if [ "$(python -c 'import requests')" ]; then
+if ! python -c 'import requests' 2>/dev/null ; then
   pushd "cp3_llbb/Framework" &> /dev/null
   source install_requests.sh
   popd &> /dev/null
